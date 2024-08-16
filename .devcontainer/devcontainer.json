@@ -1,0 +1,18 @@
+{
+    "name": "Todo App",
+    "dockerComposeFile": "../docker-compose.yml",
+    "service": "flask",
+    "workspaceFolder": "/usr/src/app",
+    "shutdownAction": "stopCompose",
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+    },
+    "extensions": [
+        "GitHub.copilot",
+        "oderwat.indent-rainbow",
+        "ms-python.python",
+        "vscode-icons-team.vscode-icons",
+        "mosapride.zenkaku",
+        "Gruntfuggly.todo-tree"
+    ]
+}
