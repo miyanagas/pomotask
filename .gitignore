@@ -1,0 +1,4 @@
+.env_file/
+mysql/data/
+flask/app/__pycache__/
+flask/app/.flaskenv
