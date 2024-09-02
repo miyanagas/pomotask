@@ -1,7 +1,7 @@
 {
     "name": "Todo App",
     "dockerComposeFile": "../docker-compose.yml",
-    "service": "flask",
+    "service": "fastapi",
     "workspaceFolder": "/usr/src/app",
     "shutdownAction": "stopCompose",
     "settings": {

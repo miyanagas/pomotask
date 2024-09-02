@@ -1,22 +1,31 @@
 version: '3.8'
 services:
   flask:
-    build: ./flask
-    image: flask-todo
-    container_name: flask-todo
+    build: ./fastapi
+    image: fastapi-todo
+    container_name: fastapi-todo
     ports:
-      - 8080:8080
+      - 8080:8000
     volumes:
-      - ./flask:/usr/src/app
+      - ./fastapi:/usr/src/app
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
   mysql:
     image: mysql:9.0
     platform: linux/arm64
     container_name: mysql-todo
+    ports:
+      - 3306:3306
     restart: always
     env_file:
       - ./.env_file/mysql.env
     volumes:
       - ./mysql/conf.d:/etc/mysql/conf.d
       - ./mysql/data:/var/lib/mysql
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
