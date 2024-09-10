@@ -9,7 +9,7 @@ services:
     volumes:
       - ./frontend/app:/usr/src/app
     depends_on:
-      - flask
+      - backend
   backend:
     build: ./backend
     image: todo-backend
