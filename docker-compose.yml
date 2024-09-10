@@ -1,11 +1,21 @@
 version: '3.8'
 services:
+  frontend:
+    build: ./frontend
+    image: todo-frontend
+    container_name: todo-frontend
+    ports:
+      - 8080:5173
+    volumes:
+      - ./frontend/app:/usr/src/app
+    depends_on:
+      - flask
   flask:
     build: ./fastapi
     image: fastapi-todo
     container_name: fastapi-todo
     ports:
-      - 8080:8000
+      - 8081:8000
     volumes:
       - ./fastapi:/usr/src/app
     depends_on:
