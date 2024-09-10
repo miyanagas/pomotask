@@ -1,4 +1,4 @@
 .env_file/
 mysql/data/
-fastapi/app/__pycache__/
-fastapi/app/.env
+backend/app/__pycache__/
+backend/app/.env

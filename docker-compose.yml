@@ -10,14 +10,14 @@ services:
       - ./frontend/app:/usr/src/app
     depends_on:
       - flask
-  flask:
-    build: ./fastapi
-    image: fastapi-todo
-    container_name: fastapi-todo
+  backend:
+    build: ./backend
+    image: todo-backend
+    container_name: todo-backend
     ports:
       - 8081:8000
     volumes:
-      - ./fastapi:/usr/src/app
+      - ./backend:/usr/src/app
     depends_on:
       mysql:
         condition: service_healthy
