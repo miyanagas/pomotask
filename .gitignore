@@ -1,4 +1,4 @@
 .env_file/
-mysql/data/
+db/data/
 backend/app/__pycache__/
 backend/app/.env
