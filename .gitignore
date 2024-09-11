@@ -2,3 +2,38 @@
 db/data/
 backend/app/__pycache__/
 backend/app/.env
+
+frontend/app/vue-app/.gitignore
+
+# 以下は.gitignoreの内容をコピー
+
+# Logs
+frontend/app/vue-app/logs
+frontend/app/vue-app/*.log
+frontend/app/vue-app/npm-debug.log*
+frontend/app/vue-app/yarn-debug.log*
+frontend/app/vue-app/yarn-error.log*
+frontend/app/vue-app/pnpm-debug.log*
+frontend/app/vue-app/lerna-debug.log*
+
+frontend/app/vue-app/node_modules
+frontend/app/vue-app/.DS_Store
+frontend/app/vue-app/dist
+frontend/app/vue-app/dist-ssr
+frontend/app/vue-app/coverage
+frontend/app/vue-app/*.local
+
+/cypress/videos/
+/cypress/screenshots/
+
+# Editor directories and files
+frontend/app/vue-app/.vscode/*
+!frontend/app/vue-app/.vscode/extensions.json
+frontend/app/vue-app/.idea
+frontend/app/vue-app/*.suo
+frontend/app/vue-app/*.ntvs*
+frontend/app/vue-app/*.njsproj
+frontend/app/vue-app/*.sln
+frontend/app/vue-app/*.sw?
+
+frontend/app/vue-app/*.tsbuildinfo
