@@ -10,7 +10,7 @@ load_dotenv()
 password = os.environ["MYSQL_ROOT_PASSWORD"]
 dbname = os.environ["MYSQL_DATABASE"]
 
-SQLALCHEMY_DATABASE_URL = f"mysql+pymysql://root:{password}@mysql:3306/{dbname}"
+SQLALCHEMY_DATABASE_URL = f"mysql+pymysql://root:{password}@db:3306/{dbname}"
 
 # DBと接続するエンジンの作成
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
