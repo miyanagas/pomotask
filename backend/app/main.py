@@ -1,6 +1,7 @@
 from fastapi import Depends, FastAPI
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
+from fastapi.middleware.cors import CORSMiddleware
 
 from . import crud, models, schemas
 from .database import SessionLocal, engine
@@ -9,6 +10,18 @@ from .database import SessionLocal, engine
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+# CORSの設定
+origins = [
+    "http://localhost:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # Dependency
@@ -20,6 +33,11 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}
 
 
 # ToDoItemを新規作成するリクエスト
