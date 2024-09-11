@@ -1,13 +1,25 @@
 version: '3.8'
 services:
+  nginx:
+    image: nginx:1.26.2
+    platform: linux/arm64
+    container_name: todo-nginx
+    ports:
+      - 8080:80
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - frontend
   frontend:
     build: ./frontend
     image: todo-frontend
     container_name: todo-frontend
     ports:
-      - 8080:5173
+      - 5173:5173
     volumes:
       - ./frontend/app:/usr/src/app
+    # tty: true
+    # stdin_open: true
     depends_on:
       - backend
   backend:
