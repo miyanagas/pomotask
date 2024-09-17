@@ -9,7 +9,6 @@ FROM --platform=linux/arm64 node:22.8.0
 WORKDIR /usr/src/app/vue-app
 
 # RUN npm install
-RUN npm install axios
 # RUN npm run dev -- --host
 
 EXPOSE 5173
