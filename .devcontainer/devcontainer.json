@@ -1,8 +1,8 @@
 {
     "name": "Todo App",
     "dockerComposeFile": "../docker-compose.yml",
-    "service": "fastapi",
-    "workspaceFolder": "/usr/src/app",
+    "service": "frontend",
+    "workspaceFolder": "/usr/src/app/vue-app",
     "shutdownAction": "stopCompose",
     "settings": {
         "terminal.integrated.shell.linux": "/bin/bash"
@@ -13,6 +13,8 @@
         "ms-python.python",
         "vscode-icons-team.vscode-icons",
         "mosapride.zenkaku",
-        "Gruntfuggly.todo-tree"
+        "Gruntfuggly.todo-tree",
+        "Vue.volar",
+        "dbaeumer.vscode-eslint",
     ]
 }
