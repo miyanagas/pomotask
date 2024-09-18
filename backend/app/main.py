@@ -48,10 +48,17 @@ def add_toDo(toDoItem: schemas.toDoItemCreate, db: Session = Depends(get_db)):
     return toDoItem
 
 
+# ToDoItemを更新するリクエスト
+@app.post("/todolist/update", response_model=schemas.toDoItem)
+def update_toDoItem(toDoItem: schemas.toDoItem, db: Session = Depends(get_db)):
+    toDoItem = crud.update_toDoItem(db=db, toDoItem=toDoItem)
+    return toDoItem
+
+
 # ToDoListを取得するリクエスト
 @app.get("/todolist", response_model=list[schemas.toDoItem])
-def get_toDoList(db: Session = Depends(get_db)):
-    toDoList = crud.get_toDoList(db, all=True)
+def get_toDoList(done_filter: bool = False, db: Session = Depends(get_db)):
+    toDoList = crud.get_toDoList(db, done_filter=done_filter)
     return toDoList
 
 

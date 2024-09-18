@@ -7,4 +7,5 @@ class toDoItemCreate(BaseModel):
 
 
 class toDoItem(toDoItemCreate):
+    id: int
     is_done: bool
