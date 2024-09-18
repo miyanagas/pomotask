@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, ErrorCodes } from 'vue'
+import { ref, onMounted } from 'vue'
 import axios from 'axios';
 
 const request = axios.create({
