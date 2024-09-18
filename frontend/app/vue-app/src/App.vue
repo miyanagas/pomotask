@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, ErrorCodes } from 'vue'
 import axios from 'axios';
 
 const request = axios.create({
@@ -7,7 +7,7 @@ const request = axios.create({
 });
 
 const error = ref(null);
-const toDoList = ref(null);
+const toDoList = ref([]);
 const newToDo = ref('');
 
 onMounted(() => {
@@ -22,6 +22,7 @@ const fetchToDoList = async () => {
         toDoList.value = response.data
     } catch (e) {
         error.value = e
+        alert('エラーが発生しました')
     }
 }
 
@@ -39,12 +40,24 @@ const addToDo = async () => {
 
     } catch (e) {
         error.value = e
+        alert('エラーが発生しました')
     }
     finally {
         newToDo.value = ''
     }
 
     fetchToDoList()
+}
+
+const deleteToDoList = async () => {
+    try {
+        await request.delete('/todolist')
+    } catch (e) {
+        error.value = e
+        alert('エラーが発生しました')
+    }
+
+    toDoList.value = []
 }
 </script>
 
@@ -54,21 +67,24 @@ const addToDo = async () => {
     <img alt="App logo" class="logo" src="./assets/todo-logo.svg" width="35" height="35" />
   </header>
   <div class="container">
+    <div v-if="error">
+      <p>{{ error }}</p>
+    </div>
     <div class="input-todo">
       <input type="text" v-model="newToDo" placeholder="ToDoを入力してください">
       <button @click="addToDo()">追加</button>
     </div>
     <div class="todo-list">
-          <ul  v-if="toDoList">
+          <ul  v-if="toDoList.length!==0">
               <li class="todo-item" v-for="(toDo, index) in toDoList" :key="index">
                   <span>{{ toDo.title }}</span>
                   <span><input class="status-checkbox" type="checkbox" v-model="toDo.is_done"></span>
               </li>
           </ul>
-          <p v-else>Loading...</p>
+          <p v-else>ToDoがありません</p>
     </div>
     <div class="delete-todo">
-      <button>ToDoを一括削除</button>
+      <button @click="deleteToDoList()">ToDoを一括削除</button>
     </div>
   </div>
 </template>
