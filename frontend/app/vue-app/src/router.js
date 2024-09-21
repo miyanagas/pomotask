@@ -5,7 +5,7 @@ import ToDoItemView from "./ToDoItem.vue";
 
 const routes = [
   { path: "/", component: ToDoListView },
-  { path: "/todo_list/:id", name: "todo_item", component: ToDoItemView },
+  { path: "/todo_list/:id/:title", name: "todo_item", component: ToDoItemView },
 ];
 
 const router = createRouter({

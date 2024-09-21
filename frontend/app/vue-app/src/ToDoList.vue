@@ -109,7 +109,10 @@ const deleteToDoList = async () => {
           :key="index"
         >
           <router-link
-            :to="{ name: 'todo_item', params: { id: toDo.id } }"
+            :to="{
+              name: 'todo_item',
+              params: { id: toDo.id, title: toDo.title },
+            }"
             id="todo-item-link"
           >
             <span>{{ toDo.title }}</span>
