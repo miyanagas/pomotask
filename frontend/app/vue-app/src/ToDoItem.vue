@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import Timer from "@/Timer";
+import alarm from "@/assets/sound-alarm.mp3";
 
 const timeType = {
   task: 25 * 60,
@@ -49,6 +50,8 @@ const updateTime = () => {
 
 const timerEnded = () => {
   // alert("Time's up!");
+  const audio = new Audio(alarm);
+  audio.play();
   currentTask = getNextTask();
   setTimeout(() => {
     remainingTime.value = currentTask;
