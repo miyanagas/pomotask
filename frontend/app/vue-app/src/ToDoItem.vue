@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, onBeforeUnmount } from "vue";
 import Timer from "@/Timer";
 import alarm from "@/assets/sound-alarm.mp3";
 
@@ -31,6 +31,10 @@ onMounted(() => {
   currentTask = taskPlan[taskIndex];
   remainingTime.value = currentTask;
   timer = new Timer(remainingTime.value, updateTime, timerEnded);
+});
+
+onBeforeUnmount(() => {
+  if (timer.getIsTimerRunning()) timer.reset();
 });
 
 const progressOffset = computed(() => {
