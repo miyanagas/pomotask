@@ -191,7 +191,7 @@ const getNextTask = () => {
 .progress-circle {
   display: flex;
   align-items: center;
-  margin: auto;
+  margin: auto 0;
   width: 200px;
   height: 200px;
 }
