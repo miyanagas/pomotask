@@ -22,6 +22,7 @@ const taskPlan = [
 let timer;
 let taskIndex = 0;
 let currentTask = 0;
+const circumference = 2 * Math.PI * 45;
 const remainingTime = ref(0);
 const isTimerRunning = ref(false);
 
@@ -29,6 +30,10 @@ onMounted(() => {
   currentTask = taskPlan[taskIndex];
   remainingTime.value = currentTask;
   timer = new Timer(remainingTime.value, updateTime, timerEnded);
+});
+
+const progressOffset = computed(() => {
+  return circumference - (remainingTime.value / currentTask) * circumference;
 });
 
 const formattedTime = computed(() => {
@@ -93,6 +98,19 @@ const getNextTask = () => {
     </div>
     <div class="todo-timer">
       <div class="timer-screen">
+        <div class="progress-circle">
+          <svg class="progress-svg" viewBox="0 0 100 100">
+            <circle class="progress-background" cx="50" cy="50" r="45"></circle>
+            <circle
+              class="progress-bar"
+              :stroke-dasharray="circumference"
+              :stroke-dashoffset="progressOffset"
+              cx="50"
+              cy="50"
+              r="45"
+            ></circle>
+          </svg>
+        </div>
         <span>{{ formattedTime }}</span>
       </div>
       <div class="timer-button">
@@ -165,6 +183,32 @@ const getNextTask = () => {
   margin: 8px 8px 8px 64px;
   padding: 8px;
   transition: 0.3s;
+}
+
+.progress-circle {
+  display: flex;
+  align-items: center;
+  margin: auto;
+  width: 200px;
+  height: 200px;
+}
+
+.progress-svg {
+  transform: rotate(-90deg) scale(1, -1);
+}
+
+.progress-background {
+  fill: none;
+  stroke: #e6e6e6;
+  stroke-width: 10;
+}
+
+.progress-bar {
+  fill: none;
+  stroke: lightseagreen;
+  stroke-width: 10;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s linear;
 }
 
 .timer-button {
