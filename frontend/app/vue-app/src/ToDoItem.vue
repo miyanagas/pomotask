@@ -21,11 +21,13 @@ const taskPlan = [
 
 let timer;
 let taskIndex = 0;
+let currentTask = 0;
 const remainingTime = ref(0);
 const isTimerRunning = ref(false);
 
 onMounted(() => {
-  remainingTime.value = taskPlan[taskIndex];
+  currentTask = taskPlan[taskIndex];
+  remainingTime.value = currentTask;
   timer = new Timer(remainingTime.value, updateTime, timerEnded);
 });
 
@@ -41,11 +43,13 @@ const updateTime = () => {
 };
 
 const timerEnded = () => {
-  alert("Time's up!");
-  const nextTask = getNextTask();
-  remainingTime.value = timeType[nextTask];
-  timer.setTime(remainingTime.value);
-  timer.start();
+  // alert("Time's up!");
+  currentTask = getNextTask();
+  setTimeout(() => {
+    remainingTime.value = currentTask;
+    timer.setTime(remainingTime.value);
+    timer.start();
+  }, 1000);
 };
 
 const start = () => {
@@ -61,13 +65,12 @@ const pause = () => {
 const stop = () => {
   isTimerRunning.value = false;
   timer.reset();
-  remainingTime.value = 0;
-  taskIndex = 0;
-  timer.setTime(taskPlan[taskIndex]);
+  remainingTime.value = currentTask;
+  timer.setTime(remainingTime.value);
 };
 
 const getNextTask = () => {
-  taskIndex++;
+  taskIndex += 1;
   if (taskIndex >= taskPlan.length) taskIndex = 0;
   return taskPlan[taskIndex];
 };
@@ -75,17 +78,109 @@ const getNextTask = () => {
 
 <template>
   <div class="container">
-    <button class="back-button" @click="$router.push('/')">Back</button>
-    <h2 class="todo-title">{{ $route.params.title }}</h2>
+    <div class="todo-header">
+      <button class="back-button" @click="$router.push('/')">戻る</button>
+    </div>
+    <div class="todo-title-headline">
+      <img
+        alt="App logo"
+        class="logo"
+        src="./assets/todo-logo2.svg"
+        width="35"
+        height="35"
+      />
+      <h1 class="todo-title">{{ $route.params.title }}</h1>
+    </div>
     <div class="todo-timer">
       <div class="timer-screen">
-        <p>{{ formattedTime }}</p>
+        <span>{{ formattedTime }}</span>
       </div>
-      <button class="timer-button" v-if="!isTimerRunning" @click="start()">
-        Start
-      </button>
-      <button class="timer-button" v-else @click="pause()">Pause</button>
-      <button class="timer-button" @click="stop()">Stop</button>
+      <div class="timer-button">
+        <button v-if="!isTimerRunning" @click="start()">スタート</button>
+        <button v-else @click="pause()">一時停止</button>
+        <button @click="stop()">リセット</button>
+      </div>
     </div>
   </div>
 </template>
+
+<style>
+.todo-header {
+  display: flex;
+  padding: 1rem;
+  justify-content: flex-start;
+}
+
+.back-button {
+  padding: 0.5rem 1rem;
+  font-size: 16px;
+  margin: 0 0% 0 0;
+  background-color: white;
+  border: 4px solid hsla(160, 100%, 37%, 1);
+  border-radius: 4px;
+  color: hsla(160, 100%, 37%, 1);
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.todo-title-headline {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 55%;
+  margin: 0 auto;
+  padding: 0.5rem 1.5rem;
+  background-color: #f1f1f1;
+  /* border: 3px solid #ccc; */
+  border-radius: 8px;
+}
+
+.logo {
+  margin: 0 0 0 1rem;
+}
+
+.todo-title {
+  margin: 0 1rem;
+  font-weight: bold;
+}
+
+.todo-timer {
+  width: 55%;
+  margin: 0.5rem auto;
+  padding: 1rem;
+}
+
+.timer-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+}
+
+.timer-screen span {
+  font-size: 128px;
+  font-family: "Lucida Console", monospace;
+  margin: 8px 8px 8px 64px;
+  padding: 8px;
+  transition: 0.3s;
+}
+
+.timer-button {
+  display: flex;
+  justify-content: center;
+  margin: 5% 0;
+}
+
+.timer-button button {
+  font-size: 24px;
+  padding: 0.5rem 1rem;
+  margin: 1.5rem;
+  border: 1px solid hsla(160, 100%, 37%, 1);
+  border-radius: 4px;
+  background-color: hsla(160, 100%, 37%, 1);
+  color: white;
+  cursor: pointer;
+}
+</style>
