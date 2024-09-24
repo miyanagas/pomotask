@@ -15,6 +15,10 @@ export default class Timer {
     return this.remainingTime;
   }
 
+  getIsTimerRunning() {
+    return this.isTimerRunning;
+  }
+
   start() {
     this.isTimerRunning = true;
     this.intervalId = setInterval(() => {
