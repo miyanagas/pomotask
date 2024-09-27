@@ -1,10 +1,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import axios from "axios";
-
-const request = axios.create({
-  baseURL: "http://localhost:8080/api/v1",
-});
+import requestAPI from "./requestAPI";
 
 const error = ref(null);
 const toDoList = ref([]);
@@ -17,7 +13,7 @@ onMounted(() => {
 
 const fetchToDoList = async () => {
   try {
-    const response = await request.get("/todolist", {
+    const response = await requestAPI.get("/todolist", {
       params: {
         done_filter: isToDoFilter.value,
       },
@@ -38,7 +34,7 @@ const addToDo = async () => {
   }
 
   try {
-    await request.post("/todolist", {
+    await requestAPI.post("/todolist", {
       title: newToDo.value,
     });
   } catch (e) {
@@ -53,7 +49,7 @@ const addToDo = async () => {
 
 const updateToDo = async (toDo) => {
   try {
-    await request.post("/todolist/update", {
+    await requestAPI.post("/todolist/update", {
       id: toDo.id,
       title: toDo.title,
       is_done: toDo.is_done,
@@ -68,7 +64,7 @@ const updateToDo = async (toDo) => {
 
 const deleteToDoList = async () => {
   try {
-    await request.delete("/todolist");
+    await requestAPI.delete("/todolist");
   } catch (e) {
     error.value = e;
     alert("エラーが発生しました");
