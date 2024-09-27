@@ -3,9 +3,16 @@ import { ref, onMounted, computed, onBeforeUnmount } from "vue";
 import Timer from "@/Timer";
 import alarm from "@/assets/sound-alarm.mp3";
 
-const timeType = {
-  task: 25 * 60,
-  break: 5 * 60,
+const defaultTaskTime = 25;
+const defaultBreakTime = 5;
+const seconds = 60;
+
+const taskTime = ref(defaultTaskTime);
+const breakTime = ref(defaultBreakTime);
+
+let timeType = {
+  task: taskTime.value * seconds,
+  break: breakTime.value * seconds,
 };
 
 let timer;
@@ -90,6 +97,18 @@ const roadYouTube = () => {
     alert("無効なURLです");
   }
 };
+
+const customizeTimer = () => {
+  if (timer.getIsTimerRunning()) {
+    timer.reset();
+    isTimerRunning.value = false;
+  }
+  timeType.task = taskTime.value * seconds;
+  timeType.break = breakTime.value * seconds;
+  currentTimer = timeType.task;
+  remainingTime.value = currentTimer;
+  timer.setTime(remainingTime.value);
+};
 </script>
 
 <template>
@@ -138,6 +157,43 @@ const roadYouTube = () => {
         referrerpolicy="strict-origin-when-cross-origin"
         allowfullscreen
       ></iframe>
+    </div>
+    <div class="timer-customize">
+      <div class="time-selector">
+        <label for="task-time">タスク時間</label>
+        <select v-model="taskTime" id="task-time">
+          <option value="5">5分</option>
+          <option value="10">10分</option>
+          <option value="15">15分</option>
+          <option value="20">20分</option>
+          <option value="25">25分</option>
+          <option value="30">30分</option>
+          <option value="35">35分</option>
+          <option value="40">40分</option>
+          <option value="45">45分</option>
+          <option value="50">50分</option>
+          <option value="55">55分</option>
+          <option value="60">60分</option>
+          <option value="65">65分</option>
+          <option value="70">70分</option>
+          <option value="75">75分</option>
+          <option value="80">80分</option>
+          <option value="85">85分</option>
+          <option value="90">90分</option>
+        </select>
+      </div>
+      <div class="time-selector">
+        <label for="break-time">休憩時間</label>
+        <select v-model="breakTime" id="break-time">
+          <option value="5">5分</option>
+          <option value="10">10分</option>
+          <option value="15">15分</option>
+          <option value="20">20分</option>
+          <option value="25">25分</option>
+          <option value="30">30分</option>
+        </select>
+      </div>
+      <button @click="customizeTimer()">設定</button>
     </div>
     <div class="todo-timer">
       <div class="timer-screen">
@@ -268,6 +324,44 @@ const roadYouTube = () => {
   color: white;
   cursor: pointer;
   font-size: 14px;
+  font-weight: bold;
+}
+
+.timer-customize {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem auto 0.5rem auto;
+  width: 55%;
+}
+
+.time-selector {
+  display: flex;
+  align-items: center;
+  margin: 0 0.5rem;
+}
+
+.time-selector label {
+  font-size: 16px;
+  margin: 0 0.5rem 0 0;
+}
+
+.time-selector select {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.timer-customize button {
+  padding: 0.5rem 1rem;
+  margin: 0 0 0 0.5rem;
+  border: 1px solid lightseagreen;
+  border-radius: 4px;
+  background-color: lightseagreen;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
   font-weight: bold;
 }
 
