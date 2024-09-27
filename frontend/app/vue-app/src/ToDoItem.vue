@@ -6,23 +6,10 @@ import alarm from "@/assets/sound-alarm.mp3";
 const timeType = {
   task: 25 * 60,
   break: 5 * 60,
-  longBreak: 15 * 60,
 };
 
-const taskPlan = [
-  timeType.task,
-  timeType.break,
-  timeType.task,
-  timeType.break,
-  timeType.task,
-  timeType.break,
-  timeType.task,
-  timeType.longBreak,
-];
-
 let timer;
-let taskIndex = 0;
-let currentTask = 0;
+let currentTimer;
 const circumference = 2 * Math.PI * 45;
 const remainingTime = ref(0);
 const isTimerRunning = ref(false);
@@ -30,8 +17,8 @@ const isMenuOpen = ref(false);
 const youtubeUrl = ref("");
 
 onMounted(() => {
-  currentTask = taskPlan[taskIndex];
-  remainingTime.value = currentTask;
+  currentTimer = timeType.task;
+  remainingTime.value = currentTimer;
   timer = new Timer(remainingTime.value, updateTime, timerEnded);
 });
 
@@ -40,7 +27,7 @@ onBeforeUnmount(() => {
 });
 
 const progressOffset = computed(() => {
-  return circumference - (remainingTime.value / currentTask) * circumference;
+  return circumference - (remainingTime.value / currentTimer) * circumference;
 });
 
 const formattedTime = computed(() => {
@@ -58,9 +45,10 @@ const timerEnded = () => {
   // alert("Time's up!");
   const audio = new Audio(alarm);
   audio.play();
-  currentTask = getNextTask();
+  currentTimer =
+    currentTimer === timeType.task ? timeType.break : timeType.task;
   setTimeout(() => {
-    remainingTime.value = currentTask;
+    remainingTime.value = currentTimer;
     timer.setTime(remainingTime.value);
     timer.start();
   }, 1000);
@@ -79,14 +67,8 @@ const pause = () => {
 const stop = () => {
   isTimerRunning.value = false;
   timer.reset();
-  remainingTime.value = currentTask;
+  remainingTime.value = currentTimer;
   timer.setTime(remainingTime.value);
-};
-
-const getNextTask = () => {
-  taskIndex += 1;
-  if (taskIndex >= taskPlan.length) taskIndex = 0;
-  return taskPlan[taskIndex];
 };
 
 const getYouTubeId = (url) => {
