@@ -2,6 +2,8 @@
 import { ref, onMounted, computed, onBeforeUnmount } from "vue";
 import Timer from "@/Timer";
 import alarm from "@/assets/sound-alarm.mp3";
+import requestAPI from "./requestAPI";
+import { useRoute } from "vue-router";
 
 const defaultTaskTime = 25;
 const defaultBreakTime = 5;
@@ -22,16 +24,21 @@ const circumference = 2 * Math.PI * 45;
 const remainingTime = ref(0);
 const isMenuOpen = ref(false);
 const youtubeUrl = ref("");
+const routeId = useRoute().params.id;
 
-onMounted(() => {
-  totalPassedTime = 0;
+const error = ref(null);
+
+onMounted(async () => {
+  await fetchToDoItem();
   currentTimer = timeType.task;
   remainingTime.value = currentTimer;
   timer = new Timer(remainingTime.value, updateTime, timerEnded);
 });
 
-onBeforeUnmount(() => {
+onBeforeUnmount(async () => {
   if (timer.getIsTimerRunning()) timer.reset();
+  totalPassedTime += currentTimer - remainingTime.value;
+  await updateToDoItem();
 });
 
 const progressOffset = computed(() => {
@@ -54,6 +61,33 @@ const formattedTotalTime = computed(() => {
   ).padStart(2, "0");
   return `${minutes}:${seconds}`;
 });
+
+const fetchToDoItem = async () => {
+  try {
+    const response = await requestAPI.get("/todolist/items", {
+      params: {
+        id: routeId,
+      },
+    });
+    if (!response.data) return;
+    totalPassedTime = response.data.time_to_complete;
+  } catch (e) {
+    error.value = e;
+    console.log(e);
+    alert("エラーが発生しました");
+  }
+};
+
+const updateToDoItem = async () => {
+  try {
+    await requestAPI.post(`/todolist/items/${routeId}`, {
+      time_to_complete: totalPassedTime,
+    });
+  } catch (e) {
+    error.value = e;
+    alert("エラーが発生しました");
+  }
+};
 
 const updateTime = () => {
   remainingTime.value = timer.getRemainingTime();
@@ -85,7 +119,8 @@ const play = () => {
 };
 
 const stop = () => {
-  timer.reset();
+  if (timer.getIsTimerRunning()) timer.reset();
+  totalPassedTime += currentTimer - remainingTime.value;
   remainingTime.value = currentTimer;
   timer.setTime(remainingTime.value);
 };
