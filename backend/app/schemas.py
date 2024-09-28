@@ -9,3 +9,4 @@ class toDoItemCreate(BaseModel):
 class toDoItem(toDoItemCreate):
     id: int
     is_done: bool
+    time_to_complete: int
