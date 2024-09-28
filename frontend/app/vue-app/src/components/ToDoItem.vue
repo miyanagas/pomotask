@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, computed, onBeforeUnmount } from "vue";
-import Timer from "@/Timer";
+import Timer from "./Timer";
 import alarm from "@/assets/sound-alarm.mp3";
 import requestAPI from "./requestAPI";
 import { useRoute } from "vue-router";
@@ -168,7 +168,7 @@ const customizeTimer = () => {
       <img
         alt="App logo"
         class="logo"
-        src="./assets/todo-logo2.svg"
+        src="@/assets/todo-logo2.svg"
         width="35"
         height="35"
       />
@@ -177,14 +177,14 @@ const customizeTimer = () => {
         <img
           v-if="!isMenuOpen"
           id="toggle-button"
-          src="./assets/arrow-down.svg"
+          src="@/assets/arrow-down.svg"
           width="25"
           height="25"
         />
         <img
           v-else
           id="toggle-button"
-          src="./assets/arrow-up.svg"
+          src="@/assets/arrow-up.svg"
           width="25"
           height="25"
         />

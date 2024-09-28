@@ -1,7 +1,7 @@
 import { createWebHistory, createRouter } from "vue-router";
 
-import ToDoListView from "./ToDoList.vue";
-import ToDoItemView from "./ToDoItem.vue";
+import ToDoListView from "./components/ToDoList.vue";
+import ToDoItemView from "./components/ToDoItem.vue";
 
 const routes = [
   { path: "/", component: ToDoListView },
