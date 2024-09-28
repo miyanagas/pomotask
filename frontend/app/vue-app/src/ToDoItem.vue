@@ -19,7 +19,6 @@ let timer;
 let currentTimer;
 const circumference = 2 * Math.PI * 45;
 const remainingTime = ref(0);
-const isTimerRunning = ref(false);
 const isMenuOpen = ref(false);
 const youtubeUrl = ref("");
 
@@ -61,18 +60,18 @@ const timerEnded = () => {
   }, 1000);
 };
 
-const start = () => {
-  isTimerRunning.value = true;
-  timer.start();
-};
-
-const pause = () => {
-  isTimerRunning.value = false;
-  timer.pause();
+// Timer control functions
+const play = () => {
+  if (timer.getIsTimerRunning()) {
+    timer.pause();
+    document.getElementById("timer-play-button").textContent = "再開";
+  } else {
+    timer.start();
+    document.getElementById("timer-play-button").textContent = "一時停止";
+  }
 };
 
 const stop = () => {
-  isTimerRunning.value = false;
   timer.reset();
   remainingTime.value = currentTimer;
   timer.setTime(remainingTime.value);
@@ -101,7 +100,6 @@ const roadYouTube = () => {
 const customizeTimer = () => {
   if (timer.getIsTimerRunning()) {
     timer.reset();
-    isTimerRunning.value = false;
   }
   timeType.task = taskTime.value * seconds;
   timeType.break = breakTime.value * seconds;
@@ -213,8 +211,7 @@ const customizeTimer = () => {
         <span>{{ formattedTime }}</span>
       </div>
       <div class="timer-button">
-        <button v-if="!isTimerRunning" @click="start()">スタート</button>
-        <button v-else @click="pause()">一時停止</button>
+        <button id="timer-play-button" @click="play()">スタート</button>
         <button @click="stop()">リセット</button>
       </div>
     </div>
@@ -398,6 +395,7 @@ const customizeTimer = () => {
 }
 
 .timer-button button {
+  width: 130px;
   font-size: 24px;
   padding: 0.5rem 1rem;
   margin: 1.5rem;
