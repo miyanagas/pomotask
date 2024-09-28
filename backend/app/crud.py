@@ -1,3 +1,4 @@
+from typing import Union
 from sqlalchemy.orm import Session
 from . import models, schemas
 
@@ -18,14 +19,19 @@ def create_toDoItem(db: Session, toDoItem: schemas.toDoItemCreate):
     db.refresh(db_toDoItem)
     return db_toDoItem
 
+def get_toDoItem(db: Session, id: int):
+    return db.query(models.ToDoItem).filter(models.ToDoItem.id == id).first()
 
-def update_toDoItem(db: Session, toDoItem: schemas.toDoItem):
+def update_toDoItem(db: Session, id: int, is_done: Union[bool, None], time_to_complete: Union[int, None]):
     db_toDoItem = (
-        db.query(models.ToDoItem).filter(models.ToDoItem.id == toDoItem.id).first()
+        db.query(models.ToDoItem).filter(models.ToDoItem.id == id).first()
     )
-    db_toDoItem.is_done = toDoItem.is_done
-    db_toDoItem.time_to_complete = toDoItem.time_to_complete
-    db.commit()
+    if is_done is not None:
+        db_toDoItem.is_done = is_done
+        db.commit()
+    if time_to_complete is not None:
+        db_toDoItem.time_to_complete = time_to_complete
+        db.commit()
     return db_toDoItem
 
 

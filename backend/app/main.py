@@ -1,3 +1,4 @@
+from typing import Union
 from fastapi import Depends, FastAPI
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
@@ -49,9 +50,9 @@ def add_toDo(toDoItem: schemas.toDoItemCreate, db: Session = Depends(get_db)):
 
 
 # ToDoItemを更新するリクエスト
-@app.post("/todolist/update", response_model=schemas.toDoItem)
-def update_toDoItem(toDoItem: schemas.toDoItem, db: Session = Depends(get_db)):
-    toDoItem = crud.update_toDoItem(db=db, toDoItem=toDoItem)
+@app.post("/todolist/items", response_model=schemas.toDoItem)
+def update_toDoItem(id: int, is_done: Union[bool, None] = None, time_to_complete: Union[int, None] = None,  db: Session = Depends(get_db)):
+    toDoItem = crud.update_toDoItem(db=db, id=id, is_done=is_done, time_to_complete=time_to_complete)
     return toDoItem
 
 
@@ -61,6 +62,11 @@ def get_toDoList(done_filter: bool = False, db: Session = Depends(get_db)):
     toDoList = crud.get_toDoList(db, done_filter=done_filter)
     return toDoList
 
+# ToDoItemを取得するリクエスト
+@app.get("/todolist/items", response_model=schemas.toDoItem)
+def get_toDoItem(id: int, db: Session = Depends(get_db)):
+    toDoItem = crud.get_toDoItem(db=db, id=id)
+    return toDoItem
 
 # ToDoListを削除するリクエスト
 @app.delete("/todolist")
