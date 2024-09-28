@@ -120,6 +120,7 @@ const play = () => {
 
 const stop = () => {
   if (timer.getIsTimerRunning()) timer.reset();
+  document.getElementById("timer-play-button").textContent = "スタート";
   totalPassedTime += currentTimer - remainingTime.value;
   remainingTime.value = currentTimer;
   timer.setTime(remainingTime.value);
@@ -149,6 +150,7 @@ const customizeTimer = () => {
   if (timer.getIsTimerRunning()) {
     timer.reset();
   }
+  document.getElementById("timer-play-button").textContent = "スタート";
   timeType.task = taskTime.value * seconds;
   timeType.break = breakTime.value * seconds;
   currentTimer = timeType.task;
