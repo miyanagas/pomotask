@@ -123,16 +123,16 @@ const customizeTimer = () => {
         height="35"
       />
       <h1 class="todo-title">{{ $route.params.title }}</h1>
-      <button v-if="!isMenuOpen" @click="isMenuOpen = !isMenuOpen">
+      <button @click="isMenuOpen = !isMenuOpen">
         <img
+          v-if="!isMenuOpen"
           id="toggle-button"
           src="./assets/arrow-down.svg"
           width="25"
           height="25"
         />
-      </button>
-      <button v-else @click="isMenuOpen = !isMenuOpen">
         <img
+          v-else
           id="toggle-button"
           src="./assets/arrow-up.svg"
           width="25"
