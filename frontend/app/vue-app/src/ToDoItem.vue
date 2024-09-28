@@ -17,12 +17,14 @@ let timeType = {
 
 let timer;
 let currentTimer;
+let totalPassedTime;
 const circumference = 2 * Math.PI * 45;
 const remainingTime = ref(0);
 const isMenuOpen = ref(false);
 const youtubeUrl = ref("");
 
 onMounted(() => {
+  totalPassedTime = 0;
   currentTimer = timeType.task;
   remainingTime.value = currentTimer;
   timer = new Timer(remainingTime.value, updateTime, timerEnded);
@@ -43,6 +45,16 @@ const formattedTime = computed(() => {
   return `${minutes}:${seconds}`;
 });
 
+const formattedTotalTime = computed(() => {
+  const minutes = String(
+    Math.floor((currentTimer - remainingTime.value + totalPassedTime) / 60)
+  ).padStart(2, "0");
+  const seconds = String(
+    (currentTimer - remainingTime.value + totalPassedTime) % 60
+  ).padStart(2, "0");
+  return `${minutes}:${seconds}`;
+});
+
 const updateTime = () => {
   remainingTime.value = timer.getRemainingTime();
 };
@@ -54,6 +66,7 @@ const timerEnded = () => {
   currentTimer =
     currentTimer === timeType.task ? timeType.break : timeType.task;
   setTimeout(() => {
+    totalPassedTime += currentTimer;
     remainingTime.value = currentTimer;
     timer.setTime(remainingTime.value);
     timer.start();
@@ -209,6 +222,10 @@ const customizeTimer = () => {
           </svg>
         </div>
         <span>{{ formattedTime }}</span>
+      </div>
+      <div id="total-time-display">
+        <span>総時間</span>
+        <span id="total-time">{{ formattedTotalTime }}</span>
       </div>
       <div class="timer-button">
         <button id="timer-play-button" @click="play()">スタート</button>
@@ -388,10 +405,26 @@ const customizeTimer = () => {
   transition: stroke-dashoffset 1s linear;
 }
 
+#total-time-display {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin: 0.5em 1em;
+  font-size: 1em;
+}
+
+#total-time {
+  font-family: "Lucida Console", monospace;
+  font-size: 1.5em;
+  margin: 0 0 0 0.25em;
+  padding: 0 0.5em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
 .timer-button {
   display: flex;
   justify-content: center;
-  margin: 5% 0;
 }
 
 .timer-button button {
