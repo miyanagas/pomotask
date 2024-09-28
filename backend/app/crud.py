@@ -22,15 +22,15 @@ def create_toDoItem(db: Session, toDoItem: schemas.toDoItemCreate):
 def get_toDoItem(db: Session, id: int):
     return db.query(models.ToDoItem).filter(models.ToDoItem.id == id).first()
 
-def update_toDoItem(db: Session, id: int, is_done: Union[bool, None], time_to_complete: Union[int, None]):
+def update_toDoItem(db: Session, id: int, toDoItem: schemas.toDoItemUpdate):
     db_toDoItem = (
         db.query(models.ToDoItem).filter(models.ToDoItem.id == id).first()
     )
-    if is_done is not None:
-        db_toDoItem.is_done = is_done
+    if toDoItem.is_done is not None:
+        db_toDoItem.is_done = toDoItem.is_done
         db.commit()
-    if time_to_complete is not None:
-        db_toDoItem.time_to_complete = time_to_complete
+    if toDoItem.time_to_complete is not None:
+        db_toDoItem.time_to_complete = toDoItem.time_to_complete
         db.commit()
     return db_toDoItem
 

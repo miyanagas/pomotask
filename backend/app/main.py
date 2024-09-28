@@ -50,9 +50,9 @@ def add_toDo(toDoItem: schemas.toDoItemCreate, db: Session = Depends(get_db)):
 
 
 # ToDoItemを更新するリクエスト
-@app.post("/todolist/items", response_model=schemas.toDoItem)
-def update_toDoItem(id: int, is_done: Union[bool, None] = None, time_to_complete: Union[int, None] = None,  db: Session = Depends(get_db)):
-    toDoItem = crud.update_toDoItem(db=db, id=id, is_done=is_done, time_to_complete=time_to_complete)
+@app.post("/todolist/items/{id}", response_model=schemas.toDoItem)
+def update_toDoItem(toDoItem: schemas.toDoItemUpdate, id: int = id, db: Session = Depends(get_db)):
+    toDoItem = crud.update_toDoItem(db=db, id=id, toDoItem=toDoItem)
     return toDoItem
 
 
