@@ -70,6 +70,16 @@ const deleteToDoList = async () => {
 
   toDoList.value = [];
 };
+
+const timeFormatter = (time) => {
+  const hours = Math.floor(time / 60 / 60);
+  const minutes = String(Math.floor(time / 60) % 60).padStart(2, "0");
+  const seconds = String(time % 60).padStart(2, "0");
+  if (hours === 0) {
+    return `${minutes}:${seconds}`;
+  }
+  return `${hours}:${minutes}:${seconds}`;
+};
 </script>
 
 <template>
@@ -110,6 +120,9 @@ const deleteToDoList = async () => {
             id="todo-item-link"
           >
             <span>{{ toDo.title }}</span>
+            <span v-show="toDo.is_done" id="time-to-complete">
+              {{ timeFormatter(toDo.time_to_complete) }}
+            </span>
           </router-link>
           <input
             @change="updateToDo(toDo)"
@@ -225,7 +238,6 @@ header {
   margin: 0.25rem 0;
   border: 1px solid #ddd;
   border-radius: 4px;
-  cursor: pointer;
   background-color: white;
 }
 
@@ -243,6 +255,12 @@ header {
   text-decoration: none;
   color: black;
   width: 90%;
+  cursor: pointer;
+}
+
+#time-to-complete {
+  font-family: "Lucida Console", monospace;
+  margin: 0 1em;
 }
 
 .status-checkbox {
