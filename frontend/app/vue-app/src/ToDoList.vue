@@ -49,9 +49,7 @@ const addToDo = async () => {
 
 const updateToDo = async (toDo) => {
   try {
-    await requestAPI.post("/todolist/update", {
-      id: toDo.id,
-      title: toDo.title,
+    await requestAPI.post(`/todolist/items/${toDo.id}`, {
       is_done: toDo.is_done,
     });
   } catch (e) {
