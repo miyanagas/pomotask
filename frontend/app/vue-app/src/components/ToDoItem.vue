@@ -1,6 +1,5 @@
 <script setup>
 import { ref, onMounted, computed, onBeforeUnmount } from "vue";
-import Timer from "./Timer";
 import alarm from "@/assets/sound-alarm.mp3";
 import requestAPI from "./requestAPI";
 import { useRoute } from "vue-router";
@@ -18,9 +17,10 @@ let timeType = {
   break: breakTime.value * seconds,
 };
 
-let timer;
+let isTimerRunning;
 let currentTimer;
 let totalPassedTime;
+const timerWorker = new Worker(new URL("./timerWorker.js", import.meta.url));
 const circumference = 2 * Math.PI * 45;
 const remainingTime = ref(0);
 const isMenuOpen = ref(false);
@@ -32,13 +32,19 @@ onMounted(async () => {
   await fetchToDoItem();
   currentTimer = timeType.task;
   remainingTime.value = currentTimer;
-  timer = new Timer(remainingTime.value, updateTime, timerEnded);
+  timerWorker.postMessage({ command: "set", time: remainingTime.value });
 });
 
 onBeforeUnmount(async () => {
-  if (timer.getIsTimerRunning()) timer.reset();
+  timerWorker.postMessage({ command: "stop" });
   totalPassedTime += currentTimer - remainingTime.value;
   await updateToDoItem();
+});
+
+timerWorker.addEventListener("message", (e) => {
+  remainingTime.value = e.data.time;
+  isTimerRunning = e.data.isRunning;
+  if (remainingTime.value <= 0) timerEnded();
 });
 
 const progressOffset = computed(() => {
@@ -89,10 +95,6 @@ const updateToDoItem = async () => {
   }
 };
 
-const updateTime = () => {
-  remainingTime.value = timer.getRemainingTime();
-};
-
 const timerEnded = () => {
   // alert("Time's up!");
   const audio = new Audio(alarm);
@@ -102,40 +104,38 @@ const timerEnded = () => {
   setTimeout(() => {
     totalPassedTime += currentTimer;
     remainingTime.value = currentTimer;
-    timer.setTime(remainingTime.value);
-    timer.start();
+    timerWorker.postMessage({ command: "set", time: remainingTime.value });
+    timerWorker.postMessage({ command: "start" });
   }, 1000);
 };
 
 // Timer control functions
 const play = () => {
-  if (timer.getIsTimerRunning()) {
-    timer.pause();
+  if (isTimerRunning) {
+    timerWorker.postMessage({ command: "stop" });
     document.getElementById("timer-play-button").textContent = "再開";
   } else {
-    timer.start();
+    timerWorker.postMessage({ command: "start" });
     document.getElementById("timer-play-button").textContent = "一時停止";
   }
 };
 
 const stop = () => {
-  if (timer.getIsTimerRunning()) timer.reset();
+  timerWorker.postMessage({ command: "stop" });
   document.getElementById("timer-play-button").textContent = "スタート";
   totalPassedTime += currentTimer - remainingTime.value;
   remainingTime.value = currentTimer;
-  timer.setTime(remainingTime.value);
+  timerWorker.postMessage({ command: "set", time: remainingTime.value });
 };
 
 const customizeTimer = () => {
-  if (timer.getIsTimerRunning()) {
-    timer.reset();
-  }
+  timerWorker.postMessage({ command: "stop" });
   document.getElementById("timer-play-button").textContent = "スタート";
   timeType.task = taskTime.value * seconds;
   timeType.break = breakTime.value * seconds;
   currentTimer = timeType.task;
   remainingTime.value = currentTimer;
-  timer.setTime(remainingTime.value);
+  timerWorker.postMessage({ command: "set", time: remainingTime.value });
 };
 </script>
 
