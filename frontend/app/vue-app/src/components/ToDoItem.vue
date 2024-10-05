@@ -173,43 +173,6 @@ const customizeTimer = () => {
       </button>
     </div>
     <YouTube v-show="isMenuOpen" />
-    <div class="timer-customize">
-      <div class="time-selector">
-        <label for="task-time">タスク時間</label>
-        <select v-model="taskTime" id="task-time">
-          <option value="5">5分</option>
-          <option value="10">10分</option>
-          <option value="15">15分</option>
-          <option value="20">20分</option>
-          <option value="25">25分</option>
-          <option value="30">30分</option>
-          <option value="35">35分</option>
-          <option value="40">40分</option>
-          <option value="45">45分</option>
-          <option value="50">50分</option>
-          <option value="55">55分</option>
-          <option value="60">60分</option>
-          <option value="65">65分</option>
-          <option value="70">70分</option>
-          <option value="75">75分</option>
-          <option value="80">80分</option>
-          <option value="85">85分</option>
-          <option value="90">90分</option>
-        </select>
-      </div>
-      <div class="time-selector">
-        <label for="break-time">休憩時間</label>
-        <select v-model="breakTime" id="break-time">
-          <option value="5">5分</option>
-          <option value="10">10分</option>
-          <option value="15">15分</option>
-          <option value="20">20分</option>
-          <option value="25">25分</option>
-          <option value="30">30分</option>
-        </select>
-      </div>
-      <button @click="customizeTimer()">設定</button>
-    </div>
     <div class="todo-timer">
       <div class="timer-screen">
         <div class="progress-circle">
@@ -234,6 +197,43 @@ const customizeTimer = () => {
       <div class="timer-button">
         <button id="timer-play-button" @click="play()">スタート</button>
         <button @click="stop()">リセット</button>
+      </div>
+      <div class="timer-customize">
+        <div class="time-selector">
+          <label for="task-time">タスク時間</label>
+          <select v-model="taskTime" id="task-time">
+            <option value="5">5分</option>
+            <option value="10">10分</option>
+            <option value="15">15分</option>
+            <option value="20">20分</option>
+            <option value="25">25分</option>
+            <option value="30">30分</option>
+            <option value="35">35分</option>
+            <option value="40">40分</option>
+            <option value="45">45分</option>
+            <option value="50">50分</option>
+            <option value="55">55分</option>
+            <option value="60">60分</option>
+            <option value="65">65分</option>
+            <option value="70">70分</option>
+            <option value="75">75分</option>
+            <option value="80">80分</option>
+            <option value="85">85分</option>
+            <option value="90">90分</option>
+          </select>
+        </div>
+        <div class="time-selector">
+          <label for="break-time">休憩時間</label>
+          <select v-model="breakTime" id="break-time">
+            <option value="5">5分</option>
+            <option value="10">10分</option>
+            <option value="15">15分</option>
+            <option value="20">20分</option>
+            <option value="25">25分</option>
+            <option value="30">30分</option>
+          </select>
+        </div>
+        <button @click="customizeTimer()">設定</button>
       </div>
     </div>
   </div>
@@ -313,8 +313,7 @@ const customizeTimer = () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 1rem auto 0.5rem auto;
-  width: 55%;
+  margin: 1rem auto;
 }
 
 .time-selector {
