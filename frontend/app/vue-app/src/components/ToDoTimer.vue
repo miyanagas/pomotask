@@ -250,7 +250,7 @@ const customize = () => {
 
 .progress-bar {
   fill: none;
-  stroke: lightseagreen;
+  stroke: var(--color-secondary);
   stroke-width: 10;
   stroke-linecap: round;
   transition: stroke-dashoffset 1s linear;
@@ -283,18 +283,22 @@ const customize = () => {
   font-size: 24px;
   padding: 0.5rem 1rem;
   margin: 1.5rem;
-  border: 1px solid hsla(160, 100%, 37%, 1);
+  border: none;
   border-radius: 4px;
-  background-color: hsla(160, 100%, 37%, 1);
-  color: white;
+  background-color: var(--color-primary);
+  color: var(--color-primary-text);
   cursor: pointer;
+}
+
+#timer-buttons button:hover {
+  background-color: var(--color-primary-bright);
 }
 
 #timer-customize {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 1rem auto;
+  margin: 3rem auto 5rem auto;
 }
 
 .time-selector {
@@ -318,12 +322,16 @@ const customize = () => {
 #timer-customize button {
   padding: 0.5rem 1rem;
   margin: 0 0 0 0.5rem;
-  border: 1px solid lightseagreen;
+  border: none;
   border-radius: 4px;
-  background-color: lightseagreen;
-  color: white;
+  background-color: var(--color-primary);
+  color: var(--color-primary-text);
   cursor: pointer;
   font-size: 16px;
   font-weight: bold;
+}
+
+#timer-customize button:hover {
+  background-color: var(--color-primary-bright);
 }
 </style>

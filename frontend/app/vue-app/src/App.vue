@@ -20,8 +20,8 @@
 }
 
 header {
-  background-color: hsla(160, 100%, 37%, 1);
-  color: white;
+  background-color: var(--color-primary);
+  color: var(--color-primary-text);
   padding: 1rem;
   display: flex;
   justify-content: flex-start;

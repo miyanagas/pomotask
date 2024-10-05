@@ -53,10 +53,10 @@ const isMenuOpen = ref(false);
   padding: 0.5rem 1rem;
   font-size: 16px;
   margin: 0 0% 0 0;
-  background-color: white;
-  border: 4px solid hsla(160, 100%, 37%, 1);
+  background-color: var(--color-primary-text);
+  border: 4px solid var(--color-primary);
   border-radius: 4px;
-  color: hsla(160, 100%, 37%, 1);
+  color: var(--color-primary);
   font-weight: bold;
   cursor: pointer;
 }
@@ -86,7 +86,12 @@ const isMenuOpen = ref(false);
   margin: 0 0 0 auto;
   padding: 0.5rem;
   background-color: #f1f1f1;
+  border-radius: 100%;
   border: none;
   cursor: pointer;
+}
+
+#todo-title-headline button:hover {
+  background-color: #e1e1e1;
 }
 </style>
