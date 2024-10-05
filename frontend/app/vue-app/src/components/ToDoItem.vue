@@ -101,8 +101,9 @@ const timerEnded = () => {
   audio.play();
   currentTimer =
     currentTimer === timeType.task ? timeType.break : timeType.task;
-  setTimeout(() => {
+  setTimeout(async () => {
     totalPassedTime += currentTimer;
+    await updateToDoItem();
     remainingTime.value = currentTimer;
     timerWorker.postMessage({ command: "set", time: remainingTime.value });
     timerWorker.postMessage({ command: "start" });
@@ -120,10 +121,11 @@ const play = () => {
   }
 };
 
-const stop = () => {
+const stop = async () => {
   timerWorker.postMessage({ command: "stop" });
   document.getElementById("timer-play-button").textContent = "スタート";
   totalPassedTime += currentTimer - remainingTime.value;
+  await updateToDoItem();
   remainingTime.value = currentTimer;
   timerWorker.postMessage({ command: "set", time: remainingTime.value });
 };
