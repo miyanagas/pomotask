@@ -37,7 +37,9 @@ const isMenuOpen = ref(false);
         />
       </button>
     </div>
-    <YouTube v-show="isMenuOpen" />
+    <Transition>
+      <YouTube v-show="isMenuOpen" />
+    </Transition>
     <Timer />
   </div>
 </template>
@@ -59,6 +61,11 @@ const isMenuOpen = ref(false);
   color: var(--color-primary);
   font-weight: bold;
   cursor: pointer;
+}
+
+.back-button:hover {
+  background-color: var(--color-primary);
+  color: var(--color-primary-text);
 }
 
 #todo-title-headline {
@@ -93,5 +100,24 @@ const isMenuOpen = ref(false);
 
 #todo-title-headline button:hover {
   background-color: #e1e1e1;
+}
+
+.v-enter-active {
+  animation: fall-in 0.5s;
+}
+
+.v-leave-active {
+  animation: fall-in 0.5s reverse;
+}
+
+@keyframes fall-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(5px);
+  }
 }
 </style>
