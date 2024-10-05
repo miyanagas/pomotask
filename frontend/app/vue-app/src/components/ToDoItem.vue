@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import YouTube from "./YouTube.vue";
-import Timer from "./Timer.vue";
+import Timer from "./ToDoTimer.vue";
 
 const isMenuOpen = ref(false);
 </script>

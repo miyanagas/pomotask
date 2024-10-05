@@ -207,7 +207,7 @@ const customize = () => {
   </div>
 </template>
 
-<style>
+<style scoped>
 .todo-timer {
   width: 55%;
   margin: 0.5rem auto;
