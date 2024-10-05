@@ -11,7 +11,7 @@ const isMenuOpen = ref(false);
     <div class="todo-header">
       <button class="back-button" @click="$router.push('/')">戻る</button>
     </div>
-    <div class="todo-title-headline">
+    <div id="todo-title-headline">
       <img
         alt="App logo"
         class="logo"
@@ -19,7 +19,7 @@ const isMenuOpen = ref(false);
         width="35"
         height="35"
       />
-      <h1 class="todo-title">{{ $route.params.title }}</h1>
+      <h1 id="todo-title">{{ $route.params.title }}</h1>
       <button @click="isMenuOpen = !isMenuOpen">
         <img
           v-if="!isMenuOpen"
@@ -42,7 +42,7 @@ const isMenuOpen = ref(false);
   </div>
 </template>
 
-<style>
+<style scoped>
 .todo-header {
   display: flex;
   padding: 1rem;
@@ -61,7 +61,7 @@ const isMenuOpen = ref(false);
   cursor: pointer;
 }
 
-.todo-title-headline {
+#todo-title-headline {
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -77,12 +77,12 @@ const isMenuOpen = ref(false);
   margin: 0 0 0 1rem;
 }
 
-.todo-title {
+#todo-title {
   margin: 0 1rem;
   font-weight: bold;
 }
 
-.todo-title-headline button {
+#todo-title-headline button {
   margin: 0 0 0 auto;
   padding: 0.5rem;
   background-color: #f1f1f1;

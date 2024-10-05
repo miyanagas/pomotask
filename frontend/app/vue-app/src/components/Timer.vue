@@ -143,8 +143,8 @@ const customize = () => {
 
 <template>
   <div class="todo-timer">
-    <div class="timer-screen">
-      <div class="progress-circle">
+    <div id="timer-screen">
+      <div id="timer-progress">
         <svg class="progress-svg" viewBox="0 0 100 100">
           <circle class="progress-background" cx="50" cy="50" r="45"></circle>
           <circle
@@ -163,11 +163,11 @@ const customize = () => {
       <span>総時間</span>
       <span id="total-time">{{ formattedTotalTime }}</span>
     </div>
-    <div class="timer-button">
+    <div id="timer-buttons">
       <button id="timer-play-button" @click="play()">スタート</button>
       <button @click="stop()">リセット</button>
     </div>
-    <div class="timer-customize">
+    <div id="timer-customize">
       <div class="time-selector">
         <label for="task-time">タスク時間</label>
         <select v-model="taskTime" id="task-time">
@@ -214,7 +214,7 @@ const customize = () => {
   padding: 1rem;
 }
 
-.timer-screen {
+#timer-screen {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -223,51 +223,14 @@ const customize = () => {
   border-radius: 4px;
 }
 
-.timer-screen span {
+#timer-screen span {
   font-size: 128px;
   font-family: "Lucida Console", monospace;
   margin: 8px 8px 8px 64px;
   padding: 8px;
 }
 
-.timer-customize {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 1rem auto;
-}
-
-.time-selector {
-  display: flex;
-  align-items: center;
-  margin: 0 0.5rem;
-}
-
-.time-selector label {
-  font-size: 16px;
-  margin: 0 0.5rem 0 0;
-}
-
-.time-selector select {
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
-}
-
-.timer-customize button {
-  padding: 0.5rem 1rem;
-  margin: 0 0 0 0.5rem;
-  border: 1px solid lightseagreen;
-  border-radius: 4px;
-  background-color: lightseagreen;
-  color: white;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-}
-
-.progress-circle {
+#timer-progress {
   display: flex;
   align-items: center;
   margin: auto 0;
@@ -310,12 +273,12 @@ const customize = () => {
   border-radius: 4px;
 }
 
-.timer-button {
+#timer-buttons {
   display: flex;
   justify-content: center;
 }
 
-.timer-button button {
+#timer-buttons button {
   width: 130px;
   font-size: 24px;
   padding: 0.5rem 1rem;
@@ -325,5 +288,42 @@ const customize = () => {
   background-color: hsla(160, 100%, 37%, 1);
   color: white;
   cursor: pointer;
+}
+
+#timer-customize {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem auto;
+}
+
+.time-selector {
+  display: flex;
+  align-items: center;
+  margin: 0 0.5rem;
+}
+
+.time-selector label {
+  font-size: 16px;
+  margin: 0 0.5rem 0 0;
+}
+
+.time-selector select {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+#timer-customize button {
+  padding: 0.5rem 1rem;
+  margin: 0 0 0 0.5rem;
+  border: 1px solid lightseagreen;
+  border-radius: 4px;
+  background-color: lightseagreen;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
 }
 </style>
