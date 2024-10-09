@@ -1,10 +1,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import axios from "axios";
-
-const request = axios.create({
-  baseURL: "http://localhost:8080/api/v1",
-});
+import requestAPI from "./requestAPI";
 
 const error = ref(null);
 const toDoList = ref([]);
@@ -17,7 +13,7 @@ onMounted(() => {
 
 const fetchToDoList = async () => {
   try {
-    const response = await request.get("/todolist", {
+    const response = await requestAPI.get("/todolist", {
       params: {
         done_filter: isToDoFilter.value,
       },
@@ -38,7 +34,7 @@ const addToDo = async () => {
   }
 
   try {
-    await request.post("/todolist", {
+    await requestAPI.post("/todolist", {
       title: newToDo.value,
     });
   } catch (e) {
@@ -53,9 +49,7 @@ const addToDo = async () => {
 
 const updateToDo = async (toDo) => {
   try {
-    await request.post("/todolist/update", {
-      id: toDo.id,
-      title: toDo.title,
+    await requestAPI.post(`/todolist/items/${toDo.id}`, {
       is_done: toDo.is_done,
     });
   } catch (e) {
@@ -68,13 +62,23 @@ const updateToDo = async (toDo) => {
 
 const deleteToDoList = async () => {
   try {
-    await request.delete("/todolist");
+    await requestAPI.delete("/todolist");
   } catch (e) {
     error.value = e;
     alert("エラーが発生しました");
   }
 
   toDoList.value = [];
+};
+
+const timeFormatter = (time) => {
+  const hours = Math.floor(time / 60 / 60);
+  const minutes = String(Math.floor(time / 60) % 60).padStart(2, "0");
+  const seconds = String(time % 60).padStart(2, "0");
+  if (hours === 0) {
+    return `${minutes}:${seconds}`;
+  }
+  return `${hours}:${minutes}:${seconds}`;
 };
 </script>
 
@@ -116,6 +120,9 @@ const deleteToDoList = async () => {
             id="todo-item-link"
           >
             <span>{{ toDo.title }}</span>
+            <span v-show="toDo.is_done" id="time-to-complete">
+              {{ timeFormatter(toDo.time_to_complete) }}
+            </span>
           </router-link>
           <input
             @change="updateToDo(toDo)"
@@ -231,7 +238,6 @@ header {
   margin: 0.25rem 0;
   border: 1px solid #ddd;
   border-radius: 4px;
-  cursor: pointer;
   background-color: white;
 }
 
@@ -249,6 +255,12 @@ header {
   text-decoration: none;
   color: black;
   width: 90%;
+  cursor: pointer;
+}
+
+#time-to-complete {
+  font-family: "Lucida Console", monospace;
+  margin: 0 1em;
 }
 
 .status-checkbox {
