@@ -219,7 +219,7 @@ const customize = () => {
   justify-content: center;
   align-items: center;
   padding: 1rem;
-  border: 2px solid #ccc;
+  border: 2px solid var(--color-border);
   border-radius: 4px;
 }
 
@@ -244,13 +244,13 @@ const customize = () => {
 
 .progress-background {
   fill: none;
-  stroke: #e6e6e6;
+  stroke: var(--color-gray);
   stroke-width: 10;
 }
 
 .progress-bar {
   fill: none;
-  stroke: var(--color-secondary);
+  stroke: var(--color-text-blue);
   stroke-width: 10;
   stroke-linecap: round;
   transition: stroke-dashoffset 1s linear;
@@ -269,7 +269,7 @@ const customize = () => {
   font-size: 1.5em;
   margin: 0 0 0 0.25em;
   padding: 0 0.5em;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border);
   border-radius: 4px;
 }
 
@@ -283,15 +283,13 @@ const customize = () => {
   font-size: 24px;
   padding: 0.5rem 1rem;
   margin: 1.5rem;
-  border: none;
   border-radius: 4px;
   background-color: var(--color-primary);
-  color: var(--color-primary-text);
-  cursor: pointer;
+  color: var(--color-text-white);
 }
 
 #timer-buttons button:hover {
-  background-color: var(--color-primary-bright);
+  background-color: var(--color-primary-hover);
 }
 
 #timer-customize {
@@ -314,7 +312,7 @@ const customize = () => {
 
 .time-selector select {
   padding: 0.5rem;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border);
   border-radius: 4px;
   font-size: 16px;
 }
@@ -322,16 +320,13 @@ const customize = () => {
 #timer-customize button {
   padding: 0.5rem 1rem;
   margin: 0 0 0 0.5rem;
-  border: none;
   border-radius: 4px;
   background-color: var(--color-primary);
-  color: var(--color-primary-text);
-  cursor: pointer;
-  font-size: 16px;
+  color: var(--color-text-white);
   font-weight: bold;
 }
 
 #timer-customize button:hover {
-  background-color: var(--color-primary-bright);
+  background-color: var(--color-primary-hover);
 }
 </style>

@@ -141,33 +141,9 @@ const timeFormatter = (time) => {
 </template>
 
 <style scoped>
-/* header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-header {
-  background-color: hsla(160, 100%, 37%, 1);
-  color: white;
-  padding: 1rem;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  flex-direction: row;
-}
-
-.title {
-  margin: 0;
-  padding: 0.5rem 1rem 0.5rem 2rem;
-} */
-
 .container {
-  margin: 5%;
-  padding: 0 5%;
+  width: 640px;
+  margin: 0 auto;
 }
 
 .input-todo {
@@ -176,9 +152,9 @@ header {
 }
 
 .input-todo input {
-  width: 35%;
+  width: 400px;
   padding: 0.5rem;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border);
   border-radius: 4px;
   margin: 2rem;
   font-size: 16px;
@@ -187,24 +163,19 @@ header {
 .input-todo button {
   padding: 0.5rem 1rem;
   margin: 2rem;
-  border: none;
   border-radius: 4px;
   background-color: var(--color-primary);
-  color: var(--color-primary-text);
-  cursor: pointer;
-  font-size: 16px;
+  color: var(--color-text-white);
 }
 
 .input-todo button:hover {
-  background-color: var(--color-primary-bright);
+  background-color: var(--color-primary-hover);
 }
 
 .filter-todo {
-  width: 55%;
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  margin: 0 auto;
 }
 
 .filter-todo span {
@@ -217,16 +188,14 @@ header {
   width: 18px;
   height: 18px;
   cursor: pointer;
-  accent-color: var(--color-primary-bright);
+  accent-color: var(--color-primary-hover);
 }
 
 .todo-list {
-  width: 55%;
-  margin: 0 auto;
   padding: 1rem;
-  border: 1px solid #ddd;
+  border: none;
   border-radius: 4px;
-  background-color: #e9e9e9;
+  background-color: var(--color-divider-soft);
 }
 
 .todo-list ul {
@@ -240,27 +209,22 @@ header {
   align-items: center;
   padding: 1rem;
   margin: 0.25rem 0;
-  border: 1px solid #ddd;
   border-radius: 4px;
-  background-color: white;
+  background-color: var(--color-background);
 }
 
 .todo-item:hover {
-  background-color: #f9f9f9;
+  background-color: var(--color-background-hover);
 }
 
 .done-item,
 .done-item:hover {
-  /* background-color: rgba(95, 210, 170, 0.5); */
   background-color: var(--color-primary-dark);
 }
 
 #todo-item-link {
   display: block;
-  text-decoration: none;
-  color: black;
   width: 90%;
-  cursor: pointer;
 }
 
 #time-to-complete {
@@ -279,41 +243,17 @@ header {
 .delete-todo {
   display: flex;
   justify-content: flex-end;
-  width: 55%;
-  margin: 0 auto;
 }
 
 .delete-todo button {
   margin: 2rem 0.5rem;
   padding: 0.5rem 1rem;
-  border: none;
   border-radius: 4px;
   background-color: var(--color-red);
-  color: white;
-  cursor: pointer;
-  font-size: 16px;
+  color: var(--color-text-white);
 }
 
 .delete-todo button:hover {
-  background-color: var(--color-red-bright);
+  background-color: var(--color-red-hover);
 }
-
-/*
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-} */
 </style>

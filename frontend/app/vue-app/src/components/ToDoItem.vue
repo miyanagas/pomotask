@@ -7,10 +7,10 @@ const isMenuOpen = ref(false);
 </script>
 
 <template>
+  <div class="todo-header">
+    <button class="back-button" @click="$router.push('/')">戻る</button>
+  </div>
   <div class="container">
-    <div class="todo-header">
-      <button class="back-button" @click="$router.push('/')">戻る</button>
-    </div>
     <div id="todo-title-headline">
       <img
         alt="App logo"
@@ -54,18 +54,17 @@ const isMenuOpen = ref(false);
 .back-button {
   padding: 0.5rem 1rem;
   font-size: 16px;
-  margin: 0 0% 0 0;
-  background-color: var(--color-primary-text);
+  margin: 0;
+  background-color: var(--color-text-white);
   border: 4px solid var(--color-primary);
   border-radius: 4px;
   color: var(--color-primary);
   font-weight: bold;
-  cursor: pointer;
 }
 
 .back-button:hover {
   background-color: var(--color-primary);
-  color: var(--color-primary-text);
+  color: var(--color-text-white);
 }
 
 #todo-title-headline {
@@ -75,8 +74,7 @@ const isMenuOpen = ref(false);
   width: 55%;
   margin: 0 auto;
   padding: 0.5rem 1.5rem;
-  background-color: #f1f1f1;
-  /* border: 3px solid #ccc; */
+  background-color: var(--color-gray);
   border-radius: 8px;
 }
 
@@ -92,14 +90,12 @@ const isMenuOpen = ref(false);
 #todo-title-headline button {
   margin: 0 0 0 auto;
   padding: 0.5rem;
-  background-color: #f1f1f1;
+  background-color: var(--color-gray);
   border-radius: 100%;
-  border: none;
-  cursor: pointer;
 }
 
 #todo-title-headline button:hover {
-  background-color: #e1e1e1;
+  background-color: var(--color-gray-hover);
 }
 
 .v-enter-active {

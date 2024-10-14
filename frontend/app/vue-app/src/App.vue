@@ -11,7 +11,9 @@
       height="35"
     />
   </header>
-  <RouterView />
+  <main>
+    <RouterView />
+  </main>
 </template>
 
 <style scoped>
@@ -21,7 +23,7 @@
 
 header {
   background-color: var(--color-primary);
-  color: var(--color-primary-text);
+  color: var(--color-text-white);
   padding: 1rem;
   display: flex;
   justify-content: flex-start;

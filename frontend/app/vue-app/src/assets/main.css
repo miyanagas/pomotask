@@ -1,39 +1,29 @@
 @import './base.css';
 
 #app {
-  --color-background: white;
-  /* --color-primary: hsla(160, 100%, 37%, 1);
-  --color-primary-bright: hsla(160, 100%, 40%, 1); */
-  --color-primary: #21a0db;
-  --color-primary-bright: hsl(199, 74%, 59%);
-  --color-primary-dark: hsl(199, 64%, 79%);
-  --color-primary-text: white;
-  --color-red: red;
-  --color-red-bright: hsl(0, 100%, 62%);
-  /* --color-secondary: lightseagreen; */
-  --color-secondary: #00aeef;
-  width: auto;
-  height: auto;
-  padding: auto;
-  margin: auto;
-}
-
-/* #app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  padding: 0;
+  margin: 0;
   font-weight: normal;
-} */
-
-/* a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-  padding: 3px;
 }
 
-@media (hover: hover) {
+main {
+  max-width: 1440px;
+  margin: 80px auto;
+}
+
+a {
+  text-decoration: none;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  font-size: 16px;
+}
+
+/* @media (hover: hover) {
   a:hover {
     background-color: hsla(160, 100%, 37%, 0.2);
   }
