@@ -7,9 +7,9 @@ const isMenuOpen = ref(false);
 </script>
 
 <template>
-  <div class="todo-header">
+  <!-- <div class="todo-header">
     <button class="back-button" @click="$router.push('/')">戻る</button>
-  </div>
+  </div> -->
   <div class="container">
     <div id="todo-title-headline">
       <img
@@ -45,11 +45,11 @@ const isMenuOpen = ref(false);
 </template>
 
 <style scoped>
-.todo-header {
+/* .todo-header {
   display: flex;
   padding: 1rem;
   justify-content: flex-start;
-}
+} */
 
 .back-button {
   padding: 0.5rem 1rem;

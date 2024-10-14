@@ -2,7 +2,7 @@
 
 <template>
   <header>
-    <h1 class="title">今日のToDo</h1>
+    <router-link to="/" class="title">今日のToDo</router-link>
     <img
       alt="App logo"
       class="logo"
@@ -34,5 +34,7 @@ header {
 .title {
   margin: 0;
   padding: 0.5rem 1rem 0.5rem 2rem;
+  color: var(--color-text-white);
+  font-size: 32px;
 }
 </style>
