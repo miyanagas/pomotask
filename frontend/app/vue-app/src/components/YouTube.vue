@@ -79,7 +79,9 @@ const roadYouTube = () => {
   font-weight: bold;
 }
 
-.video-input-form button:hover {
-  background-color: var(--color-red-hover);
+@media (hover: hover) {
+  .video-input-form button:hover {
+    background-color: var(--color-red-hover);
+  }
 }
 </style>

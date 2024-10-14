@@ -288,8 +288,10 @@ const customize = () => {
   color: var(--color-text-white);
 }
 
-#timer-buttons button:hover {
-  background-color: var(--color-primary-hover);
+@media (hover: hover) {
+  #timer-buttons button:hover {
+    background-color: var(--color-primary-hover);
+  }
 }
 
 #timer-customize {
@@ -326,7 +328,9 @@ const customize = () => {
   font-weight: bold;
 }
 
-#timer-customize button:hover {
-  background-color: var(--color-primary-hover);
+@media (hover: hover) {
+  #timer-customize button:hover {
+    background-color: var(--color-primary-hover);
+  }
 }
 </style>

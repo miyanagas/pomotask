@@ -62,9 +62,11 @@ const isMenuOpen = ref(false);
   font-weight: bold;
 }
 
-.back-button:hover {
-  background-color: var(--color-primary);
-  color: var(--color-text-white);
+@media (hover: hover) {
+  .back-button:hover {
+    background-color: var(--color-primary);
+    color: var(--color-text-white);
+  }
 }
 
 #todo-title-headline {

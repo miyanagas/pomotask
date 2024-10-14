@@ -168,8 +168,10 @@ const timeFormatter = (time) => {
   color: var(--color-text-white);
 }
 
-.input-todo button:hover {
-  background-color: var(--color-primary-hover);
+@media (hover: hover) {
+  .input-todo button:hover {
+    background-color: var(--color-primary-hover);
+  }
 }
 
 .filter-todo {
@@ -195,7 +197,7 @@ const timeFormatter = (time) => {
   padding: 1rem;
   border: none;
   border-radius: 4px;
-  background-color: var(--color-divider-soft);
+  background-color: var(--color-gray);
 }
 
 .todo-list ul {
@@ -213,8 +215,10 @@ const timeFormatter = (time) => {
   background-color: var(--color-background);
 }
 
-.todo-item:hover {
-  background-color: var(--color-background-hover);
+@media (hover: hover) {
+  .todo-item:hover {
+    background-color: var(--color-background-hover);
+  }
 }
 
 .done-item,
@@ -253,7 +257,9 @@ const timeFormatter = (time) => {
   color: var(--color-text-white);
 }
 
-.delete-todo button:hover {
-  background-color: var(--color-red-hover);
+@media (hover: hover) {
+  .delete-todo button:hover {
+    background-color: var(--color-red-hover);
+  }
 }
 </style>
