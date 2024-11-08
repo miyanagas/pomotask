@@ -1,14 +1,13 @@
-from typing import Union
-from fastapi import Depends, FastAPI
+from typing import Annotated
+import uuid
+from fastapi import FastAPI, Depends, HTTPException
 from fastapi.responses import JSONResponse
-from sqlalchemy.orm import Session
+from sqlmodel import Session, select, delete
 from fastapi.middleware.cors import CORSMiddleware
 
-from . import crud, models, schemas
-from .database import SessionLocal, engine
+from app.database import get_session, create_db_and_tables, drop_db_and_tables
+from app.models import Todo, TodoCreate, TodoPublic, TodoUpdate
 
-# データベースのテーブルの一括作成
-models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -24,17 +23,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+SessionDep = Annotated[Session, Depends(get_session)]
 
-# Dependency
-# リクエストごとに独立してセッションを作成し、使用する
-# リクエストが終了するとセッションを閉じる
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
+@app.on_event("startup")
+def on_startup():
+    create_db_and_tables()
+
+@app.on_event("shutdown")
+def on_shutdown():
+    drop_db_and_tables()
 
 @app.get("/")
 def read_root():
@@ -42,34 +40,48 @@ def read_root():
 
 
 # ToDoItemを新規作成するリクエスト
-@app.post("/todolist", response_model=schemas.toDoItem)
-def add_toDo(toDoItem: schemas.toDoItemCreate, db: Session = Depends(get_db)):
-
-    toDoItem = crud.create_toDoItem(db=db, toDoItem=toDoItem)
-    return toDoItem
+@app.post("/todo-list/", response_model=TodoPublic)
+def create_todo(todo: TodoCreate, session: SessionDep):
+    db_todo = Todo.model_validate(todo)
+    session.add(db_todo)
+    session.commit()
+    session.refresh(db_todo)
+    return db_todo
 
 
 # ToDoItemを更新するリクエスト
-@app.post("/todolist/items/{id}", response_model=schemas.toDoItem)
-def update_toDoItem(toDoItem: schemas.toDoItemUpdate, id: int = id, db: Session = Depends(get_db)):
-    toDoItem = crud.update_toDoItem(db=db, id=id, toDoItem=toDoItem)
-    return toDoItem
-
+@app.put("/todo-list/{id}", response_model=TodoPublic)
+def update_todo(id: uuid.UUID, todo: TodoUpdate, session: SessionDep):
+    db_todo = session.get(Todo, id)
+    if not db_todo:
+        raise HTTPException(status_code=404, detail="Todo not found")
+    todo_data = todo.model_dump(exclude_unset=True)
+    db_todo.sqlmodel_update(todo_data)
+    session.add(db_todo)
+    session.commit()
+    session.refresh(db_todo)
+    return db_todo
 
 # ToDoListを取得するリクエスト
-@app.get("/todolist", response_model=list[schemas.toDoItem])
-def get_toDoList(done_filter: bool = False, db: Session = Depends(get_db)):
-    toDoList = crud.get_toDoList(db, done_filter=done_filter)
-    return toDoList
+@app.get("/todo-list/", response_model=list[TodoPublic])
+def read_todo_list(session: SessionDep, filter: bool = False):
+    if filter:
+        db_todo_list = session.exec(select(Todo).where(Todo.is_done == False)).all()
+    else:
+        db_todo_list = session.exec(select(Todo)).all()
+    return db_todo_list
 
 # ToDoItemを取得するリクエスト
-@app.get("/todolist/items", response_model=schemas.toDoItem)
-def get_toDoItem(id: int, db: Session = Depends(get_db)):
-    toDoItem = crud.get_toDoItem(db=db, id=id)
-    return toDoItem
+@app.get("/todo-list/{id}", response_model=TodoPublic)
+def read_todo(id: uuid.UUID, session: SessionDep):
+    db_todo = session.get(Todo, id)
+    if not db_todo:
+        raise HTTPException(status_code=404, detail="Todo not found")
+    return db_todo
 
 # ToDoListを削除するリクエスト
-@app.delete("/todolist")
-def delete_toDoList(db: Session = Depends(get_db)):
-    crud.delete_toDoItem(db)
-    return JSONResponse(content={"message": "Deleted all toDoList"})
+@app.delete("/todo-list/")
+def delete_todo_list(session: SessionDep):
+    session.exec(delete(Todo))
+    session.commit()
+    return {"ok": True}
