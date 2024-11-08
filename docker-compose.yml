@@ -27,9 +27,11 @@ services:
     image: todo-backend
     container_name: todo-backend
     ports:
-      - 8081:8000
+      - 8000:8000
     volumes:
       - ./backend:/usr/src/app
+    tty: true
+    stdin_open: true
     depends_on:
       db:
         condition: service_healthy
@@ -44,10 +46,13 @@ services:
       - ./.env_file/mysql.env
     volumes:
       - ./db/conf.d:/etc/mysql/conf.d
-      - ./db/data:/var/lib/mysql
+      - db-store:/var/lib/mysql
     healthcheck:
       test: mysqladmin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD
       interval: 10s
       timeout: 10s
       retries: 3
       start_period: 30s
+
+volumes:
+  db-store:
