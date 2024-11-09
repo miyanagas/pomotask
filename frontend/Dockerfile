@@ -13,4 +13,6 @@ WORKDIR /usr/src/app/vue-app
 
 EXPOSE 5173
 
-CMD npm install && npm run dev -- --host
+# CMD npm install && npm run dev -- --host
+COPY ./app/vue-app/ /usr/src/app/vue-app/
+RUN npm install

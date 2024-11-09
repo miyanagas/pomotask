@@ -18,8 +18,8 @@ services:
       - 5173:5173
     volumes:
       - ./frontend/app:/usr/src/app
-    # tty: true
-    # stdin_open: true
+    tty: true
+    stdin_open: true
     depends_on:
       - backend
   backend:

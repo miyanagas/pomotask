@@ -13,9 +13,9 @@ onMounted(() => {
 
 const fetchToDoList = async () => {
   try {
-    const response = await requestAPI.get("/todolist", {
+    const response = await requestAPI.get("/todo-list/", {
       params: {
-        done_filter: isToDoFilter.value,
+        filter: isToDoFilter.value,
       },
     });
 
@@ -34,7 +34,7 @@ const addToDo = async () => {
   }
 
   try {
-    await requestAPI.post("/todolist", {
+    await requestAPI.post("/todo-list/", {
       title: newToDo.value,
     });
   } catch (e) {
@@ -49,7 +49,7 @@ const addToDo = async () => {
 
 const updateToDo = async (toDo) => {
   try {
-    await requestAPI.post(`/todolist/items/${toDo.id}`, {
+    await requestAPI.put(`/todo-list/${toDo.id}`, {
       is_done: toDo.is_done,
     });
   } catch (e) {
@@ -62,7 +62,7 @@ const updateToDo = async (toDo) => {
 
 const deleteToDoList = async () => {
   try {
-    await requestAPI.delete("/todolist");
+    await requestAPI.delete("/todo-list/");
   } catch (e) {
     error.value = e;
     alert("エラーが発生しました");
