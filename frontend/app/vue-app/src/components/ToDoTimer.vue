@@ -54,11 +54,7 @@ const convertToTime = (time) => {
 
 onMounted(async () => {
   try {
-    const response = await requestAPI.get("/todolist/items", {
-      params: {
-        id: routeId,
-      },
-    });
+    const response = await requestAPI.get(`/todo-list/${routeId}`);
     if (!response.data) return;
     totalPassedTime = response.data.time_to_complete;
   } catch (e) {
@@ -84,7 +80,7 @@ timerWorker.value.addEventListener("message", (e) => {
 
 const updateTimeToComplete = async (timeToComplete) => {
   try {
-    await requestAPI.post(`/todolist/items/${routeId}`, {
+    await requestAPI.put(`/todo-list/${routeId}`, {
       time_to_complete: timeToComplete,
     });
   } catch (e) {
