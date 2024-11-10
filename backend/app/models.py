@@ -1,8 +1,8 @@
-from typing import Optional, Any
+from typing import Optional
 import uuid
 from datetime import datetime
 import re
-from sqlmodel import SQLModel, Field
+from sqlmodel import SQLModel, Field, Relationship
 from pydantic import validator, EmailStr
 
 # ToDoItemテーブルの定義
@@ -14,7 +14,14 @@ class Todo(TodoBase, table=True):
     is_done: bool = False # 完了フラグ
     time_to_complete: int = 0 # 完了予定時間（秒）
     created_at: datetime = Field(default_factory=datetime.now, index=True) # 作成日時
-    updated_at: datetime = Field(default_factory=datetime.now, sa_column_kwargs={"onupdate": datetime.now}, index=True) # 更新日時
+    updated_at: datetime = Field(
+        default_factory=datetime.now,
+        sa_column_kwargs={"onupdate": datetime.now},
+        index=True
+    ) # 更新日時
+
+    user_id: uuid.UUID = Field(index=True, foreign_key="user.id", ondelete="CASCADE") # User削除時にTodoも削除
+    user: User = Relationship(back_populates="todo_list")
 
 class TodoCreate(TodoBase):
     pass
@@ -23,6 +30,7 @@ class TodoPublic(TodoBase):
     id: uuid.UUID
     is_done: bool
     time_to_complete: int
+    user_id: uuid.UUID
     created_at: datetime
     updated_at: datetime
 
@@ -39,6 +47,8 @@ class UserBase(SQLModel):
 class User(UserBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True) # ID
     password: str # パスワード
+
+    todo_list: list["Todo"] = Relationship(back_populates="user", cascade_delete=True) # User削除時にTodoも削除
 
 # パスワードのパターンを検証する関数
 def check_password_pattern(password: str):
