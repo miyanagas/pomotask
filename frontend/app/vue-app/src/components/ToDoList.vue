@@ -13,9 +13,13 @@ onMounted(() => {
 
 const fetchToDoList = async () => {
   try {
+    const token = localStorage.getItem("token");
     const response = await requestAPI.get("/todo-list/", {
       params: {
         filter: isToDoFilter.value,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -34,9 +38,18 @@ const addToDo = async () => {
   }
 
   try {
-    await requestAPI.post("/todo-list/", {
-      title: newToDo.value,
-    });
+    const token = localStorage.getItem("token");
+    await requestAPI.post(
+      "/todo-list/",
+      {
+        title: newToDo.value,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
   } catch (e) {
     error.value = e;
     alert("エラーが発生しました");
@@ -49,9 +62,18 @@ const addToDo = async () => {
 
 const updateToDo = async (toDo) => {
   try {
-    await requestAPI.put(`/todo-list/${toDo.id}`, {
-      is_done: toDo.is_done,
-    });
+    const token = localStorage.getItem("token");
+    await requestAPI.put(
+      `/todo-list/${toDo.id}`,
+      {
+        is_done: toDo.is_done,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
   } catch (e) {
     error.value = e;
     alert("エラーが発生しました");
@@ -62,7 +84,12 @@ const updateToDo = async (toDo) => {
 
 const deleteToDoList = async () => {
   try {
-    await requestAPI.delete("/todo-list/");
+    const token = localStorage.getItem("token");
+    await requestAPI.delete("/todo-list/", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
   } catch (e) {
     error.value = e;
     alert("エラーが発生しました");

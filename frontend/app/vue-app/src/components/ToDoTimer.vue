@@ -54,7 +54,12 @@ const convertToTime = (time) => {
 
 onMounted(async () => {
   try {
-    const response = await requestAPI.get(`/todo-list/${routeId}`);
+    const token = localStorage.getItem("token");
+    const response = await requestAPI.get(`/todo-list/${routeId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     if (!response.data) return;
     totalPassedTime = response.data.time_to_complete;
   } catch (e) {
@@ -80,9 +85,18 @@ timerWorker.value.addEventListener("message", (e) => {
 
 const updateTimeToComplete = async (timeToComplete) => {
   try {
-    await requestAPI.put(`/todo-list/${routeId}`, {
-      time_to_complete: timeToComplete,
-    });
+    const token = localStorage.getItem("token");
+    await requestAPI.put(
+      `/todo-list/${routeId}`,
+      {
+        time_to_complete: timeToComplete,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
   } catch (e) {
     error.value = e;
     alert("エラーが発生しました");

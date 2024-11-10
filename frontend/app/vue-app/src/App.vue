@@ -1,7 +1,7 @@
 <script setup></script>
 
 <template>
-  <header>
+  <header v-if="!$route.meta.hideHeader">
     <router-link to="/" class="title">今日のToDo</router-link>
     <img
       alt="App logo"
