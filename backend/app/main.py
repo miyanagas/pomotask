@@ -115,12 +115,14 @@ def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], session: Ses
         raise credentials_exception
     return user
 
+UserDep = Annotated[User, Depends(get_current_user)]
+
 @app.get("/users/me/", response_model=UserPublic)
-def read_users_me(current_user: Annotated[User, Depends(get_current_user)]):
+def read_users_me(current_user: UserDep):
     return current_user
 
 @app.put("/users/me/", response_model=UserPublic)
-def update_user_me(user: UserUpdate, current_user: Annotated[User, Depends(get_current_user)], session: SessionDep):
+def update_user_me(user: UserUpdate, current_user: UserDep, session: SessionDep):
     user_data = user.model_dump(exclude_unset=True)
     current_user.sqlmodel_update(user_data)
     session.add(current_user)
@@ -129,7 +131,7 @@ def update_user_me(user: UserUpdate, current_user: Annotated[User, Depends(get_c
     return current_user
 
 @app.delete("/users/me/")
-def delete_user_me(current_user: Annotated[User, Depends(get_current_user)], session: SessionDep):
+def delete_user_me(current_user: UserDep, session: SessionDep):
     session.delete(current_user)
     session.commit()
     return {"ok": True}
@@ -149,8 +151,9 @@ def read_root():
 
 # ToDoItemを新規作成するリクエスト
 @app.post("/todo-list/", response_model=TodoPublic)
-def create_todo(todo: TodoCreate, session: SessionDep):
+def create_todo(todo: TodoCreate, user: UserDep, session: SessionDep):
     db_todo = Todo.model_validate(todo)
+    db_todo.user_id = user.id
     session.add(db_todo)
     session.commit()
     session.refresh(db_todo)
@@ -159,8 +162,8 @@ def create_todo(todo: TodoCreate, session: SessionDep):
 
 # ToDoItemを更新するリクエスト
 @app.put("/todo-list/{id}", response_model=TodoPublic)
-def update_todo(id: uuid.UUID, todo: TodoUpdate, session: SessionDep):
-    db_todo = session.get(Todo, id)
+def update_todo(id: uuid.UUID, todo: TodoUpdate, user: UserDep, session: SessionDep):
+    db_todo = session.exec(select(Todo).where(Todo.user_id == user.id).where(Todo.id == id)).first()
     if not db_todo:
         raise HTTPException(status_code=404, detail="Todo not found")
     todo_data = todo.model_dump(exclude_unset=True)
@@ -172,24 +175,24 @@ def update_todo(id: uuid.UUID, todo: TodoUpdate, session: SessionDep):
 
 # ToDoListを取得するリクエスト
 @app.get("/todo-list/", response_model=list[TodoPublic])
-def read_todo_list(session: SessionDep, filter: bool = False):
+def read_todo_list(user: UserDep, session: SessionDep, filter: bool = False):
     if filter:
-        db_todo_list = session.exec(select(Todo).where(Todo.is_done == False)).all()
+        db_todo_list = session.exec(select(Todo).where(Todo.user_id == user.id).where(Todo.is_done == False)).all()
     else:
-        db_todo_list = session.exec(select(Todo)).all()
+        db_todo_list = session.exec(select(Todo).where(Todo.user_id == user.id)).all()
     return db_todo_list
 
 # ToDoItemを取得するリクエスト
 @app.get("/todo-list/{id}", response_model=TodoPublic)
-def read_todo(id: uuid.UUID, session: SessionDep):
-    db_todo = session.get(Todo, id)
+def read_todo(id: uuid.UUID, user: UserDep, session: SessionDep):
+    db_todo = session.exec(select(Todo).where(Todo.user_id == user.id).where(Todo.id == id)).first()
     if not db_todo:
         raise HTTPException(status_code=404, detail="Todo not found")
     return db_todo
 
 # ToDoListを削除するリクエスト
 @app.delete("/todo-list/")
-def delete_todo_list(session: SessionDep):
-    session.exec(delete(Todo))
+def delete_todo_list(user: UserDep, session: SessionDep):
+    session.exec(delete(Todo).where(Todo.user_id == user.id))
     session.commit()
     return {"ok": True}
