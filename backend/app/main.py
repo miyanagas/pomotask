@@ -14,8 +14,8 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import get_session, create_db_and_tables, drop_db_and_tables
-from app.models import Todo, TodoCreate, TodoPublic, TodoUpdate
-from app.models import User, UserCreate, UserPublic, UserUpdate
+from app.todo_model import Todo, TodoCreate, TodoPublic, TodoUpdate
+from app.user_model import User, UserCreate, UserPublic, UserUpdate
 
 
 app = FastAPI()
@@ -152,8 +152,9 @@ def read_root():
 # ToDoItemを新規作成するリクエスト
 @app.post("/todo-list/", response_model=TodoPublic)
 def create_todo(todo: TodoCreate, user: UserDep, session: SessionDep):
-    db_todo = Todo.model_validate(todo)
-    db_todo.user_id = user.id
+    todo_data = todo.model_dump()
+    todo_data["user_id"] = user.id
+    db_todo = Todo.model_validate(todo_data)
     session.add(db_todo)
     session.commit()
     session.refresh(db_todo)
