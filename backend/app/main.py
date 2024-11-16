@@ -70,23 +70,6 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None) -> s
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-@app.post("/signup/", response_model=Token)
-def signup(user: UserCreate, session: SessionDep):
-    if session.exec(select(User).where(User.username == user.username)).first():
-        raise HTTPException(status_code=400, detail="Username already registered")
-    if session.exec(select(User).where(User.email == user.email)).first():
-        raise HTTPException(status_code=400, detail="Email already registered")
-    user.password = hash_password(user.password)
-    db_user = User.model_validate(user)
-    session.add(db_user)
-    session.commit()
-    session.refresh(db_user)
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": str(db_user.id)}, expires_delta=access_token_expires
-    )
-    return Token(access_token=access_token, token_type="bearer")
-
 @app.post("/token/", response_model=Token)
 def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], session: SessionDep):
     user = session.exec(select(User).where(User.username == form_data.username)).first()
@@ -99,6 +82,19 @@ def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depen
         data={"sub": str(user.id)}, expires_delta=access_token_expires
     )
     return Token(access_token=access_token, token_type="bearer")
+
+@app.post("/signup/", response_model=UserPublic)
+def signup(user: UserCreate, session: SessionDep):
+    if session.exec(select(User).where(User.username == user.username)).first():
+        raise HTTPException(status_code=400, detail="Username already registered")
+    if session.exec(select(User).where(User.email == user.email)).first():
+        raise HTTPException(status_code=400, detail="Email already registered")
+    user.password = hash_password(user.password)
+    db_user = User.model_validate(user)
+    session.add(db_user)
+    session.commit()
+    session.refresh(db_user)
+    return db_user
 
 def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], session: SessionDep) -> User:
     credentials_exception = HTTPException(
