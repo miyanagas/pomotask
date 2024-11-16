@@ -7,6 +7,7 @@ from app.database import SessionDep
 
 router = APIRouter(prefix="/users", tags=["users"])
 
+# ユーザー登録リクエスト
 @router.post("/signup/", response_model=UserPublic)
 def signup(user: UserCreate, session: SessionDep):
     if session.exec(select(User).where(User.username == user.username)).first():
@@ -20,10 +21,12 @@ def signup(user: UserCreate, session: SessionDep):
     session.refresh(db_user)
     return db_user
 
+# ユーザー取得リクエスト
 @router.get("/me/", response_model=UserPublic)
 def read_users_me(current_user: UserDep):
     return current_user
 
+# ユーザー情報更新リクエスト
 @router.put("/me/", response_model=UserPublic)
 def update_user_me(user: UserUpdate, current_user: UserDep, session: SessionDep):
     user_data = user.model_dump(exclude_unset=True)
@@ -33,6 +36,7 @@ def update_user_me(user: UserUpdate, current_user: UserDep, session: SessionDep)
     session.refresh(current_user)
     return current_user
 
+# パスワード更新リクエスト
 @router.put("/me/password/")
 def update_user_password(user: UserPasswordUpdate, current_user: UserDep, session: SessionDep):
     if not verify_password(user.current_password, current_user.password):
@@ -42,6 +46,7 @@ def update_user_password(user: UserPasswordUpdate, current_user: UserDep, sessio
     session.commit()
     return {"ok": True}
 
+# ユーザー削除リクエスト
 @router.delete("/me/")
 def delete_user_me(current_user: UserDep, session: SessionDep):
     session.delete(current_user)

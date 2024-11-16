@@ -12,6 +12,7 @@ from app.auth import authenticate_user, create_access_token, Token
 
 router = APIRouter(tags=["auth"])
 
+# ログインしてアクセストークンを取得するリクエスト
 @router.post("/token/", response_model=Token)
 def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], session: SessionDep):
     user = authenticate_user(form_data.username, form_data.password, session)
