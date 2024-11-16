@@ -16,7 +16,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import get_session, create_db_and_tables, drop_db_and_tables
 from app.todo_model import Todo, TodoCreate, TodoPublic, TodoUpdate
-from app.user_model import User, UserCreate, UserPublic, UserUpdate
+from app.user_model import User, UserCreate, UserPublic, UserUpdate, UserPasswordUpdate
 
 
 app = FastAPI()
@@ -31,7 +31,7 @@ class Token(BaseModel):
     token_type: str
 
 class TokenData(BaseModel):
-    username: str | None = None
+    user_id: str | None = None
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
@@ -83,7 +83,7 @@ def signup(user: UserCreate, session: SessionDep):
     session.refresh(db_user)
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": db_user.username}, expires_delta=access_token_expires
+        data={"sub": str(db_user.id)}, expires_delta=access_token_expires
     )
     return Token(access_token=access_token, token_type="bearer")
 
@@ -96,7 +96,7 @@ def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depen
         raise HTTPException(status_code=401, detail="Incorrect username or password", headers={"WWW-Authenticate": "Bearer"})
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
+        data={"sub": str(user.id)}, expires_delta=access_token_expires
     )
     return Token(access_token=access_token, token_type="bearer")
 
@@ -108,13 +108,18 @@ def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], session: Ses
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if not username:
+        user_id: str = payload.get("sub")
+        if not user_id:
             raise credentials_exception
-        token_data = TokenData(username=username)
+        token_data = TokenData(user_id=user_id)
     except InvalidTokenError:
         raise credentials_exception
-    user = session.exec(select(User).where(User.username == token_data.username)).first()
+    try:
+        user_uuid = uuid.UUID(token_data.user_id)
+    except ValueError:
+        # uuid conversion failed
+        raise HTTPException(status_code=401, detail="Invalid user ID in token")
+    user = session.exec(select(User).where(User.id == user_uuid)).first()
     if not user:
         raise credentials_exception
     return user
@@ -133,6 +138,15 @@ def update_user_me(user: UserUpdate, current_user: UserDep, session: SessionDep)
     session.commit()
     session.refresh(current_user)
     return current_user
+
+@app.put("/users/me/password/")
+def update_user_password(user: UserPasswordUpdate, current_user: UserDep, session: SessionDep):
+    if not verify_password(user.current_password, current_user.password):
+        raise HTTPException(status_code=400, detail="Old password is incorrect")
+    current_user.password = hash_password(user.new_password)
+    session.add(current_user)
+    session.commit()
+    return {"ok": True}
 
 @app.delete("/users/me/")
 def delete_user_me(current_user: UserDep, session: SessionDep):
