@@ -57,6 +57,23 @@ const updateUsername = async () => {
 };
 
 const updateEmail = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    await requestAPI.put(
+      "/users/me/",
+      {
+        email: email.value,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  } catch (e) {
+    alert("メールアドレスの更新に失敗しました");
+    console.error(e);
+  }
   toggleIsEditingEmail();
 };
 
