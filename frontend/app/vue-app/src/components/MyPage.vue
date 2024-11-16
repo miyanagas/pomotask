@@ -36,6 +36,23 @@ const toggleIsEditingEmail = () => {
 };
 
 const updateUsername = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    await requestAPI.put(
+      "/users/me/",
+      {
+        username: username.value,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  } catch (e) {
+    alert("ユーザー名の更新に失敗しました");
+    console.error(e);
+  }
   toggleIsEditingUsername();
 };
 
