@@ -4,8 +4,8 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
-from app.database import create_db_and_tables, drop_db_and_tables
-from app.routers import auth, users, todo_list
+from api.database import create_db_and_tables, drop_db_and_tables
+from api.routers import auth, users, todo_list
 
 app = FastAPI()
 

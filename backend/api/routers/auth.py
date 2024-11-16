@@ -5,10 +5,10 @@ from sqlmodel import select
 from typing import Annotated
 from datetime import timedelta
 
-from app.config import ACCESS_TOKEN_EXPIRE_MINUTES
-from app.models.user import User
-from app.database import SessionDep
-from app.auth import authenticate_user, create_access_token, Token
+from api.config import ACCESS_TOKEN_EXPIRE_MINUTES
+from api.models.user import User
+from api.database import SessionDep
+from api.auth import verify_password, create_access_token, Token
 
 router = APIRouter(tags=["auth"])
 

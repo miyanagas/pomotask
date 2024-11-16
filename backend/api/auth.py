@@ -11,9 +11,9 @@ from jwt.exceptions import InvalidTokenError
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 
-from app.config import ALGORITHM, SECRET_KEY
-from app.models.user import User
-from app.database import SessionDep
+from api.config import ALGORITHM, SECRET_KEY
+from api.models.user import User
+from api.database import SessionDep
 
 ph = PasswordHasher()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")

@@ -3,7 +3,7 @@ from sqlmodel import SQLModel, Session, create_engine
 
 from typing import Annotated
 
-from app.config import SQL_DATABASE_URL
+from api.config import SQL_DATABASE_URL
 
 # DBと接続するエンジンの作成
 engine = create_engine(SQL_DATABASE_URL)

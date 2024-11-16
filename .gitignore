@@ -1,9 +1,9 @@
 .env_file/
 db/data/
-backend/app/__pycache__/
-backend/app/models/__pycache__/
-backend/app/routers/__pycache__/
-backend/app/.env
+backend/api/__pycache__/
+backend/api/models/__pycache__/
+backend/api/routers/__pycache__/
+backend/api/.env
 
 frontend/app/vue-app/.gitignore
 

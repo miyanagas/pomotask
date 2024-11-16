@@ -3,9 +3,9 @@ from sqlmodel import select, delete
 
 import uuid
 
-from app.models.todo import Todo, TodoCreate, TodoPublic, TodoUpdate
-from app.auth import UserDep
-from app.database import SessionDep
+from api.models.todo import Todo, TodoCreate, TodoPublic, TodoUpdate
+from api.auth import UserDep
+from api.database import SessionDep
 
 router = APIRouter(prefix="/todo-list", tags=["todo-list"])
 

@@ -7,7 +7,7 @@ import uuid
 import re
 
 if TYPE_CHECKING:
-    from app.models.todo import Todo
+    from api.models.todo import Todo
 
 # Userテーブルの定義
 class UserBase(SQLModel):
