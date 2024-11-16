@@ -10,10 +10,18 @@ const password = ref("");
 
 const login = async () => {
   try {
-    const response = await requestAPI.post("/token/", {
-      username: username.value,
-      password: password.value,
-    });
+    const response = await requestAPI.post(
+      "/token/",
+      {
+        username: username.value,
+        password: password.value,
+      },
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      }
+    );
     localStorage.setItem("token", response.data.access_token);
     router.push("/");
   } catch (e) {
