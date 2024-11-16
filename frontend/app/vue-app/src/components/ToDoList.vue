@@ -13,7 +13,7 @@ onMounted(() => {
 
 const fetchToDoList = async () => {
   try {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("access_token");
     const response = await requestAPI.get("/todo-list/", {
       params: {
         filter: isToDoFilter.value,
@@ -38,7 +38,7 @@ const addToDo = async () => {
   }
 
   try {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("access_token");
     await requestAPI.post(
       "/todo-list/",
       {
@@ -62,7 +62,7 @@ const addToDo = async () => {
 
 const updateToDo = async (toDo) => {
   try {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("access_token");
     await requestAPI.put(
       `/todo-list/${toDo.id}`,
       {
@@ -84,7 +84,7 @@ const updateToDo = async (toDo) => {
 
 const deleteToDoList = async () => {
   try {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("access_token");
     await requestAPI.delete("/todo-list/", {
       headers: {
         Authorization: `Bearer ${token}`,

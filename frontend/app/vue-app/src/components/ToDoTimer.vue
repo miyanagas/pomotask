@@ -54,7 +54,7 @@ const convertToTime = (time) => {
 
 onMounted(async () => {
   try {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("access_token");
     const response = await requestAPI.get(`/todo-list/${routeId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -85,7 +85,7 @@ timerWorker.value.addEventListener("message", (e) => {
 
 const updateTimeToComplete = async (timeToComplete) => {
   try {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("access_token");
     await requestAPI.put(
       `/todo-list/${routeId}`,
       {

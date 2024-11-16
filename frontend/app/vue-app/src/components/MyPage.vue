@@ -7,7 +7,7 @@ const router = useRouter();
 
 onMounted(async () => {
   try {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("access_token");
     const response = await requestAPI.get("/users/me/", {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -37,7 +37,7 @@ const toggleIsEditingEmail = () => {
 
 const updateUsername = async () => {
   try {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("access_token");
     await requestAPI.put(
       "/users/me/",
       {
@@ -58,7 +58,7 @@ const updateUsername = async () => {
 
 const updateEmail = async () => {
   try {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("access_token");
     await requestAPI.put(
       "/users/me/",
       {
