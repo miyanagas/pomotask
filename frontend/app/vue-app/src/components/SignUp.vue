@@ -9,17 +9,38 @@ const username = ref("");
 const email = ref("");
 const password = ref("");
 
-const signup = async () => {
+const login = async (username, password) => {
   try {
-    const response = await requestAPI.post("/signup/", {
-      username: username.value,
-      email: email.value,
-      password: password.value,
-    });
+    const response = await requestAPI.post(
+      "/token/",
+      {
+        username: username,
+        password: password,
+      },
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      }
+    );
     localStorage.setItem("token", response.data.access_token);
     router.push("/");
   } catch (e) {
     alert("ログインに失敗しました");
+    console.error(e);
+  }
+};
+
+const signup = async () => {
+  try {
+    await requestAPI.post("/users/signup/", {
+      username: username.value,
+      email: email.value,
+      password: password.value,
+    });
+    await login(username.value, password.value);
+  } catch (e) {
+    alert("登録に失敗しました");
     console.error(e);
   }
 };
