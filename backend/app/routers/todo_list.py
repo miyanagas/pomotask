@@ -9,7 +9,7 @@ from app.database import SessionDep
 
 router = APIRouter(prefix="/todo-list", tags=["todo-list"])
 
-# ToDoItemを新規作成するリクエスト
+# Todo新規作成リクエスト
 @router.post("/", response_model=TodoPublic)
 def create_todo(todo: TodoCreate, user: UserDep, session: SessionDep):
     todo_data = todo.model_dump()
@@ -20,8 +20,7 @@ def create_todo(todo: TodoCreate, user: UserDep, session: SessionDep):
     session.refresh(db_todo)
     return db_todo
 
-
-# ToDoItemを更新するリクエスト
+# Todo更新リクエスト
 @router.put("/{id}", response_model=TodoPublic)
 def update_todo(id: uuid.UUID, todo: TodoUpdate, user: UserDep, session: SessionDep):
     db_todo = session.exec(select(Todo).where(Todo.user_id == user.id).where(Todo.id == id)).first()
@@ -34,7 +33,7 @@ def update_todo(id: uuid.UUID, todo: TodoUpdate, user: UserDep, session: Session
     session.refresh(db_todo)
     return db_todo
 
-# ToDoListを取得するリクエスト
+# Todo一覧取得リクエスト
 @router.get("/", response_model=list[TodoPublic])
 def read_todo_list(user: UserDep, session: SessionDep, filter: bool = False):
     if filter:
@@ -43,7 +42,7 @@ def read_todo_list(user: UserDep, session: SessionDep, filter: bool = False):
         db_todo_list = session.exec(select(Todo).where(Todo.user_id == user.id)).all()
     return db_todo_list
 
-# ToDoItemを取得するリクエスト
+# Todo取得リクエスト
 @router.get("/{id}", response_model=TodoPublic)
 def read_todo(id: uuid.UUID, user: UserDep, session: SessionDep):
     db_todo = session.exec(select(Todo).where(Todo.user_id == user.id).where(Todo.id == id)).first()
@@ -51,7 +50,7 @@ def read_todo(id: uuid.UUID, user: UserDep, session: SessionDep):
         raise HTTPException(status_code=404, detail="Todo not found")
     return db_todo
 
-# ToDoListを削除するリクエスト
+# Todo全削除リクエスト
 @router.delete("/")
 def delete_todo_list(user: UserDep, session: SessionDep):
     session.exec(delete(Todo).where(Todo.user_id == user.id))

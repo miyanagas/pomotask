@@ -12,6 +12,7 @@ from app.auth import verify_password, create_access_token, Token
 
 router = APIRouter(tags=["auth"])
 
+# ログインしてアクセストークンを取得するリクエスト
 @router.post("/token/", response_model=Token)
 def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], session: SessionDep):
     user = session.exec(select(User).where(User.username == form_data.username)).first()

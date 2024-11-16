@@ -18,6 +18,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ルーターの登録
 app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(todo_list.router)

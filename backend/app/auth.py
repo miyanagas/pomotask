@@ -25,15 +25,18 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     user_id: uuid.UUID
 
+# パスワードのハッシュ化
 def hash_password(password: str) -> str:
     return ph.hash(password)
 
+# パスワードの検証
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     try:
         return ph.verify(hashed_password, plain_password)
     except VerifyMismatchError:
         return False
 
+# アクセストークンの生成
 def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
     to_encode = data.copy()
     if expires_delta:
@@ -44,6 +47,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None) -> s
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+# ユーザーの取得
 def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], session: SessionDep) -> User:
     credentials_exception = HTTPException(
         status_code=401,
