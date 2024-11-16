@@ -1,9 +1,10 @@
-from typing import TYPE_CHECKING, Optional
-import uuid
-from datetime import datetime
 from sqlmodel import SQLModel, Field, Relationship
 
-from app.user_model import User
+from typing import Optional
+import uuid
+from datetime import datetime
+
+from app.models.user import User
 
 # ToDoItemテーブルの定義
 class TodoBase(SQLModel):

@@ -1,12 +1,12 @@
-from typing import TYPE_CHECKING, Optional
-import uuid
-from datetime import datetime
-import re
 from sqlmodel import SQLModel, Field, Relationship
 from pydantic import validator, EmailStr, BaseModel
 
+from typing import TYPE_CHECKING, Optional
+import uuid
+import re
+
 if TYPE_CHECKING:
-    from app.todo_model import Todo
+    from app.models.todo import Todo
 
 # Userテーブルの定義
 class UserBase(SQLModel):
