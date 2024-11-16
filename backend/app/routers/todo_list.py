@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, status
 from sqlmodel import select, delete
 
 import uuid
@@ -25,7 +25,7 @@ def create_todo(todo: TodoCreate, user: UserDep, session: SessionDep):
 def update_todo(id: uuid.UUID, todo: TodoUpdate, user: UserDep, session: SessionDep):
     db_todo = session.exec(select(Todo).where(Todo.user_id == user.id).where(Todo.id == id)).first()
     if not db_todo:
-        raise HTTPException(status_code=404, detail="Todo not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Todo not found")
     todo_data = todo.model_dump(exclude_unset=True)
     db_todo.sqlmodel_update(todo_data)
     session.add(db_todo)
@@ -47,7 +47,7 @@ def read_todo_list(user: UserDep, session: SessionDep, filter: bool = False):
 def read_todo(id: uuid.UUID, user: UserDep, session: SessionDep):
     db_todo = session.exec(select(Todo).where(Todo.user_id == user.id).where(Todo.id == id)).first()
     if not db_todo:
-        raise HTTPException(status_code=404, detail="Todo not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Todo not found")
     return db_todo
 
 # Todo全削除リクエスト
