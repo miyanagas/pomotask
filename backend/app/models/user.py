@@ -2,6 +2,7 @@ from sqlmodel import SQLModel, Field, Relationship
 from pydantic import validator, EmailStr, BaseModel
 
 from typing import TYPE_CHECKING, Optional
+from datetime import datetime
 import uuid
 import re
 
@@ -16,6 +17,11 @@ class UserBase(SQLModel):
 class User(UserBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True) # ID
     password: str # パスワード
+    created_at: datetime = Field(default_factory=datetime.now) # 作成日時
+    updated_at: datetime = Field(
+        default_factory=datetime.now,
+        sa_column_kwargs={"onupdate": datetime.now}
+    ) # 更新日時
 
     todo_list: list["Todo"] = Relationship(back_populates="user", cascade_delete=True) # User削除時にTodoも削除
 
