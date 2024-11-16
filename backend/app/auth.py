@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlmodel import select
 from pydantic import BaseModel
@@ -34,6 +34,14 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     except VerifyMismatchError:
         return False
 
+def authenticate_user(username: str, password: str, session: SessionDep) -> User | bool:
+    user = session.exec(select(User).where(User.username == username)).first()
+    if not user:
+        return False
+    if not verify_password(plain_password=password, hashed_password=user.password):
+        return False
+    return user
+
 def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
     to_encode = data.copy()
     if expires_delta:
@@ -46,7 +54,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None) -> s
 
 def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], session: SessionDep) -> User:
     credentials_exception = HTTPException(
-        status_code=401,
+        status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
@@ -62,7 +70,7 @@ def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], session: Ses
         user_uuid = uuid.UUID(token_data.user_id)
     except ValueError:
         # uuid conversion failed
-        raise HTTPException(status_code=401, detail="Invalid user ID in token")
+        raise credentials_exception
     user = session.exec(select(User).where(User.id == user_uuid)).first()
     if not user:
         raise credentials_exception
