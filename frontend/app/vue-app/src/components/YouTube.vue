@@ -62,7 +62,7 @@ const roadYouTube = () => {
 .video-input-form input {
   width: 60%;
   padding: 0.5rem;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border);
   border-radius: 4px;
   margin: 0 0.5rem 0 0;
   font-size: 14px;
@@ -71,12 +71,17 @@ const roadYouTube = () => {
 .video-input-form button {
   padding: 0.5rem 1rem;
   margin: 0 0 0 0.5rem;
-  border: 1px solid black;
+  border: 1px solid var(--color-background);
   border-radius: 4px;
-  background-color: red;
-  color: white;
-  cursor: pointer;
+  background-color: var(--color-red);
+  color: var(--color-text-white);
   font-size: 14px;
   font-weight: bold;
+}
+
+@media (hover: hover) {
+  .video-input-form button:hover {
+    background-color: var(--color-red-hover);
+  }
 }
 </style>

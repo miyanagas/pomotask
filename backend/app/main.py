@@ -1,14 +1,11 @@
-from typing import Union
-from fastapi import Depends, FastAPI
-from fastapi.responses import JSONResponse
-from sqlalchemy.orm import Session
+from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.exceptions import RequestValidationError
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
 
-from . import crud, models, schemas
-from .database import SessionLocal, engine
-
-# データベースのテーブルの一括作成
-models.Base.metadata.create_all(bind=engine)
+from app.database import create_db_and_tables, drop_db_and_tables
+from app.routers import auth, users, todo_list
 
 app = FastAPI()
 
@@ -24,52 +21,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ルーターの登録
+app.include_router(auth.router)
+app.include_router(users.router)
+app.include_router(todo_list.router)
 
-# Dependency
-# リクエストごとに独立してセッションを作成し、使用する
-# リクエストが終了するとセッションを閉じる
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc):
+    return JSONResponse(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        content=jsonable_encoder({"detail": exc.errors()[0].get("msg")}),
+    )
 
+@app.on_event("startup")
+def on_startup():
+    create_db_and_tables()
+
+@app.on_event("shutdown")
+def on_shutdown():
+    drop_db_and_tables()
 
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
-
-
-# ToDoItemを新規作成するリクエスト
-@app.post("/todolist", response_model=schemas.toDoItem)
-def add_toDo(toDoItem: schemas.toDoItemCreate, db: Session = Depends(get_db)):
-
-    toDoItem = crud.create_toDoItem(db=db, toDoItem=toDoItem)
-    return toDoItem
-
-
-# ToDoItemを更新するリクエスト
-@app.post("/todolist/items/{id}", response_model=schemas.toDoItem)
-def update_toDoItem(toDoItem: schemas.toDoItemUpdate, id: int = id, db: Session = Depends(get_db)):
-    toDoItem = crud.update_toDoItem(db=db, id=id, toDoItem=toDoItem)
-    return toDoItem
-
-
-# ToDoListを取得するリクエスト
-@app.get("/todolist", response_model=list[schemas.toDoItem])
-def get_toDoList(done_filter: bool = False, db: Session = Depends(get_db)):
-    toDoList = crud.get_toDoList(db, done_filter=done_filter)
-    return toDoList
-
-# ToDoItemを取得するリクエスト
-@app.get("/todolist/items", response_model=schemas.toDoItem)
-def get_toDoItem(id: int, db: Session = Depends(get_db)):
-    toDoItem = crud.get_toDoItem(db=db, id=id)
-    return toDoItem
-
-# ToDoListを削除するリクエスト
-@app.delete("/todolist")
-def delete_toDoList(db: Session = Depends(get_db)):
-    crud.delete_toDoItem(db)
-    return JSONResponse(content={"message": "Deleted all toDoList"})
