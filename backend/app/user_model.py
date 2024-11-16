@@ -3,7 +3,7 @@ import uuid
 from datetime import datetime
 import re
 from sqlmodel import SQLModel, Field, Relationship
-from pydantic import validator, EmailStr
+from pydantic import validator, EmailStr, BaseModel
 
 if TYPE_CHECKING:
     from app.todo_model import Todo
@@ -54,6 +54,9 @@ class UserPublic(UserBase):
 class UserUpdate(UserBase):
     username: Optional[str] = None
     email: Optional[EmailStr] = None
-    password: Optional[str] = None
 
-    _check_password_pattern = validator("password", allow_reuse=True)(check_password_pattern)
+class UserPasswordUpdate(BaseModel):
+    current_password: str
+    new_password: str
+
+    _check_password_pattern = validator("new_password", allow_reuse=True)(check_password_pattern)
