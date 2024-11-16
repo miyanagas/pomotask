@@ -23,7 +23,7 @@ class Token(BaseModel):
     token_type: str
 
 class TokenData(BaseModel):
-    user_id: str | None = None
+    user_id: uuid.UUID
 
 def hash_password(password: str) -> str:
     return ph.hash(password)
@@ -55,15 +55,15 @@ def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], session: Ses
         user_id: str = payload.get("sub")
         if not user_id:
             raise credentials_exception
-        token_data = TokenData(user_id=user_id)
+        try:
+            user_uuid = uuid.UUID(user_id)
+        except ValueError:
+            # uuid conversion failed
+            raise credentials_exception
+        token_data = TokenData(user_id=user_uuid)
     except InvalidTokenError:
         raise credentials_exception
-    try:
-        user_uuid = uuid.UUID(token_data.user_id)
-    except ValueError:
-        # uuid conversion failed
-        raise HTTPException(status_code=401, detail="Invalid user ID in token")
-    user = session.exec(select(User).where(User.id == user_uuid)).first()
+    user = session.exec(select(User).where(User.id == token_data.user_id)).first()
     if not user:
         raise credentials_exception
     return user
