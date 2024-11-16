@@ -24,6 +24,25 @@ onMounted(async () => {
 const username = ref("");
 const email = ref("");
 
+const isEditingUsername = ref(false);
+const isEditingEmail = ref(false);
+
+const toggleIsEditingUsername = () => {
+  isEditingUsername.value = !isEditingUsername.value;
+};
+
+const toggleIsEditingEmail = () => {
+  isEditingEmail.value = !isEditingEmail.value;
+};
+
+const updateUsername = async () => {
+  toggleIsEditingUsername();
+};
+
+const updateEmail = async () => {
+  toggleIsEditingEmail();
+};
+
 const logout = () => {
   localStorage.removeItem("token");
   router.push("/login");
@@ -35,19 +54,27 @@ const logout = () => {
     <h1 id="page-title">マイページ</h1>
     <div id="user-info">
       <p>ユーザー名</p>
-      <div class="info-group">
+      <div class="info-group" v-if="!isEditingUsername">
         <p>{{ username }}</p>
-        <button @click="router.push('/edit')">編集</button>
+        <button @click="toggleIsEditingUsername">編集</button>
+      </div>
+      <div class="info-group" v-else>
+        <input type="text" v-model="username" />
+        <button @click="updateUsername">保存</button>
       </div>
       <p>メールアドレス</p>
-      <div class="info-group">
+      <div class="info-group" v-if="!isEditingEmail">
         <p>{{ email }}</p>
-        <button @click="router.push('/edit')">編集</button>
+        <button @click="toggleIsEditingEmail">編集</button>
+      </div>
+      <div class="info-group" v-else>
+        <input type="email" v-model="email" />
+        <button @click="updateEmail">保存</button>
       </div>
       <p>パスワード</p>
       <div class="info-group">
         <p>********</p>
-        <button @click="router.push('/edit')">編集</button>
+        <button @click="router.push('/edit_password')">編集</button>
       </div>
     </div>
     <button id="logout-button" @click="logout">ログアウト</button>
@@ -79,9 +106,11 @@ const logout = () => {
   margin-bottom: 1rem;
 }
 
-.info-group p {
+.info-group p,
+input {
   width: 80%;
-  font-size: 14px;
+  height: 36px;
+  font-size: 18px;
   padding: 0.25rem 0.5rem;
   border: 1px solid var(--color-gray);
   border-radius: 4px;
