@@ -2,10 +2,11 @@
 import { ref, onMounted } from "vue";
 import requestAPI from "./requestAPI";
 
-const error = ref(null);
 const toDoList = ref([]);
 const newToDo = ref("");
 const isToDoFilter = ref(true);
+
+const error = ref(null);
 
 onMounted(() => {
   fetchToDoList();
@@ -26,8 +27,9 @@ const fetchToDoList = async () => {
     if (!response.data) return;
     toDoList.value = response.data;
   } catch (e) {
-    error.value = e;
-    alert("エラーが発生しました");
+    console.error(e);
+    error.value = e.response.data.detail;
+    alert("Todoリストの取得に失敗しました");
   }
 };
 
@@ -51,8 +53,9 @@ const addToDo = async () => {
       }
     );
   } catch (e) {
-    error.value = e;
-    alert("エラーが発生しました");
+    console.error(e);
+    error.value = e.response.data.detail;
+    alert("Todoの追加に失敗しました");
   } finally {
     newToDo.value = "";
   }
@@ -75,8 +78,9 @@ const updateToDo = async (toDo) => {
       }
     );
   } catch (e) {
-    error.value = e;
-    alert("エラーが発生しました");
+    console.error(e);
+    error.value = e.response.data.detail;
+    alert("Todoの更新に失敗しました");
   }
 
   fetchToDoList();
@@ -91,8 +95,9 @@ const deleteToDoList = async () => {
       },
     });
   } catch (e) {
-    error.value = e;
-    alert("エラーが発生しました");
+    console.error(e);
+    error.value = e.response.data.detail;
+    alert("Todoリストの削除に失敗しました");
   }
 
   toDoList.value = [];

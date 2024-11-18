@@ -5,6 +5,8 @@ import requestAPI from "./requestAPI";
 
 const router = useRouter();
 
+const error = ref(null);
+
 onMounted(async () => {
   try {
     const token = localStorage.getItem("access_token");
@@ -16,8 +18,9 @@ onMounted(async () => {
     username.value = response.data.username;
     email.value = response.data.email;
   } catch (e) {
-    alert("ユーザー情報の取得に失敗しました");
     console.error(e);
+    error.value = e.response.data.detail;
+    alert("ユーザー情報の取得に失敗しました");
   }
 });
 
@@ -50,8 +53,9 @@ const updateUsername = async () => {
       }
     );
   } catch (e) {
-    alert("ユーザー名の更新に失敗しました");
     console.error(e);
+    error.value = e.response.data.detail;
+    alert("ユーザー名の更新に失敗しました");
   }
   toggleIsEditingUsername();
 };
@@ -71,8 +75,9 @@ const updateEmail = async () => {
       }
     );
   } catch (e) {
-    alert("メールアドレスの更新に失敗しました");
     console.error(e);
+    error.value = e.response.data.detail;
+    alert("メールアドレスの更新に失敗しました");
   }
   toggleIsEditingEmail();
 };
@@ -86,6 +91,7 @@ const logout = () => {
 <template>
   <div class="container">
     <h1 id="page-title">マイページ</h1>
+    <div v-if="error">{{ error }}</div>
     <div id="user-info">
       <p>ユーザー名</p>
       <div class="info-group" v-if="!isEditingUsername">

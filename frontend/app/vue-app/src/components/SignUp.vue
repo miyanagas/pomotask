@@ -9,6 +9,8 @@ const username = ref("");
 const email = ref("");
 const password = ref("");
 
+const error = ref(null);
+
 const login = async (username, password) => {
   try {
     const response = await requestAPI.post(
@@ -26,8 +28,9 @@ const login = async (username, password) => {
     localStorage.setItem("access_token", response.data.access_token);
     router.push("/");
   } catch (e) {
-    alert("ログインに失敗しました");
     console.error(e);
+    error.value = e.response.data.detail;
+    alert("ログインに失敗しました");
   }
 };
 
@@ -40,8 +43,9 @@ const signup = async () => {
     });
     await login(username.value, password.value);
   } catch (e) {
-    alert("登録に失敗しました");
     console.error(e);
+    error.value = e.response.data.detail;
+    alert("登録に失敗しました");
   }
 };
 </script>
@@ -50,6 +54,7 @@ const signup = async () => {
   <div class="container">
     <h1 class="title">新規登録</h1>
     <form class="signup-form" @submit.prevent="signup">
+      <div v-if="error">{{ error }}</div>
       <div class="form-group">
         <label for="username">ユーザー名</label>
         <input

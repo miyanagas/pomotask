@@ -8,6 +8,8 @@ const router = useRouter();
 const username = ref("");
 const password = ref("");
 
+const error = ref(null);
+
 const login = async () => {
   try {
     const response = await requestAPI.post(
@@ -25,8 +27,9 @@ const login = async () => {
     localStorage.setItem("access_token", response.data.access_token);
     router.push("/");
   } catch (e) {
-    alert("ログインに失敗しました");
     console.error(e);
+    error.value = e.response.data.detail;
+    alert("ログインに失敗しました");
   }
 };
 </script>
@@ -35,6 +38,7 @@ const login = async () => {
   <div class="container">
     <h1 class="title">ログイン</h1>
     <form class="login-form" @submit.prevent="login">
+      <div v-if="error">{{ error }}</div>
       <div class="form-group">
         <label for="username">ユーザー名</label>
         <input

@@ -63,9 +63,9 @@ onMounted(async () => {
     if (!response.data) return;
     totalPassedTime = response.data.time_to_complete;
   } catch (e) {
-    error.value = e;
-    console.log(e);
-    alert("エラーが発生しました");
+    console.error(e);
+    error.value = e.response.data.detail;
+    alert("Todoの取得に失敗しました");
   }
   setTimer(timeType.task);
 });
@@ -98,8 +98,9 @@ const updateTimeToComplete = async (timeToComplete) => {
       }
     );
   } catch (e) {
-    error.value = e;
-    alert("エラーが発生しました");
+    console.error(e);
+    error.value = e.response.data.detail;
+    alert("Todoの更新に失敗しました");
   }
 };
 
