@@ -4,6 +4,13 @@ import alarm from "@/assets/sound-alarm.mp3";
 import requestAPI from "./requestAPI";
 import { useRoute } from "vue-router";
 
+const props = defineProps({
+  timeToComplete: {
+    type: Number,
+    required: true,
+  },
+});
+
 const defaultTaskTime = 25;
 const defaultBreakTime = 5;
 const taskTime = ref(defaultTaskTime);
@@ -52,21 +59,8 @@ const convertToTime = (time) => {
   return `${minutes}:${seconds}`;
 };
 
-onMounted(async () => {
-  try {
-    const token = localStorage.getItem("access_token");
-    const response = await requestAPI.get(`/todo-list/${routeId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (!response.data) return;
-    totalPassedTime = response.data.time_to_complete;
-  } catch (e) {
-    console.error(e);
-    error.value = e.response.data.detail;
-    alert("Todoの取得に失敗しました");
-  }
+onMounted(() => {
+  totalPassedTime = props.timeToComplete;
   setTimer(timeType.task);
 });
 

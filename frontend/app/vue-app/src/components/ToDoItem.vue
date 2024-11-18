@@ -1,9 +1,36 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import requestAPI from "./requestAPI";
+
 import YouTube from "./YouTube.vue";
 import Timer from "./ToDoTimer.vue";
 
+const routeId = useRoute().params.id;
+const error = ref(null);
+
 const isMenuOpen = ref(false);
+const title = ref("");
+const timeToComplete = ref(0);
+
+onMounted(async () => {
+  try {
+    const token = localStorage.getItem("access_token");
+    const response = await requestAPI.get(`/todo-list/${routeId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.data) return;
+    title.value = response.data.title;
+    timeToComplete.value = response.data.time_to_complete;
+  } catch (e) {
+    console.error(e);
+    error.value = e.response.data.detail;
+    alert("タスク情報の取得に失敗しました");
+  }
+});
 </script>
 
 <template>
@@ -11,6 +38,7 @@ const isMenuOpen = ref(false);
     <button class="back-button" @click="$router.push('/')">戻る</button>
   </div> -->
   <div class="container">
+    <div v-if="error">{{ error }}</div>
     <div id="todo-title-headline">
       <img
         alt="App logo"
@@ -19,7 +47,7 @@ const isMenuOpen = ref(false);
         width="35"
         height="35"
       />
-      <h1 id="todo-title">{{ $route.params.title }}</h1>
+      <h1 id="todo-title">{{ title }}</h1>
       <button @click="isMenuOpen = !isMenuOpen">
         <img
           v-if="!isMenuOpen"
@@ -40,7 +68,7 @@ const isMenuOpen = ref(false);
     <Transition>
       <YouTube v-show="isMenuOpen" />
     </Transition>
-    <Timer />
+    <Timer :timeToComplete="timeToComplete" />
   </div>
 </template>
 
