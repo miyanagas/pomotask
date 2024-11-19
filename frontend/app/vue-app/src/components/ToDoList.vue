@@ -21,6 +21,7 @@ const fetchToDoList = async () => {
       params: {
         filter: isToDoFilter.value,
       },
+      withCredentials: true,
     });
 
     if (!response.data) return;
@@ -42,9 +43,15 @@ const addToDo = async () => {
   }
 
   try {
-    await requestAPI.post("/todo-list/", {
-      title: newToDo.value,
-    });
+    await requestAPI.post(
+      "/todo-list/",
+      {
+        title: newToDo.value,
+      },
+      {
+        withCredentials: true,
+      }
+    );
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;
@@ -61,9 +68,15 @@ const addToDo = async () => {
 
 const updateToDo = async (toDo) => {
   try {
-    await requestAPI.put(`/todo-list/${toDo.id}`, {
-      is_done: toDo.is_done,
-    });
+    await requestAPI.put(
+      `/todo-list/${toDo.id}`,
+      {
+        is_done: toDo.is_done,
+      },
+      {
+        withCredentials: true,
+      }
+    );
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;
@@ -78,7 +91,9 @@ const updateToDo = async (toDo) => {
 
 const deleteToDoList = async () => {
   try {
-    await requestAPI.delete("/todo-list/");
+    await requestAPI.delete("/todo-list/", {
+      withCredentials: true,
+    });
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;

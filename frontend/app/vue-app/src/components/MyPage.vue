@@ -11,7 +11,9 @@ const error = ref(null);
 
 onMounted(async () => {
   try {
-    const response = await requestAPI.get("/users/me/");
+    const response = await requestAPI.get("/users/me/", {
+      withCredentials: true,
+    });
     username.value = response.data.username;
     email.value = response.data.email;
   } catch (e) {
@@ -40,9 +42,15 @@ const toggleIsEditingEmail = () => {
 
 const updateUsername = async () => {
   try {
-    await requestAPI.put("/users/me/", {
-      username: username.value,
-    });
+    await requestAPI.put(
+      "/users/me/",
+      {
+        username: username.value,
+      },
+      {
+        withCredentials: true,
+      }
+    );
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;
@@ -56,9 +64,15 @@ const updateUsername = async () => {
 
 const updateEmail = async () => {
   try {
-    await requestAPI.put("/users/me/", {
-      email: email.value,
-    });
+    await requestAPI.put(
+      "/users/me/",
+      {
+        email: email.value,
+      },
+      {
+        withCredentials: true,
+      }
+    );
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;
@@ -72,7 +86,9 @@ const updateEmail = async () => {
 
 const logout = async () => {
   try {
-    await requestAPI.post("/logout/");
+    await requestAPI.post("/logout/", {
+      withCredentials: true,
+    });
     authStore.logout();
     router.push("/login");
   } catch (e) {

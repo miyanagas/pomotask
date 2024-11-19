@@ -82,9 +82,15 @@ timerWorker.value.addEventListener("message", (e) => {
 
 const updateTimeToComplete = async (timeToComplete) => {
   try {
-    await requestAPI.put(`/todo-list/${routeId}`, {
-      time_to_complete: timeToComplete,
-    });
+    await requestAPI.put(
+      `/todo-list/${routeId}`,
+      {
+        time_to_complete: timeToComplete,
+      },
+      {
+        withCredentials: true,
+      }
+    );
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;

@@ -25,6 +25,7 @@ const login = async (username, password) => {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
+        withCredentials: true,
       }
     );
     authStore.login();

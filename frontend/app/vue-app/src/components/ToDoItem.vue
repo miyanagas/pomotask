@@ -18,7 +18,9 @@ const timeToComplete = ref(0);
 
 onMounted(async () => {
   try {
-    const response = await requestAPI.get(`/todo-list/${routeId}`);
+    const response = await requestAPI.get(`/todo-list/${routeId}`, {
+      withCredentials: true,
+    });
 
     if (!response.data) return;
     title.value = response.data.title;
