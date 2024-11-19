@@ -6,7 +6,7 @@ from datetime import timedelta
 
 from api.config import ACCESS_TOKEN_EXPIRE_MINUTES
 from api.database import SessionDep
-from api.auth import authenticate_user, create_access_token
+from api.auth import authenticate_user, create_access_token, get_token_from_cookie
 
 router = APIRouter(tags=["auth"])
 
@@ -37,4 +37,14 @@ def login_for_access_token(response: Response, form_data: Annotated[OAuth2Passwo
 @router.post("/logout/")
 def logout(response: Response):
     response.delete_cookie(key="access_token")
+    return {"ok": True}
+
+@router.get("/status/")
+def read_auth_status(token: Annotated[str, Depends(get_token_from_cookie)]):
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     return {"ok": True}
