@@ -24,8 +24,11 @@ def login_for_access_token(response: Response, form_data: Annotated[OAuth2Passwo
     response.set_cookie(
         key="access_token",
         value=f"Bearer {access_token}",
-        # httponly=True,
-        # secure=True,
+        httponly=True,
+        secure=False,
+        domain="localhost",
+        samesite="None",
+        path="/",
         expires=expires,
     )
 
