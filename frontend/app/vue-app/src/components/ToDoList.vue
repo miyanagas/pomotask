@@ -1,6 +1,9 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import requestAPI from "./requestAPI";
+import { useAuthStore } from "@/auth";
+
+const authStore = useAuthStore();
 
 const toDoList = ref([]);
 const newToDo = ref("");
@@ -26,6 +29,9 @@ const fetchToDoList = async () => {
     console.error(e);
     error.value = e.response.data.detail;
     alert("Todoリストの取得に失敗しました");
+    if (e.response.status === 401) {
+      authStore.checkLoginStatus();
+    }
   }
 };
 
@@ -43,6 +49,9 @@ const addToDo = async () => {
     console.error(e);
     error.value = e.response.data.detail;
     alert("Todoの追加に失敗しました");
+    if (e.response.status === 401) {
+      authStore.checkLoginStatus();
+    }
   } finally {
     newToDo.value = "";
   }
@@ -59,6 +68,9 @@ const updateToDo = async (toDo) => {
     console.error(e);
     error.value = e.response.data.detail;
     alert("Todoの更新に失敗しました");
+    if (e.response.status === 401) {
+      authStore.checkLoginStatus();
+    }
   }
 
   fetchToDoList();
@@ -71,6 +83,9 @@ const deleteToDoList = async () => {
     console.error(e);
     error.value = e.response.data.detail;
     alert("Todoリストの削除に失敗しました");
+    if (e.response.status === 401) {
+      authStore.checkLoginStatus();
+    }
   }
 
   toDoList.value = [];

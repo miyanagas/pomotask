@@ -2,9 +2,12 @@
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import requestAPI from "./requestAPI";
+import { useAuthStore } from "@/auth";
 
 import YouTube from "./YouTube.vue";
 import Timer from "./ToDoTimer.vue";
+
+const authStore = useAuthStore();
 
 const routeId = useRoute().params.id;
 const error = ref(null);
@@ -24,6 +27,9 @@ onMounted(async () => {
     console.error(e);
     error.value = e.response.data.detail;
     alert("タスク情報の取得に失敗しました");
+    if (e.response.status === 401) {
+      authStore.checkLoginStatus();
+    }
   }
 });
 </script>

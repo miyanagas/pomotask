@@ -2,8 +2,10 @@
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import requestAPI from "./requestAPI";
+import { useAuthStore } from "@/auth";
 
 const router = useRouter();
+const authStore = useAuthStore();
 
 const error = ref(null);
 
@@ -16,6 +18,9 @@ onMounted(async () => {
     console.error(e);
     error.value = e.response.data.detail;
     alert("ユーザー情報の取得に失敗しました");
+    if (e.response.status === 401) {
+      authStore.checkLoginStatus();
+    }
   }
 });
 
@@ -42,6 +47,9 @@ const updateUsername = async () => {
     console.error(e);
     error.value = e.response.data.detail;
     alert("ユーザー名の更新に失敗しました");
+    if (e.response.status === 401) {
+      authStore.checkLoginStatus();
+    }
   }
   toggleIsEditingUsername();
 };
@@ -55,6 +63,9 @@ const updateEmail = async () => {
     console.error(e);
     error.value = e.response.data.detail;
     alert("メールアドレスの更新に失敗しました");
+    if (e.response.status === 401) {
+      authStore.checkLoginStatus();
+    }
   }
   toggleIsEditingEmail();
 };
@@ -62,11 +73,13 @@ const updateEmail = async () => {
 const logout = async () => {
   try {
     await requestAPI.post("/logout/");
+    authStore.logout();
+    router.push("/login");
   } catch (e) {
     console.error(e);
     alert("ログアウトに失敗しました");
+    authStore.checkLoginStatus();
   }
-  router.push("/login");
 };
 </script>
 

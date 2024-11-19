@@ -3,6 +3,7 @@ import { ref, onMounted, computed, onBeforeUnmount } from "vue";
 import alarm from "@/assets/sound-alarm.mp3";
 import requestAPI from "./requestAPI";
 import { useRoute } from "vue-router";
+import { useAuthStore } from "@/auth";
 
 const props = defineProps({
   timeToComplete: {
@@ -10,6 +11,8 @@ const props = defineProps({
     required: true,
   },
 });
+
+const authStore = useAuthStore();
 
 const defaultTaskTime = 25;
 const defaultBreakTime = 5;
@@ -86,6 +89,9 @@ const updateTimeToComplete = async (timeToComplete) => {
     console.error(e);
     error.value = e.response.data.detail;
     alert("Todoの更新に失敗しました");
+    if (e.response.status === 401) {
+      authStore.checkLoginStatus();
+    }
   }
 };
 
