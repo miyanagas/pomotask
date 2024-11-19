@@ -1,10 +1,9 @@
-from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi import Cookie, Depends, HTTPException, status
 from sqlmodel import select
 from pydantic import BaseModel
 
 from typing import Annotated
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import uuid
 import jwt
 from jwt.exceptions import InvalidTokenError
@@ -16,11 +15,6 @@ from api.models.user import User
 from api.database import SessionDep
 
 ph = PasswordHasher()
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str
 
 class TokenData(BaseModel):
     user_id: uuid.UUID
@@ -49,15 +43,25 @@ def authenticate_user(username: str, password: str, session: SessionDep) -> User
 def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
     to_encode = data.copy()
     if expires_delta:
-        expire = datetime.now() + expires_delta
+        expire = datetime.now(timezone.utc) + expires_delta
     else:
-        expire = datetime.now() + timedelta(minutes=15)
+        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
+    return encoded_jwt, expire
+
+# クッキーからトークンを取得
+def get_token_from_cookie(token: Annotated[str | None, Cookie()] = None) -> str:
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return token
 
 # ユーザーの取得
-def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], session: SessionDep) -> User:
+def get_current_user(token: Annotated[str, Depends(get_token_from_cookie)], session: SessionDep) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
