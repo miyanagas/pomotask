@@ -9,18 +9,43 @@ const username = ref("");
 const email = ref("");
 const password = ref("");
 
+const error = ref(null);
+
+const login = async (username, password) => {
+  try {
+    const response = await requestAPI.post(
+      "/token/",
+      {
+        username: username,
+        password: password,
+      },
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      }
+    );
+    localStorage.setItem("access_token", response.data.access_token);
+    router.push("/");
+  } catch (e) {
+    console.error(e);
+    error.value = e.response.data.detail;
+    alert("ログインに失敗しました");
+  }
+};
+
 const signup = async () => {
   try {
-    const response = await requestAPI.post("/signup/", {
+    await requestAPI.post("/users/signup/", {
       username: username.value,
       email: email.value,
       password: password.value,
     });
-    localStorage.setItem("token", response.data.access_token);
-    router.push("/");
+    await login(username.value, password.value);
   } catch (e) {
-    alert("ログインに失敗しました");
     console.error(e);
+    error.value = e.response.data.detail;
+    alert("登録に失敗しました");
   }
 };
 </script>
@@ -29,6 +54,7 @@ const signup = async () => {
   <div class="container">
     <h1 class="title">新規登録</h1>
     <form class="signup-form" @submit.prevent="signup">
+      <div v-if="error">{{ error }}</div>
       <div class="form-group">
         <label for="username">ユーザー名</label>
         <input

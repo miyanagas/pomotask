@@ -8,6 +8,8 @@ const router = useRouter();
 const currentPassword = ref("");
 const newPassword = ref("");
 
+const error = ref(null);
+
 const updatePassword = async () => {
   try {
     const token = localStorage.getItem("token");
@@ -26,8 +28,9 @@ const updatePassword = async () => {
 
     router.push("/my_page");
   } catch (e) {
-    alert("パスワードの変更に失敗しました");
     console.error(e);
+    error.value = e.response.data.detail;
+    alert("パスワードの変更に失敗しました");
   }
 };
 </script>
@@ -35,6 +38,7 @@ const updatePassword = async () => {
 <template>
   <div class="container">
     <h1 id="page-title">パスワード変更</h1>
+    <div v-if="error">{{ error }}</div>
     <form id="edit-password-form">
       <div class="form-group">
         <label for="current-password">現在のパスワード</label>

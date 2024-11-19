@@ -4,6 +4,13 @@ import alarm from "@/assets/sound-alarm.mp3";
 import requestAPI from "./requestAPI";
 import { useRoute } from "vue-router";
 
+const props = defineProps({
+  timeToComplete: {
+    type: Number,
+    required: true,
+  },
+});
+
 const defaultTaskTime = 25;
 const defaultBreakTime = 5;
 const taskTime = ref(defaultTaskTime);
@@ -52,21 +59,8 @@ const convertToTime = (time) => {
   return `${minutes}:${seconds}`;
 };
 
-onMounted(async () => {
-  try {
-    const token = localStorage.getItem("token");
-    const response = await requestAPI.get(`/todo-list/${routeId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (!response.data) return;
-    totalPassedTime = response.data.time_to_complete;
-  } catch (e) {
-    error.value = e;
-    console.log(e);
-    alert("エラーが発生しました");
-  }
+onMounted(() => {
+  totalPassedTime = props.timeToComplete;
   setTimer(timeType.task);
 });
 
@@ -85,7 +79,7 @@ timerWorker.value.addEventListener("message", (e) => {
 
 const updateTimeToComplete = async (timeToComplete) => {
   try {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("access_token");
     await requestAPI.put(
       `/todo-list/${routeId}`,
       {
@@ -98,8 +92,9 @@ const updateTimeToComplete = async (timeToComplete) => {
       }
     );
   } catch (e) {
-    error.value = e;
-    alert("エラーが発生しました");
+    console.error(e);
+    error.value = e.response.data.detail;
+    alert("Todoの更新に失敗しました");
   }
 };
 
