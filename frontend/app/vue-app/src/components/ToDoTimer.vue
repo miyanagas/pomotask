@@ -79,18 +79,9 @@ timerWorker.value.addEventListener("message", (e) => {
 
 const updateTimeToComplete = async (timeToComplete) => {
   try {
-    const token = localStorage.getItem("access_token");
-    await requestAPI.put(
-      `/todo-list/${routeId}`,
-      {
-        time_to_complete: timeToComplete,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    await requestAPI.put(`/todo-list/${routeId}`, {
+      time_to_complete: timeToComplete,
+    });
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;

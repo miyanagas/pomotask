@@ -9,12 +9,7 @@ const error = ref(null);
 
 onMounted(async () => {
   try {
-    const token = localStorage.getItem("access_token");
-    const response = await requestAPI.get("/users/me/", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await requestAPI.get("/users/me/");
     username.value = response.data.username;
     email.value = response.data.email;
   } catch (e) {
@@ -40,18 +35,9 @@ const toggleIsEditingEmail = () => {
 
 const updateUsername = async () => {
   try {
-    const token = localStorage.getItem("access_token");
-    await requestAPI.put(
-      "/users/me/",
-      {
-        username: username.value,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    await requestAPI.put("/users/me/", {
+      username: username.value,
+    });
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;
@@ -62,18 +48,9 @@ const updateUsername = async () => {
 
 const updateEmail = async () => {
   try {
-    const token = localStorage.getItem("access_token");
-    await requestAPI.put(
-      "/users/me/",
-      {
-        email: email.value,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    await requestAPI.put("/users/me/", {
+      email: email.value,
+    });
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;
@@ -83,7 +60,7 @@ const updateEmail = async () => {
 };
 
 const logout = () => {
-  localStorage.removeItem("token");
+  // localStorage.removeItem("token");
   router.push("/login");
 };
 </script>

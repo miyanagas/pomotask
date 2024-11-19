@@ -15,12 +15,7 @@ const timeToComplete = ref(0);
 
 onMounted(async () => {
   try {
-    const token = localStorage.getItem("access_token");
-    const response = await requestAPI.get(`/todo-list/${routeId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await requestAPI.get(`/todo-list/${routeId}`);
 
     if (!response.data) return;
     title.value = response.data.title;

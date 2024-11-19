@@ -12,7 +12,7 @@ const error = ref(null);
 
 const login = async () => {
   try {
-    const response = await requestAPI.post(
+    await requestAPI.post(
       "/token/",
       {
         username: username.value,
@@ -24,7 +24,6 @@ const login = async () => {
         },
       }
     );
-    localStorage.setItem("access_token", response.data.access_token);
     router.push("/");
   } catch (e) {
     console.error(e);

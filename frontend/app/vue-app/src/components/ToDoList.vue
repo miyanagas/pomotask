@@ -14,13 +14,9 @@ onMounted(() => {
 
 const fetchToDoList = async () => {
   try {
-    const token = localStorage.getItem("access_token");
     const response = await requestAPI.get("/todo-list/", {
       params: {
         filter: isToDoFilter.value,
-      },
-      headers: {
-        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -40,18 +36,9 @@ const addToDo = async () => {
   }
 
   try {
-    const token = localStorage.getItem("access_token");
-    await requestAPI.post(
-      "/todo-list/",
-      {
-        title: newToDo.value,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    await requestAPI.post("/todo-list/", {
+      title: newToDo.value,
+    });
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;
@@ -65,18 +52,9 @@ const addToDo = async () => {
 
 const updateToDo = async (toDo) => {
   try {
-    const token = localStorage.getItem("access_token");
-    await requestAPI.put(
-      `/todo-list/${toDo.id}`,
-      {
-        is_done: toDo.is_done,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    await requestAPI.put(`/todo-list/${toDo.id}`, {
+      is_done: toDo.is_done,
+    });
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;
@@ -88,12 +66,7 @@ const updateToDo = async (toDo) => {
 
 const deleteToDoList = async () => {
   try {
-    const token = localStorage.getItem("access_token");
-    await requestAPI.delete("/todo-list/", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    await requestAPI.delete("/todo-list/");
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;
