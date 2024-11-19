@@ -33,3 +33,8 @@ def login_for_access_token(response: Response, form_data: Annotated[OAuth2Passwo
 
     print(response.headers)
     return {"ok": True}
+
+@router.post("/logout/")
+def logout(response: Response):
+    response.delete_cookie(key="access_token")
+    return {"ok": True}
