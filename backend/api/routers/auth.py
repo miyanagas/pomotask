@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Response, Depends, HTTPException, status
+from fastapi import APIRouter, Response, Cookie, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
 from typing import Annotated
@@ -40,11 +40,7 @@ def logout(response: Response):
     return {"ok": True}
 
 @router.get("/status/")
-def read_auth_status(token: Annotated[str, Depends(get_token_from_cookie)]):
+def read_auth_status(token: Annotated[str | None, Cookie()] = None) -> bool:
     if not token:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Could not validate credentials",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    return {"ok": True}
+        return {"is_authenticated": False}
+    return {"is_authenticated": True}
