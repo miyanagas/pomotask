@@ -8,7 +8,7 @@ export const useAuthStore = defineStore("auth", {
   actions: {
     async checkLoginStatus() {
       try {
-        const response = await requestAPI.get("/auth/status/", {
+        const response = await requestAPI.get("/status/", {
           withCredentials: true,
         });
         this.isAuthenticated = response.data.is_authenticated;
