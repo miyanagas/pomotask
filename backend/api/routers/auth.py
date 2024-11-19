@@ -21,17 +21,14 @@ def login_for_access_token(response: Response, form_data: Annotated[OAuth2Passwo
         data={"sub": str(user.id)}, expires_delta=access_token_expires
     )
 
-    print(expires)
-
     response.set_cookie(
         key="access_token",
         value=f"Bearer {access_token}",
-        httponly=True,
-        secure=True,
+        # httponly=True,
+        # secure=True,
         expires=expires,
     )
 
-    print(response.headers)
     return {"ok": True}
 
 @router.post("/logout/")
@@ -40,7 +37,7 @@ def logout(response: Response):
     return {"ok": True}
 
 @router.get("/status/")
-def read_auth_status(token: Annotated[str | None, Cookie()] = None) -> bool:
-    if not token:
+def read_auth_status(access_token: Annotated[str | None, Cookie()] = None):
+    if not access_token:
         return {"is_authenticated": False}
     return {"is_authenticated": True}
