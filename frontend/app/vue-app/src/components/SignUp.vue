@@ -2,8 +2,10 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import requestAPI from "./requestAPI";
+import { useAuthStore } from "@/auth";
 
 const router = useRouter();
+const authStore = useAuthStore();
 
 const username = ref("");
 const email = ref("");
@@ -25,6 +27,7 @@ const login = async (username, password) => {
         },
       }
     );
+    authStore.login();
     router.push("/");
   } catch (e) {
     console.error(e);
