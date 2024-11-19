@@ -17,5 +17,11 @@ export const useAuthStore = defineStore("auth", {
         this.isAuthenticated = false;
       }
     },
+    login() {
+      this.isAuthenticated = true;
+    },
+    logout() {
+      this.isAuthenticated = false;
+    },
   },
 });
