@@ -59,8 +59,13 @@ const updateEmail = async () => {
   toggleIsEditingEmail();
 };
 
-const logout = () => {
-  // localStorage.removeItem("token");
+const logout = async () => {
+  try {
+    await requestAPI.post("/logout/");
+  } catch (e) {
+    console.error(e);
+    alert("ログアウトに失敗しました");
+  }
   router.push("/login");
 };
 </script>
