@@ -14,10 +14,16 @@ const error = ref(null);
 
 const updatePassword = async () => {
   try {
-    await requestAPI.put("/users/me/password/", {
-      current_password: currentPassword.value,
-      new_password: newPassword.value,
-    });
+    await requestAPI.put(
+      "/users/me/password/",
+      {
+        current_password: currentPassword.value,
+        new_password: newPassword.value,
+      },
+      {
+        withCredentials: true,
+      }
+    );
     router.push("/my_page");
   } catch (e) {
     console.error(e);
