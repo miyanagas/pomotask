@@ -1,4 +1,5 @@
 from fastapi import Cookie, Depends, HTTPException, status
+from fastapi.security.utils import get_authorization_scheme_param
 from sqlmodel import select
 from pydantic import BaseModel
 
@@ -51,24 +52,29 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None) -> s
     return encoded_jwt, expire
 
 # クッキーからトークンを取得
-def get_token_from_cookie(token: Annotated[str | None, Cookie()] = None) -> str:
-    if not token:
+def get_token_from_cookie(access_token: Annotated[str | None, Cookie()] = None) -> str:
+    if not access_token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    return token
+    return access_token
 
 # ユーザーの取得
-def get_current_user(token: Annotated[str, Depends(get_token_from_cookie)], session: SessionDep) -> User:
+def get_current_user(authorization: Annotated[str, Depends(get_token_from_cookie)], session: SessionDep) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
+
+    token_type, access_token = get_authorization_scheme_param(authorization)
+    if token_type.lower() != "bearer":
+        raise credentials_exception
+
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(access_token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id: str = payload.get("sub")
         if not user_id:
             raise credentials_exception
@@ -80,9 +86,11 @@ def get_current_user(token: Annotated[str, Depends(get_token_from_cookie)], sess
         token_data = TokenData(user_id=user_uuid)
     except InvalidTokenError:
         raise credentials_exception
+
     user = session.exec(select(User).where(User.id == token_data.user_id)).first()
     if not user:
         raise credentials_exception
+
     return user
 
 UserDep = Annotated[User, Depends(get_current_user)]
