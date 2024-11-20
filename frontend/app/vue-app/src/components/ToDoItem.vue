@@ -14,7 +14,7 @@ const error = ref(null);
 
 const isMenuOpen = ref(false);
 const title = ref("");
-const timeToComplete = ref(0);
+const timeToComplete = ref(null);
 
 // タスク情報を取得
 onMounted(async () => {
@@ -72,7 +72,7 @@ onMounted(async () => {
     <Transition>
       <YouTube v-show="isMenuOpen" />
     </Transition>
-    <Timer :timeToComplete="timeToComplete" />
+    <Timer :timeToComplete="timeToComplete" v-if="timeToComplete != null" />
   </div>
 </template>
 
