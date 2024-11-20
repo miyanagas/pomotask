@@ -248,6 +248,10 @@ const deleteTodoList = async () => {
   }
 }
 
+.done-item #todo-item-link {
+  pointer-events: none;
+}
+
 .done-item,
 .done-item:hover {
   background-color: var(--color-primary-dark);
