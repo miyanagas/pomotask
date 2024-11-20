@@ -2,6 +2,7 @@
 import { ref, onMounted, computed } from "vue";
 import requestAPI from "./requestAPI";
 import { useAuthStore } from "@/auth";
+import { timeFormat } from "./Timer";
 
 const authStore = useAuthStore();
 
@@ -111,16 +112,6 @@ const deleteTodoList = async () => {
 
   todoList.value = [];
 };
-
-const timeFormatter = (time) => {
-  const hours = Math.floor(time / 60 / 60);
-  const minutes = String(Math.floor(time / 60) % 60).padStart(2, "0");
-  const seconds = String(time % 60).padStart(2, "0");
-  if (hours === 0) {
-    return `${minutes}:${seconds}`;
-  }
-  return `${hours}:${minutes}:${seconds}`;
-};
 </script>
 
 <template>
@@ -157,7 +148,7 @@ const timeFormatter = (time) => {
           >
             <span>{{ todo.title }}</span>
             <span v-show="todo.is_done" id="time-to-complete">
-              {{ timeFormatter(todo.time_to_complete) }}
+              {{ timeFormat(todo.time_to_complete) }}
             </span>
           </router-link>
           <input

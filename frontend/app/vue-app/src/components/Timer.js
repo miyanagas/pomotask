@@ -1,4 +1,4 @@
-export default class Timer {
+class Timer {
   constructor(time, onTick, onEnd) {
     this.remainingTime = time;
     this.isTimerRunning = false;
@@ -48,3 +48,15 @@ export default class Timer {
     this.remainingTime = 0;
   }
 }
+
+const timeFormat = (time) => {
+  const hours = Math.floor(time / 60 / 60);
+  const minutes = String(Math.floor(time / 60) % 60).padStart(2, "0");
+  const seconds = String(time % 60).padStart(2, "0");
+  if (hours === 0) {
+    return `${minutes}:${seconds}`;
+  }
+  return `${hours}:${minutes}:${seconds}`;
+};
+
+export { Timer, timeFormat };

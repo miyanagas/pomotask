@@ -4,6 +4,7 @@ import alarm from "@/assets/sound-alarm.mp3";
 import requestAPI from "./requestAPI";
 import { useRoute } from "vue-router";
 import { useAuthStore } from "@/auth";
+import { timeFormat } from "./Timer";
 
 const props = defineProps({
   timeToComplete: {
@@ -41,26 +42,12 @@ const progressOffset = computed(() => {
 });
 
 const formattedTime = computed(() => {
-  return convertToTime(remainingTime.value);
+  return timeFormat(remainingTime.value);
 });
 
 const formattedTotalTime = computed(() => {
-  const hours = Math.floor(
-    (currentTimer - remainingTime.value + totalPassedTime) / 60 / 60
-  );
-  if (hours === 0) {
-    return convertToTime(currentTimer - remainingTime.value + totalPassedTime);
-  }
-  return `${hours}:${convertToTime(
-    currentTimer - remainingTime.value + totalPassedTime
-  )}`;
+  return timeFormat(currentTimer - remainingTime.value + totalPassedTime);
 });
-
-const convertToTime = (time) => {
-  const minutes = String(Math.floor(time / 60) % 60).padStart(2, "0");
-  const seconds = String(time % 60).padStart(2, "0");
-  return `${minutes}:${seconds}`;
-};
 
 onMounted(() => {
   totalPassedTime = props.timeToComplete;
