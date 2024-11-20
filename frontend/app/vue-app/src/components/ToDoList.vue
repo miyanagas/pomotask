@@ -1,31 +1,39 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import requestAPI from "./requestAPI";
 import { useAuthStore } from "@/auth";
 
 const authStore = useAuthStore();
 
-const toDoList = ref([]);
-const newToDo = ref("");
-const isToDoFilter = ref(true);
+const todoList = ref([]);
+const newTodoTitle = ref("");
+const filtered = ref(false);
 
 const error = ref(null);
 
-onMounted(() => {
-  fetchToDoList();
+// Todoリストのフィルタリング
+const filteredTodoList = computed(() => {
+  if (filtered.value) {
+    return todoList.value.filter((todo) => {
+      return !todo.is_done;
+    });
+  } else {
+    return todoList.value;
+  }
 });
 
-const fetchToDoList = async () => {
+// Todoリストの取得
+onMounted(async () => {
   try {
     const response = await requestAPI.get("/todo-list/", {
       params: {
-        filter: isToDoFilter.value,
+        filter: filtered.value,
       },
       withCredentials: true,
     });
 
     if (!response.data) return;
-    toDoList.value = response.data;
+    todoList.value = response.data;
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;
@@ -34,24 +42,26 @@ const fetchToDoList = async () => {
       authStore.checkLoginStatus();
     }
   }
-};
+});
 
-const addToDo = async () => {
-  if (!newToDo.value) {
+const addTodo = async () => {
+  if (!newTodoTitle.value) {
     alert("Todoを入力してください");
     return;
   }
 
   try {
-    await requestAPI.post(
+    const response = await requestAPI.post(
       "/todo-list/",
       {
-        title: newToDo.value,
+        title: newTodoTitle.value,
       },
       {
         withCredentials: true,
       }
     );
+    const newTodo = response.data;
+    todoList.value.push(newTodo);
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;
@@ -60,18 +70,16 @@ const addToDo = async () => {
       authStore.checkLoginStatus();
     }
   } finally {
-    newToDo.value = "";
+    newTodoTitle.value = "";
   }
-
-  fetchToDoList();
 };
 
-const updateToDo = async (toDo) => {
+const updateTodo = async (todo) => {
   try {
     await requestAPI.put(
-      `/todo-list/${toDo.id}`,
+      `/todo-list/${todo.id}`,
       {
-        is_done: toDo.is_done,
+        is_done: todo.is_done,
       },
       {
         withCredentials: true,
@@ -85,11 +93,9 @@ const updateToDo = async (toDo) => {
       authStore.checkLoginStatus();
     }
   }
-
-  fetchToDoList();
 };
 
-const deleteToDoList = async () => {
+const deleteTodoList = async () => {
   try {
     await requestAPI.delete("/todo-list/", {
       withCredentials: true,
@@ -103,7 +109,7 @@ const deleteToDoList = async () => {
     }
   }
 
-  toDoList.value = [];
+  todoList.value = [];
 };
 
 const timeFormatter = (time) => {
@@ -125,52 +131,47 @@ const timeFormatter = (time) => {
     <div class="input-todo">
       <input
         type="text"
-        v-model="newToDo"
-        placeholder="ToDoを入力してください"
+        v-model="newTodoTitle"
+        placeholder="Todoを入力してください"
       />
-      <button @click="addToDo()">追加</button>
+      <button @click="addTodo()">追加</button>
     </div>
     <div class="filter-todo">
-      <input
-        @change="fetchToDoList()"
-        class="filter-checkbox"
-        type="checkbox"
-        v-model="isToDoFilter"
-      />
-      <span>完了したToDoを非表示</span>
+      <input class="filter-checkbox" type="checkbox" v-model="filtered" />
+      <span>完了したTodoを非表示</span>
     </div>
     <div class="todo-list">
-      <ul v-if="toDoList.length !== 0">
+      <ul v-if="todoList.length !== 0">
         <li
-          :class="{ 'done-item': toDo.is_done }"
+          :class="{ 'done-item': todo.is_done }"
           class="todo-item"
-          v-for="(toDo, index) in toDoList"
-          :key="index"
+          v-for="todo in filteredTodoList"
+          :key="todo.id"
         >
           <router-link
             :to="{
-              name: 'todo_item',
-              params: { id: toDo.id, title: toDo.title },
+              name: 'Todo',
+              params: { id: todo.id },
             }"
             id="todo-item-link"
           >
-            <span>{{ toDo.title }}</span>
-            <span v-show="toDo.is_done" id="time-to-complete">
-              {{ timeFormatter(toDo.time_to_complete) }}
+            <span>{{ todo.title }}</span>
+            <span v-show="todo.is_done" id="time-to-complete">
+              {{ timeFormatter(todo.time_to_complete) }}
             </span>
           </router-link>
           <input
-            @change="updateToDo(toDo)"
+            @change="updateTodo(todo)"
             class="status-checkbox"
             type="checkbox"
-            v-model="toDo.is_done"
+            v-model="todo.is_done"
           />
         </li>
       </ul>
-      <p v-else>ToDoがありません</p>
+      <p v-else>Todoがありません</p>
     </div>
     <div class="delete-todo">
-      <button @click="deleteToDoList()">ToDoを一括削除</button>
+      <button @click="deleteTodoList()">Todoを一括削除</button>
     </div>
   </div>
 </template>
