@@ -29,4 +29,8 @@ export const useAuthStore = defineStore("auth", {
       this.isAuthenticated = false;
     },
   },
+  persist: {
+    key: "auth",
+    storage: sessionStorage,
+  },
 });
