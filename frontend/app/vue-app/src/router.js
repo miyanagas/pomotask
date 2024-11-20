@@ -1,5 +1,5 @@
 import { createWebHistory, createRouter } from "vue-router";
-import isAuthenticated from "./auth";
+import { useAuthStore } from "./auth";
 
 import LogInView from "./components/LogIn.vue";
 import SignUpView from "./components/SignUp.vue";
@@ -13,12 +13,12 @@ const routes = [
     path: "/login",
     name: "Login",
     component: LogInView,
-    meta: { hideHeader: true },
+    meta: { hideHeader: true, requiresAuth: false },
   },
   {
     path: "/signup",
     component: SignUpView,
-    meta: { hideHeader: true },
+    meta: { hideHeader: true, requiresAuth: false },
   },
   { path: "/my_page", component: MyPageView, meta: { requiresAuth: true } },
   {
@@ -45,10 +45,16 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
-  if (to.meta.requiresAuth && !isAuthenticated()) {
-    console.log(isAuthenticated());
+router.beforeEach(async (to, from, next) => {
+  const authStore = useAuthStore();
+  if (!authStore.initialized) {
+    await authStore.initialize();
+  }
+
+  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     next({ name: "Login" });
+  } else if (!to.meta.requiresAuth && authStore.isAuthenticated) {
+    next({ name: "ToDoList" });
   } else {
     next();
   }

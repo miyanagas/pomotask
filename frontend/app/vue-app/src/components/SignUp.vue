@@ -2,8 +2,10 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import requestAPI from "./requestAPI";
+import { useAuthStore } from "@/auth";
 
 const router = useRouter();
+const authStore = useAuthStore();
 
 const username = ref("");
 const email = ref("");
@@ -13,7 +15,7 @@ const error = ref(null);
 
 const login = async (username, password) => {
   try {
-    const response = await requestAPI.post(
+    await requestAPI.post(
       "/token/",
       {
         username: username,
@@ -23,9 +25,10 @@ const login = async (username, password) => {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
+        withCredentials: true,
       }
     );
-    localStorage.setItem("access_token", response.data.access_token);
+    authStore.login();
     router.push("/");
   } catch (e) {
     console.error(e);

@@ -2,18 +2,17 @@
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import requestAPI from "./requestAPI";
+import { useAuthStore } from "@/auth";
 
 const router = useRouter();
+const authStore = useAuthStore();
 
 const error = ref(null);
 
 onMounted(async () => {
   try {
-    const token = localStorage.getItem("access_token");
     const response = await requestAPI.get("/users/me/", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      withCredentials: true,
     });
     username.value = response.data.username;
     email.value = response.data.email;
@@ -21,6 +20,9 @@ onMounted(async () => {
     console.error(e);
     error.value = e.response.data.detail;
     alert("ユーザー情報の取得に失敗しました");
+    if (e.response.status === 401) {
+      authStore.checkLoginStatus();
+    }
   }
 });
 
@@ -40,51 +42,60 @@ const toggleIsEditingEmail = () => {
 
 const updateUsername = async () => {
   try {
-    const token = localStorage.getItem("access_token");
     await requestAPI.put(
       "/users/me/",
       {
         username: username.value,
       },
       {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        withCredentials: true,
       }
     );
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;
     alert("ユーザー名の更新に失敗しました");
+    if (e.response.status === 401) {
+      authStore.checkLoginStatus();
+    }
   }
   toggleIsEditingUsername();
 };
 
 const updateEmail = async () => {
   try {
-    const token = localStorage.getItem("access_token");
     await requestAPI.put(
       "/users/me/",
       {
         email: email.value,
       },
       {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        withCredentials: true,
       }
     );
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;
     alert("メールアドレスの更新に失敗しました");
+    if (e.response.status === 401) {
+      authStore.checkLoginStatus();
+    }
   }
   toggleIsEditingEmail();
 };
 
-const logout = () => {
-  localStorage.removeItem("token");
-  router.push("/login");
+const logout = async () => {
+  try {
+    await requestAPI.post("/logout/", {
+      withCredentials: true,
+    });
+    authStore.logout();
+    router.push("/login");
+  } catch (e) {
+    console.error(e);
+    alert("ログアウトに失敗しました");
+    authStore.checkLoginStatus();
+  }
 };
 </script>
 

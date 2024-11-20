@@ -2,8 +2,10 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import requestAPI from "./requestAPI";
+import { useAuthStore } from "@/auth";
 
 const router = useRouter();
+const authStore = useAuthStore();
 
 const currentPassword = ref("");
 const newPassword = ref("");
@@ -12,7 +14,6 @@ const error = ref(null);
 
 const updatePassword = async () => {
   try {
-    const token = localStorage.getItem("token");
     await requestAPI.put(
       "/users/me/password/",
       {
@@ -20,17 +21,17 @@ const updatePassword = async () => {
         new_password: newPassword.value,
       },
       {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        withCredentials: true,
       }
     );
-
     router.push("/my_page");
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;
     alert("パスワードの変更に失敗しました");
+    if (e.response.status === 401) {
+      authStore.checkLoginStatus();
+    }
   }
 };
 </script>

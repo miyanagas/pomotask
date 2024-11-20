@@ -1,6 +1,9 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import requestAPI from "./requestAPI";
+import { useAuthStore } from "@/auth";
+
+const authStore = useAuthStore();
 
 const toDoList = ref([]);
 const newToDo = ref("");
@@ -14,14 +17,11 @@ onMounted(() => {
 
 const fetchToDoList = async () => {
   try {
-    const token = localStorage.getItem("access_token");
     const response = await requestAPI.get("/todo-list/", {
       params: {
         filter: isToDoFilter.value,
       },
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      withCredentials: true,
     });
 
     if (!response.data) return;
@@ -30,6 +30,9 @@ const fetchToDoList = async () => {
     console.error(e);
     error.value = e.response.data.detail;
     alert("Todoリストの取得に失敗しました");
+    if (e.response.status === 401) {
+      authStore.checkLoginStatus();
+    }
   }
 };
 
@@ -40,22 +43,22 @@ const addToDo = async () => {
   }
 
   try {
-    const token = localStorage.getItem("access_token");
     await requestAPI.post(
       "/todo-list/",
       {
         title: newToDo.value,
       },
       {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        withCredentials: true,
       }
     );
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;
     alert("Todoの追加に失敗しました");
+    if (e.response.status === 401) {
+      authStore.checkLoginStatus();
+    }
   } finally {
     newToDo.value = "";
   }
@@ -65,22 +68,22 @@ const addToDo = async () => {
 
 const updateToDo = async (toDo) => {
   try {
-    const token = localStorage.getItem("access_token");
     await requestAPI.put(
       `/todo-list/${toDo.id}`,
       {
         is_done: toDo.is_done,
       },
       {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        withCredentials: true,
       }
     );
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;
     alert("Todoの更新に失敗しました");
+    if (e.response.status === 401) {
+      authStore.checkLoginStatus();
+    }
   }
 
   fetchToDoList();
@@ -88,16 +91,16 @@ const updateToDo = async (toDo) => {
 
 const deleteToDoList = async () => {
   try {
-    const token = localStorage.getItem("access_token");
     await requestAPI.delete("/todo-list/", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      withCredentials: true,
     });
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;
     alert("Todoリストの削除に失敗しました");
+    if (e.response.status === 401) {
+      authStore.checkLoginStatus();
+    }
   }
 
   toDoList.value = [];

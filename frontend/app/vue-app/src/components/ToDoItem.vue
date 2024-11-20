@@ -2,9 +2,12 @@
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import requestAPI from "./requestAPI";
+import { useAuthStore } from "@/auth";
 
 import YouTube from "./YouTube.vue";
 import Timer from "./ToDoTimer.vue";
+
+const authStore = useAuthStore();
 
 const routeId = useRoute().params.id;
 const error = ref(null);
@@ -15,11 +18,8 @@ const timeToComplete = ref(0);
 
 onMounted(async () => {
   try {
-    const token = localStorage.getItem("access_token");
     const response = await requestAPI.get(`/todo-list/${routeId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      withCredentials: true,
     });
 
     if (!response.data) return;
@@ -29,6 +29,9 @@ onMounted(async () => {
     console.error(e);
     error.value = e.response.data.detail;
     alert("タスク情報の取得に失敗しました");
+    if (e.response.status === 401) {
+      authStore.checkLoginStatus();
+    }
   }
 });
 </script>

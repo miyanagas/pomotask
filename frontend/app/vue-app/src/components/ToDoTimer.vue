@@ -3,6 +3,7 @@ import { ref, onMounted, computed, onBeforeUnmount } from "vue";
 import alarm from "@/assets/sound-alarm.mp3";
 import requestAPI from "./requestAPI";
 import { useRoute } from "vue-router";
+import { useAuthStore } from "@/auth";
 
 const props = defineProps({
   timeToComplete: {
@@ -10,6 +11,8 @@ const props = defineProps({
     required: true,
   },
 });
+
+const authStore = useAuthStore();
 
 const defaultTaskTime = 25;
 const defaultBreakTime = 5;
@@ -79,22 +82,22 @@ timerWorker.value.addEventListener("message", (e) => {
 
 const updateTimeToComplete = async (timeToComplete) => {
   try {
-    const token = localStorage.getItem("access_token");
     await requestAPI.put(
       `/todo-list/${routeId}`,
       {
         time_to_complete: timeToComplete,
       },
       {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        withCredentials: true,
       }
     );
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;
     alert("Todoの更新に失敗しました");
+    if (e.response.status === 401) {
+      authStore.checkLoginStatus();
+    }
   }
 };
 
