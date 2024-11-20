@@ -24,7 +24,7 @@ const updatePassword = async () => {
         withCredentials: true,
       }
     );
-    router.push("/my_page");
+    router.push("/mypage");
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;
