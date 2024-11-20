@@ -9,6 +9,7 @@ const authStore = useAuthStore();
 
 const error = ref(null);
 
+// ユーザー情報を取得
 onMounted(async () => {
   try {
     const response = await requestAPI.get("/users/me/", {
