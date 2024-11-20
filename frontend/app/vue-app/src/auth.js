@@ -4,6 +4,7 @@ import requestAPI from "./components/requestAPI";
 export const useAuthStore = defineStore("auth", {
   state: () => ({
     isAuthenticated: false,
+    initialized: false,
   }),
   actions: {
     async checkLoginStatus() {
@@ -16,6 +17,10 @@ export const useAuthStore = defineStore("auth", {
         console.error("Error checking login status:", error);
         this.isAuthenticated = false;
       }
+    },
+    async initialize() {
+      await this.checkLoginStatus();
+      this.initialized = true;
     },
     login() {
       this.isAuthenticated = true;
