@@ -11,7 +11,7 @@ app = FastAPI()
 
 # CORSの設定
 origins = [
-    "https://miyanagas.github.io",
+    "https://todo-app-2yl.pages.dev/",
 ]
 
 app.add_middleware(
