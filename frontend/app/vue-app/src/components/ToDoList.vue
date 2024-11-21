@@ -2,7 +2,7 @@
 import { ref, onMounted, computed } from "vue";
 import requestAPI from "./requestAPI";
 import { useAuthStore } from "@/auth";
-import { timeFormat } from "./timer";
+import { timeFormat } from "./time";
 
 const authStore = useAuthStore();
 
