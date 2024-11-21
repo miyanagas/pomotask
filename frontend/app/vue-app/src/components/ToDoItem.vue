@@ -38,9 +38,6 @@ onMounted(async () => {
 </script>
 
 <template>
-  <!-- <div class="todo-header">
-    <button class="back-button" @click="$router.push('/')">戻る</button>
-  </div> -->
   <div class="container">
     <div v-if="error" class="error-message">{{ error }}</div>
     <div id="todo-title-headline">
@@ -77,30 +74,6 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-/* .todo-header {
-  display: flex;
-  padding: 1rem;
-  justify-content: flex-start;
-} */
-
-.back-button {
-  padding: 0.5rem 1rem;
-  font-size: 16px;
-  margin: 0;
-  background-color: var(--color-text-white);
-  border: 4px solid var(--color-primary);
-  border-radius: 4px;
-  color: var(--color-primary);
-  font-weight: bold;
-}
-
-@media (hover: hover) {
-  .back-button:hover {
-    background-color: var(--color-primary);
-    color: var(--color-text-white);
-  }
-}
-
 #todo-title-headline {
   display: flex;
   justify-content: flex-start;

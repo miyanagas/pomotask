@@ -96,7 +96,9 @@ const signup = async () => {
           required
         />
       </div>
-      <button class="signup-button" type="submit">新規登録</button>
+      <button style="margin: 2rem" class="primary-button" type="submit">
+        新規登録
+      </button>
     </form>
   </div>
 </template>
@@ -132,19 +134,5 @@ const signup = async () => {
   border-radius: 4px;
   margin: 0.5rem;
   font-size: 16px;
-}
-
-.signup-button {
-  padding: 0.5rem 1rem;
-  margin: 2rem;
-  border-radius: 4px;
-  background-color: var(--color-primary);
-  color: var(--color-text-white);
-}
-
-@media (hover: hover) {
-  .signup-button:hover {
-    background-color: var(--color-primary-hover);
-  }
 }
 </style>

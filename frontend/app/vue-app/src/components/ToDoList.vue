@@ -123,7 +123,9 @@ const deleteTodoList = async () => {
         required
         placeholder="Todoを入力してください"
       />
-      <button type="submit">追加</button>
+      <button style="margin: 2rem" class="primary-button" type="submit">
+        追加
+      </button>
     </form>
     <div class="filter-todo">
       <input class="filter-checkbox" type="checkbox" v-model="filtered" />
@@ -159,8 +161,14 @@ const deleteTodoList = async () => {
       </ul>
       <p v-else>Todoがありません</p>
     </div>
-    <div class="delete-todo">
-      <button @click="deleteTodoList()">Todoを一括削除</button>
+    <div style="display: flex; justify-content: flex-end">
+      <button
+        style="margin: 2rem 0.5rem"
+        class="danger-button"
+        @click="deleteTodoList()"
+      >
+        Todoを一括削除
+      </button>
     </div>
   </div>
 </template>
@@ -183,20 +191,6 @@ const deleteTodoList = async () => {
   border-radius: 4px;
   margin: 2rem;
   font-size: 16px;
-}
-
-.input-todo button {
-  padding: 0.5rem 1rem;
-  margin: 2rem;
-  border-radius: 4px;
-  background-color: var(--color-primary);
-  color: var(--color-text-white);
-}
-
-@media (hover: hover) {
-  .input-todo button:hover {
-    background-color: var(--color-primary-hover);
-  }
 }
 
 .filter-todo {
@@ -271,24 +265,5 @@ const deleteTodoList = async () => {
   height: 25px;
   cursor: pointer;
   accent-color: royalblue;
-}
-
-.delete-todo {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.delete-todo button {
-  margin: 2rem 0.5rem;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  background-color: var(--color-red);
-  color: var(--color-text-white);
-}
-
-@media (hover: hover) {
-  .delete-todo button:hover {
-    background-color: var(--color-red-hover);
-  }
 }
 </style>

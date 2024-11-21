@@ -18,9 +18,56 @@ a {
 }
 
 button {
+  display: block;
+  padding: 0.5rem 1rem;
   cursor: pointer;
   border: none;
   font-size: 16px;
+  border-radius: 4px;
+}
+
+.primary-button {
+  background-color: var(--color-primary);
+  color: var(--color-text-white);
+}
+
+@media (hover: hover) {
+  .primary-button:hover {
+    background-color: var(--color-primary-hover);
+  }
+}
+
+.update-button {
+  background-color: var(--color-lightseagreen);
+  color: var(--color-text-white);
+}
+
+@media (hover: hover) {
+  .update-button:hover {
+    background-color: var(--color-lightseagreen-hover);
+  }
+}
+
+.edit-button {
+  background-color: var(--color-gray);
+  color: var(--color-text-black);
+}
+
+@media (hover: hover) {
+  .edit-button:hover {
+    background-color: var(--color-gray-hover);
+  }
+}
+
+.danger-button {
+  background-color: var(--color-red);
+  color: var(--color-text-white);
+}
+
+@media (hover: hover) {
+  .danger-button:hover {
+    background-color: var(--color-red-hover);
+  }
 }
 
 .error-message {

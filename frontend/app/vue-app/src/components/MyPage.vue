@@ -160,30 +160,46 @@ const deleteUser = async () => {
       <p>ユーザー名</p>
       <div class="info-group" v-if="!isEditingUsername">
         <p>{{ username }}</p>
-        <button @click="toggleIsEditingUsername">編集</button>
+        <button class="edit-button" @click="toggleIsEditingUsername">
+          編集
+        </button>
       </div>
       <form class="info-group" v-else @submit.prevent="updateUsername">
         <input type="text" v-model="newUsername" required />
-        <button type="submit">保存</button>
+        <button class="update-button" type="submit">保存</button>
       </form>
       <p>メールアドレス</p>
       <div class="info-group" v-if="!isEditingEmail">
         <p>{{ email }}</p>
-        <button @click="toggleIsEditingEmail">編集</button>
+        <button class="edit-button" @click="toggleIsEditingEmail">編集</button>
       </div>
       <form class="info-group" v-else @submit.prevent="updateEmail">
         <input type="email" v-model="newEmail" required />
-        <button type="submit">保存</button>
+        <button class="update-button" type="submit">保存</button>
       </form>
       <p>パスワード</p>
       <div class="info-group">
         <p>********</p>
-        <button @click="router.push('/edit_password')">編集</button>
+        <button class="edit-button" @click="router.push('/edit_password')">
+          編集
+        </button>
       </div>
     </div>
-    <div id="buttons">
-      <button @click="deleteUser" id="delete-button">アカウントを削除</button>
-      <button @click="logout" id="logout-button">ログアウト</button>
+    <div style="display: flex">
+      <button
+        style="margin: 2rem auto 1rem 0"
+        class="danger-button"
+        @click="deleteUser"
+      >
+        アカウントを削除
+      </button>
+      <button
+        style="margin: 2rem 0 1rem auto"
+        class="primary-button"
+        @click="logout"
+      >
+        ログアウト
+      </button>
     </div>
   </div>
 </template>
@@ -225,32 +241,6 @@ input {
 }
 
 .info-group button {
-  display: block;
   margin: 0.5rem 0 0.5rem auto;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  font-size: 16px;
-}
-
-#buttons {
-  display: flex;
-}
-
-#delete-button {
-  display: block;
-  margin: 2rem auto 1rem 0;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  background-color: var(--color-red);
-  color: var(--color-white);
-}
-
-#logout-button {
-  display: block;
-  margin: 2rem 0 1rem auto;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  background-color: var(--color-primary);
-  color: var(--color-white);
 }
 </style>

@@ -161,11 +161,26 @@ const customize = () => {
     <div id="total-time-display">
       <span>総時間</span>
       <span id="total-time">{{ formattedTotalTime }}</span>
-      <button id="complete-todo" @click="updateTodo(true)">完了</button>
+      <button
+        style="margin-left: 0.5rem"
+        class="primary-button"
+        id="complete-todo-button"
+        @click="updateTodo(true)"
+      >
+        完了
+      </button>
     </div>
-    <div id="timer-buttons">
-      <button id="timer-play-button" @click="play()">スタート</button>
-      <button @click="reset()">リセット</button>
+    <div style="display: flex; justify-content: center">
+      <button
+        class="timer-button primary-button"
+        id="timer-play-button"
+        @click="play()"
+      >
+        スタート
+      </button>
+      <button class="timer-button update-button" @click="reset()">
+        リセット
+      </button>
     </div>
     <div id="timer-customize">
       <div class="time-selector">
@@ -202,7 +217,13 @@ const customize = () => {
           <option value="30">30分</option>
         </select>
       </div>
-      <button @click="customize()">設定</button>
+      <button
+        style="margin-left: 0.5rem"
+        class="primary-button"
+        @click="customize()"
+      >
+        設定
+      </button>
     </div>
   </div>
 </template>
@@ -273,25 +294,10 @@ const customize = () => {
   border-radius: 4px;
 }
 
-#timer-buttons {
-  display: flex;
-  justify-content: center;
-}
-
-#timer-buttons button {
+.timer-button {
   width: 130px;
   font-size: 24px;
-  padding: 0.5rem 1rem;
   margin: 1.5rem;
-  border-radius: 4px;
-  background-color: var(--color-primary);
-  color: var(--color-text-white);
-}
-
-@media (hover: hover) {
-  #timer-buttons button:hover {
-    background-color: var(--color-primary-hover);
-  }
 }
 
 #timer-customize {
@@ -317,30 +323,5 @@ const customize = () => {
   border: 1px solid var(--color-border);
   border-radius: 4px;
   font-size: 16px;
-}
-
-#timer-customize button {
-  padding: 0.5rem 1rem;
-  margin: 0 0 0 0.5rem;
-  border-radius: 4px;
-  background-color: var(--color-primary);
-  color: var(--color-text-white);
-  font-weight: bold;
-}
-
-@media (hover: hover) {
-  #timer-customize button:hover {
-    background-color: var(--color-primary-hover);
-  }
-}
-
-#complete-todo {
-  padding: 0.5rem 1rem;
-  margin-left: 0.5rem;
-  border-radius: 4px;
-  background-color: var(--color-primary);
-  color: var(--color-text-white);
-  font-size: 18px;
-  font-weight: bold;
 }
 </style>

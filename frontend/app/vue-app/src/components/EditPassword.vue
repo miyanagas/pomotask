@@ -56,9 +56,7 @@ const updatePassword = async () => {
         <label for="new-password">新しいパスワード</label>
         <input type="password" id="new-password" />
       </div>
-      <button id="update-password-button" type="submit">
-        パスワードを変更
-      </button>
+      <button class="update-button" type="submit">パスワードを変更</button>
     </form>
   </div>
 </template>
@@ -95,17 +93,5 @@ input {
   font-size: 1rem;
   border: 1px solid var(--color-border);
   border-radius: 4px;
-}
-
-#update-password-button {
-  background-color: var(--color-primary);
-  color: var(--color-white);
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  font-size: 1rem;
-}
-
-#update-password-button:hover {
-  background-color: var(--color-primary-hover);
 }
 </style>

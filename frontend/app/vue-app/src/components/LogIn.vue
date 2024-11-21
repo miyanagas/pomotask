@@ -75,8 +75,18 @@ const login = async () => {
         />
       </div>
       <div class="login-buttons">
-        <button class="login-button" type="submit">ログイン</button>
-        <button class="login-button" @click="router.push('/signup')">
+        <button
+          style="margin: 0.5rem 1rem"
+          class="primary-button"
+          type="submit"
+        >
+          ログイン
+        </button>
+        <button
+          style="margin: 0.5rem 1rem"
+          class="primary-button"
+          @click="router.push('/signup')"
+        >
           新規登録
         </button>
       </div>
@@ -124,23 +134,5 @@ const login = async () => {
   align-items: center;
   padding: 1rem;
   margin: 1rem;
-}
-
-.login-button {
-  padding: 0.5rem 1rem;
-  margin: 0.5rem 1rem;
-  border-radius: 4px;
-  background-color: var(--color-primary);
-  color: var(--color-text-white);
-}
-
-@media (hover: hover) {
-  .login-button:hover {
-    background-color: var(--color-primary-hover);
-  }
-
-  .signup-button:hover {
-    background-color: var(--color-secondary-hover);
-  }
 }
 </style>

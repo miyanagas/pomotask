@@ -43,8 +43,10 @@ const updateVideoId = () => {
         required
         placeholder="YouTube URL"
       />
-      <button id="embed" type="submit">ロード</button>
-      <button id="reset" @click="updateVideoId()">お気に入り</button>
+      <button class="youtube-button" type="submit">ロード</button>
+      <button class="primary-button" id="reset" @click="updateVideoId()">
+        お気に入り
+      </button>
     </form>
     <iframe
       v-if="!youtubeId.value"
@@ -85,30 +87,18 @@ const updateVideoId = () => {
   font-size: 14px;
 }
 
-#embed {
-  padding: 0.5rem 1rem;
+.video-input-form button {
   margin: 0 0 0 0.5rem;
-  border: 1px solid var(--color-background);
-  border-radius: 4px;
-  background-color: var(--color-red);
-  color: var(--color-text-white);
   font-size: 14px;
-  font-weight: bold;
 }
 
-#reset {
-  padding: 0.5rem 1rem;
-  margin: 0 0 0 0.5rem;
-  border: 1px solid var(--color-background);
-  border-radius: 4px;
-  background-color: var(--color-primary);
+.youtube-button {
+  background-color: var(--color-red);
   color: var(--color-text-white);
-  font-size: 14px;
-  font-weight: bold;
 }
 
 @media (hover: hover) {
-  .video-input-form button:hover {
+  .youtube-button:hover {
     background-color: var(--color-red-hover);
   }
 }
