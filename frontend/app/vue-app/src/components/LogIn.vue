@@ -48,43 +48,38 @@ const login = async () => {
 <template>
   <div class="container">
     <h1 class="title">ログイン</h1>
-    <form class="login-form" @submit.prevent="login">
+    <form class="multiple-input-form" @submit.prevent="login">
       <div v-if="error" class="error-message">
         {{ error }}
       </div>
-      <div class="form-group">
+      <div class="labeled-text-input">
         <label for="username">ユーザー名</label>
         <input
           id="username"
-          class="login-input"
+          class="text-input"
           type="text"
           v-model="username"
           placeholder="ユーザー名を入力してください"
           required
         />
       </div>
-      <div class="form-group">
+      <div class="labeled-text-input">
         <label for="password">パスワード</label>
         <input
           id="password"
-          class="login-input"
+          class="text-input"
           type="password"
           v-model="password"
           placeholder="パスワードを入力してください"
           required
         />
       </div>
-      <div class="login-buttons">
-        <button
-          style="margin: 0.5rem 1rem"
-          class="primary-button"
-          type="submit"
-        >
+      <div style="margin-top: 3rem" class="flex-center-container">
+        <button class="primary-button login-button" type="submit">
           ログイン
         </button>
         <button
-          style="margin: 0.5rem 1rem"
-          class="primary-button"
+          class="primary-button login-button"
           @click="router.push('/signup')"
         >
           新規登録
@@ -95,44 +90,7 @@ const login = async () => {
 </template>
 
 <style scoped>
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.title {
-  font-size: 2rem;
-  margin: 1rem;
-}
-
-.login-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  margin: 1rem;
-}
-
-.login-input {
-  width: 400px;
-  padding: 0.5rem;
-  margin: 0.5rem;
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  font-size: 16px;
-}
-
-.login-buttons {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 1rem;
-  margin: 1rem;
+.login-button {
+  margin: 0 1rem;
 }
 </style>

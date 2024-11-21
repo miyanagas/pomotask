@@ -64,39 +64,39 @@ const signup = async () => {
 <template>
   <div class="container">
     <h1 class="title">新規登録</h1>
-    <form class="signup-form" @submit.prevent="signup">
+    <form class="multiple-input-form" @submit.prevent="signup">
       <div v-if="error" class="error-message">{{ error }}</div>
-      <div class="form-group">
+      <div class="labeled-text-input">
         <label for="username">ユーザー名</label>
         <input
-          class="login-input"
+          class="text-input"
           type="text"
           v-model="username"
           placeholder="ユーザー名を入力してください"
           required
         />
       </div>
-      <div class="form-group">
+      <div class="labeled-text-input">
         <label for="email">メールアドレス</label>
         <input
-          class="login-input"
+          class="text-input"
           type="email"
           v-model="email"
           placeholder="example@xxxx.com"
           required
         />
       </div>
-      <div class="form-group">
+      <div class="labeled-text-input">
         <label for="password">パスワード</label>
         <input
-          class="login-input"
+          class="text-input"
           type="password"
           v-model="password"
           placeholder="パスワードを入力してください"
           required
         />
       </div>
-      <button style="margin: 2rem" class="primary-button" type="submit">
+      <button id="signup-button" class="primary-button" type="submit">
         新規登録
       </button>
     </form>
@@ -104,35 +104,7 @@ const signup = async () => {
 </template>
 
 <style scoped>
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.title {
-  margin-bottom: 1rem;
-}
-
-.signup-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1rem;
-}
-
-.login-input {
-  width: 400px;
-  padding: 0.5rem;
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  margin: 0.5rem;
-  font-size: 16px;
+#signup-button {
+  margin: 3rem auto 0 auto;
 }
 </style>

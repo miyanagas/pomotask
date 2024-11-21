@@ -154,50 +154,46 @@ const deleteUser = async () => {
 
 <template>
   <div class="container">
-    <h1 id="page-title">マイページ</h1>
+    <h1 id="mypage-title" class="title">マイページ</h1>
     <div v-if="error" class="error-message">{{ error }}</div>
     <div id="user-info">
-      <p>ユーザー名</p>
-      <div class="info-group" v-if="!isEditingUsername">
-        <p>{{ username }}</p>
+      <span class="user-info-label">ユーザー名</span>
+      <div class="user-info-editor" v-if="!isEditingUsername">
+        <span>{{ username }}</span>
         <button class="edit-button" @click="toggleIsEditingUsername">
           編集
         </button>
       </div>
-      <form class="info-group" v-else @submit.prevent="updateUsername">
+      <form class="user-info-editor" v-else @submit.prevent="updateUsername">
         <input type="text" v-model="newUsername" required />
         <button class="update-button" type="submit">保存</button>
       </form>
-      <p>メールアドレス</p>
-      <div class="info-group" v-if="!isEditingEmail">
-        <p>{{ email }}</p>
+      <span class="user-info-label">メールアドレス</span>
+      <div class="user-info-editor" v-if="!isEditingEmail">
+        <span>{{ email }}</span>
         <button class="edit-button" @click="toggleIsEditingEmail">編集</button>
       </div>
-      <form class="info-group" v-else @submit.prevent="updateEmail">
+      <form class="user-info-editor" v-else @submit.prevent="updateEmail">
         <input type="email" v-model="newEmail" required />
         <button class="update-button" type="submit">保存</button>
       </form>
-      <p>パスワード</p>
-      <div class="info-group">
-        <p>********</p>
+      <span class="user-info-label">パスワード</span>
+      <div class="user-info-editor">
+        <span>********</span>
         <button class="edit-button" @click="router.push('/edit_password')">
           編集
         </button>
       </div>
     </div>
-    <div style="display: flex">
+    <div style="display: flex; margin-top: 3rem">
       <button
-        style="margin: 2rem auto 1rem 0"
+        style="margin-right: auto"
         class="danger-button"
         @click="deleteUser"
       >
         アカウントを削除
       </button>
-      <button
-        style="margin: 2rem 0 1rem auto"
-        class="primary-button"
-        @click="logout"
-      >
+      <button style="margin-left: auto" class="primary-button" @click="logout">
         ログアウト
       </button>
     </div>
@@ -205,42 +201,41 @@ const deleteUser = async () => {
 </template>
 
 <style scoped>
-.container {
-  margin: 0 auto;
-  max-width: 500px;
-}
-
-#page-title {
+#mypage-title {
+  margin: 0 auto 0 0;
   color: var(--color-primary);
 }
 
 #user-info {
-  margin: 3rem 0 5rem 0;
+  margin: 3rem 0;
+  display: flex;
+  flex-direction: column;
 }
 
-#user-info p {
+.user-info-label {
+  padding: 0.5rem;
   font-size: 18px;
 }
 
-.info-group {
+.user-info-editor {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
 }
 
-.info-group p,
+.user-info-editor span,
 input {
   width: 80%;
-  height: 36px;
+  /* height: 36px; */
   font-size: 18px;
-  padding: 0.25rem 0.5rem;
+  padding: 0.5rem;
   border: 1px solid var(--color-gray);
   border-radius: 4px;
   word-wrap: break-word;
 }
 
-.info-group button {
-  margin: 0.5rem 0 0.5rem auto;
+.user-info-editor button {
+  margin-left: auto;
 }
 </style>

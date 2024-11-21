@@ -35,16 +35,29 @@ const updateVideoId = () => {
 </script>
 
 <template>
-  <div class="video-container">
-    <form class="video-input-form" @submit.prevent="embedYoutube">
+  <div style="padding: 0 1rem">
+    <form class="single-input-form" @submit.prevent="embedYoutube">
       <input
+        style="font-size: 14px"
+        class="text-input"
         type="text"
         v-model="youtubeUrl"
         required
         placeholder="YouTube URL"
       />
-      <button class="youtube-button" type="submit">ロード</button>
-      <button class="primary-button" id="reset" @click="updateVideoId()">
+      <button
+        style="margin-left: 2rem"
+        class="youtube-button video-button"
+        type="submit"
+      >
+        ロード
+      </button>
+      <button
+        style="margin-left: 1rem"
+        class="primary-button video-button"
+        id="reset"
+        @click="updateVideoId()"
+      >
         お気に入り
       </button>
     </form>
@@ -63,37 +76,17 @@ const updateVideoId = () => {
 </template>
 
 <style>
-.video-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 1rem auto;
-  width: 55%;
+iframe {
+  display: block;
+  margin: 0 auto;
 }
 
-.video-input-form {
-  display: flex;
-  justify-content: center;
-  width: 80%;
-  margin: 0rem auto 1rem auto;
-}
-
-.video-input-form input {
-  width: 60%;
-  padding: 0.5rem;
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  margin: 0 0.5rem 0 0;
-  font-size: 14px;
-}
-
-.video-input-form button {
-  margin: 0 0 0 0.5rem;
+.video-button {
   font-size: 14px;
 }
 
 .youtube-button {
-  background-color: var(--color-red);
+  background-color: red;
   color: var(--color-text-white);
 }
 

@@ -116,26 +116,27 @@ const deleteTodoList = async () => {
     <div v-if="error" class="error-message">
       <p>{{ error }}</p>
     </div>
-    <form class="input-todo" @submit.prevent="addTodo">
+    <form class="single-input-form" @submit.prevent="addTodo">
       <input
+        class="text-input"
         type="text"
         v-model="newTodoTitle"
         required
         placeholder="Todoを入力してください"
       />
-      <button style="margin: 2rem" class="primary-button" type="submit">
+      <button style="margin-left: 2rem" class="primary-button" type="submit">
         追加
       </button>
     </form>
-    <div class="filter-todo">
-      <input class="filter-checkbox" type="checkbox" v-model="filtered" />
+    <div style="font-size: 12px" class="flex-end-container">
+      <input id="filter-checkbox" type="checkbox" v-model="filtered" />
       <span>完了したTodoを非表示</span>
     </div>
-    <div class="todo-list">
+    <div id="todo-list">
       <ul v-if="todoList.length !== 0">
         <li
-          :class="{ 'done-item': todo.is_done }"
-          class="todo-item"
+          class="todo"
+          :class="{ 'completed-todo': todo.is_done }"
           v-for="todo in filteredTodoList"
           :key="todo.id"
         >
@@ -144,18 +145,17 @@ const deleteTodoList = async () => {
               name: 'Todo',
               params: { id: todo.id },
             }"
-            id="todo-item-link"
           >
-            <span>{{ todo.title }}</span>
-            <span v-show="todo.is_done" id="time-to-complete">
+            <span class="todo-title">{{ todo.title }}</span>
+            <span v-if="todo.is_done" class="todo-complete-time">
               {{ timeFormat(todo.time_to_complete) }}
             </span>
           </router-link>
           <input
-            @change="updateTodo(todo)"
-            class="status-checkbox"
+            class="todo-checkbox"
             type="checkbox"
             v-model="todo.is_done"
+            @change="updateTodo(todo)"
           />
         </li>
       </ul>
@@ -167,103 +167,85 @@ const deleteTodoList = async () => {
         class="danger-button"
         @click="deleteTodoList()"
       >
-        Todoを一括削除
+        Todoを全て削除
       </button>
     </div>
   </div>
 </template>
 
 <style scoped>
-.container {
-  width: 640px;
-  margin: 0 auto;
-}
-
-.input-todo {
-  display: flex;
-  justify-content: center;
-}
-
-.input-todo input {
-  width: 400px;
-  padding: 0.5rem;
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  margin: 2rem;
-  font-size: 16px;
-}
-
-.filter-todo {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-}
-
-.filter-todo span {
-  font-size: small;
-  padding: 0.25rem 0.5rem;
-}
-
-.filter-checkbox {
+#filter-checkbox {
+  margin-right: 0.5rem;
   display: block;
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   cursor: pointer;
-  accent-color: var(--color-primary-hover);
+  accent-color: var(--color-primary);
 }
 
-.todo-list {
-  padding: 1rem;
+#todo-list {
+  padding: 0.5rem 1rem;
   border: none;
   border-radius: 4px;
   background-color: var(--color-gray);
 }
 
-.todo-list ul {
+#todo-list ul {
   list-style: none;
   padding: 0;
 }
 
-.todo-item {
+.todo {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  margin: 0.25rem 0;
+  margin: 0.5rem 0;
   border-radius: 4px;
   background-color: var(--color-background);
+  font-size: 18px;
 }
 
 @media (hover: hover) {
-  .todo-item:hover {
+  .todo:hover {
     background-color: var(--color-background-hover);
   }
 }
 
-.done-item #todo-item-link {
-  pointer-events: none;
-}
-
-.done-item,
-.done-item:hover {
-  background-color: var(--color-primary-dark);
-}
-
-#todo-item-link {
+.todo a {
   display: block;
   width: 90%;
 }
 
-#time-to-complete {
-  font-family: "Lucida Console", monospace;
-  margin: 0 1em;
+.completed-todo {
+  background-color: var(--color-checkbox);
 }
 
-.status-checkbox {
+.completed-todo a {
+  pointer-events: none;
+  color: var(--color-text-white);
+}
+
+.completed-todo .todo-title {
+  text-decoration: line-through;
+}
+
+@media (hover: hover) {
+  .completed-todo:hover {
+    background-color: var(--color-checkbox);
+  }
+}
+
+.todo-complete-time {
+  font-family: "Lucida Console", monospace;
+  margin-left: 2rem;
+}
+
+.todo-checkbox {
   display: block;
   width: 25px;
   height: 25px;
   cursor: pointer;
-  accent-color: royalblue;
+  accent-color: var(--color-checkbox);
 }
 </style>

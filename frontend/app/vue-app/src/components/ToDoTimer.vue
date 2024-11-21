@@ -141,8 +141,8 @@ const customize = () => {
 </script>
 
 <template>
-  <div class="todo-timer">
-    <div id="timer-screen">
+  <div style="margin-top: 2rem; padding: 0 1rem">
+    <div class="screen">
       <div id="timer-progress">
         <svg class="progress-svg" viewBox="0 0 100 100">
           <circle class="progress-background" cx="50" cy="50" r="45"></circle>
@@ -156,15 +156,14 @@ const customize = () => {
           ></circle>
         </svg>
       </div>
-      <span>{{ formattedTime }}</span>
+      <span id="timer-display">{{ formattedTime }}</span>
     </div>
-    <div id="total-time-display">
+    <div class="flex-end-container">
       <span>総時間</span>
-      <span id="total-time">{{ formattedTotalTime }}</span>
+      <span id="total-time-display">{{ formattedTotalTime }}</span>
       <button
         style="margin-left: 0.5rem"
         class="primary-button"
-        id="complete-todo-button"
         @click="updateTodo(true)"
       >
         完了
@@ -182,7 +181,7 @@ const customize = () => {
         リセット
       </button>
     </div>
-    <div id="timer-customize">
+    <div class="flex-center-container">
       <div class="time-selector">
         <label for="task-time">タスク時間</label>
         <select v-model="taskTime" id="task-time">
@@ -217,38 +216,25 @@ const customize = () => {
           <option value="30">30分</option>
         </select>
       </div>
-      <button
-        style="margin-left: 0.5rem"
-        class="primary-button"
-        @click="customize()"
-      >
-        設定
-      </button>
+      <button class="primary-button" @click="customize()">設定</button>
     </div>
   </div>
 </template>
 
 <style scoped>
-.todo-timer {
-  width: 55%;
-  margin: 0.5rem auto;
-  padding: 1rem;
-}
-
-#timer-screen {
+.screen {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 1rem;
   border: 2px solid var(--color-border);
-  border-radius: 4px;
+  border-radius: 8px;
 }
 
-#timer-screen span {
+#timer-display {
   font-size: 128px;
   font-family: "Lucida Console", monospace;
   margin: 8px 8px 8px 64px;
-  padding: 8px;
 }
 
 #timer-progress {
@@ -278,17 +264,9 @@ const customize = () => {
 }
 
 #total-time-display {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  margin: 0.5em 1em;
-  font-size: 1em;
-}
-
-#total-time {
   font-family: "Lucida Console", monospace;
   font-size: 1.5em;
-  margin: 0 0 0 0.25em;
+  margin-left: 0.25em;
   padding: 0 0.5em;
   border: 1px solid var(--color-border);
   border-radius: 4px;
@@ -300,25 +278,21 @@ const customize = () => {
   margin: 1.5rem;
 }
 
-#timer-customize {
+.flex-center-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 3rem auto 5rem auto;
+  margin-top: 3rem;
 }
 
 .time-selector {
   display: flex;
   align-items: center;
-  margin: 0 0.5rem;
-}
-
-.time-selector label {
-  font-size: 16px;
-  margin: 0 0.5rem 0 0;
+  margin-right: 1rem;
 }
 
 .time-selector select {
+  margin-left: 0.5rem;
   padding: 0.5rem;
   border: 1px solid var(--color-border);
   border-radius: 4px;

@@ -40,7 +40,7 @@ onMounted(async () => {
 <template>
   <div class="container">
     <div v-if="error" class="error-message">{{ error }}</div>
-    <div id="todo-title-headline">
+    <div id="title">
       <img
         alt="App logo"
         class="logo"
@@ -48,22 +48,15 @@ onMounted(async () => {
         width="35"
         height="35"
       />
-      <h1 id="todo-title">{{ title }}</h1>
-      <button @click="isMenuOpen = !isMenuOpen">
+      <h1 style="margin-left: 1rem; font-weight: bold">{{ title }}</h1>
+      <button id="toggle-button" @click="isMenuOpen = !isMenuOpen">
         <img
           v-if="!isMenuOpen"
-          id="toggle-button"
           src="@/assets/arrow-down.svg"
           width="25"
           height="25"
         />
-        <img
-          v-else
-          id="toggle-button"
-          src="@/assets/arrow-up.svg"
-          width="25"
-          height="25"
-        />
+        <img v-else src="@/assets/arrow-up.svg" width="25" height="25" />
       </button>
     </div>
     <Transition>
@@ -74,12 +67,10 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-#todo-title-headline {
+#title {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  width: 55%;
-  margin: 0 auto;
   padding: 0.5rem 1.5rem;
   background-color: var(--color-gray);
   border-radius: 8px;
@@ -89,20 +80,17 @@ onMounted(async () => {
   margin: 0 0 0 1rem;
 }
 
-#todo-title {
-  margin: 0 1rem;
-  font-weight: bold;
-}
-
-#todo-title-headline button {
+#toggle-button {
   margin: 0 0 0 auto;
   padding: 0.5rem;
   background-color: var(--color-gray);
   border-radius: 100%;
 }
 
-#todo-title-headline button:hover {
-  background-color: var(--color-gray-hover);
+@media (hover: hover) {
+  #toggle-button:hover {
+    background-color: var(--color-gray-hover);
+  }
 }
 
 .v-enter-active {
