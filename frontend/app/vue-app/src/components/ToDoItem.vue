@@ -40,10 +40,11 @@ onMounted(async () => {
 <template>
   <div class="container">
     <div v-if="error" class="error-message">{{ error }}</div>
-    <div id="title">
+    <div id="todo-title">
       <img
         alt="App logo"
-        class="logo"
+        style="margin-left: 1rem"
+        class="icon"
         src="@/assets/todo-logo2.svg"
         width="35"
         height="35"
@@ -67,17 +68,13 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-#title {
+#todo-title {
   display: flex;
   justify-content: flex-start;
   align-items: center;
   padding: 0.5rem 1.5rem;
   background-color: var(--color-gray);
   border-radius: 8px;
-}
-
-.logo {
-  margin: 0 0 0 1rem;
 }
 
 #toggle-button {

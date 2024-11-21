@@ -2,10 +2,10 @@
 
 <template>
   <header v-if="!$route.meta.hideHeader">
-    <router-link to="/" class="title">今日のToDo</router-link>
+    <router-link to="/" id="header-title" class="title">今日のToDo</router-link>
     <img
       alt="App logo"
-      class="logo"
+      class="icon"
       src="./assets/todo-logo.svg"
       width="35"
       height="35"
@@ -13,7 +13,7 @@
     <router-link to="/mypage" class="title" id="mypage-link"
       ><img
         alt="My page"
-        class="logo"
+        class="icon"
         src="./assets/user.svg"
         width="35"
         height="35"
@@ -26,10 +26,6 @@
 </template>
 
 <style scoped>
-.logo {
-  display: block;
-}
-
 header {
   background-color: var(--color-primary);
   color: var(--color-text-white);
@@ -40,11 +36,9 @@ header {
   flex-direction: row;
 }
 
-.title {
-  margin: 0;
-  padding: 0.5rem 1rem 0.5rem 2rem;
+#header-title {
+  margin: 0 0 0 1rem;
   color: var(--color-text-white);
-  font-size: 32px;
 }
 
 #mypage-link {
