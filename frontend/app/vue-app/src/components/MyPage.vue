@@ -118,7 +118,7 @@ const deleteUser = async () => {
 <template>
   <div class="container">
     <h1 id="page-title">マイページ</h1>
-    <div v-if="error">{{ error }}</div>
+    <div v-if="error" class="error-message">{{ error }}</div>
     <div id="user-info">
       <p>ユーザー名</p>
       <div class="info-group" v-if="!isEditingUsername">

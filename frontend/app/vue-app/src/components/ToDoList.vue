@@ -113,7 +113,7 @@ const deleteTodoList = async () => {
 
 <template>
   <div class="container">
-    <div v-if="error">
+    <div v-if="error" class="error-message">
       <p>{{ error }}</p>
     </div>
     <form class="input-todo" @submit.prevent="addTodo">

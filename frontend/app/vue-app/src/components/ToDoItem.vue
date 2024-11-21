@@ -42,7 +42,7 @@ onMounted(async () => {
     <button class="back-button" @click="$router.push('/')">戻る</button>
   </div> -->
   <div class="container">
-    <div v-if="error">{{ error }}</div>
+    <div v-if="error" class="error-message">{{ error }}</div>
     <div id="todo-title-headline">
       <img
         alt="App logo"
