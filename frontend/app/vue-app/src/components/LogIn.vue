@@ -64,7 +64,7 @@ const login = async () => {
       </div>
       <div class="login-buttons">
         <button class="login-button" type="submit">ログイン</button>
-        <button class="login-button" @click="this.$router.push('/signup')">
+        <button class="login-button" @click="router.push('/signup')">
           新規登録
         </button>
       </div>
