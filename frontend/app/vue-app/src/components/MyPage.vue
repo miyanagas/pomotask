@@ -61,7 +61,7 @@ const updateUsername = async () => {
   }
 
   try {
-    const response = await requestAPI.put(
+    const response = await requestAPI.patch(
       "/users/me/",
       {
         username: username.value,
@@ -99,7 +99,7 @@ const updateEmail = async () => {
   }
 
   try {
-    const response = await requestAPI.put(
+    const response = await requestAPI.patch(
       "/users/me/",
       {
         email: email.value,

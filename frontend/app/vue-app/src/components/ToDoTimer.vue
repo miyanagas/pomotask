@@ -68,7 +68,7 @@ timerWorker.value.addEventListener("message", (e) => {
 
 const updateTodo = async (completed = false) => {
   try {
-    const response = await requestAPI.put(
+    const response = await requestAPI.patch(
       `/todo-list/${routeId}`,
       {
         is_done: completed,
