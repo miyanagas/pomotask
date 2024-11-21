@@ -1,9 +1,12 @@
 <script setup>
 import { ref } from "vue";
+import { useVideoStore } from "./video";
+
+const videoStore = useVideoStore();
 
 const youtubeUrl = ref("");
-const youtubeId = ref("");
-const youtubeSrc = ref("");
+const youtubeId = ref(videoStore.video_id);
+const youtubeSrc = ref(`https://www.youtube.com/embed/${youtubeId.value}`);
 
 const extractYoutubeId = (url) => {
   const regExp =
@@ -17,10 +20,15 @@ const embedYoutube = () => {
   youtubeUrl.value = "";
   if (youtubeId.value) {
     youtubeSrc.value = `https://www.youtube.com/embed/${youtubeId.value}`;
-    console.log(youtubeSrc.value);
   } else {
     alert("正しいYouTubeのURLを入力してください");
   }
+};
+
+const updateVideoId = () => {
+  if (youtubeId.value == "") return;
+  videoStore.setVideoId(youtubeId.value);
+  alert("お気に入りの動画に設定しました");
 };
 </script>
 
@@ -29,7 +37,7 @@ const embedYoutube = () => {
     <div class="video-input-form">
       <input type="text" v-model="youtubeUrl" placeholder="YouTube URL" />
       <button id="embed" @click="embedYoutube()">ロード</button>
-      <button id="reset" @click="youtubeId.value = ''">リセット</button>
+      <button id="reset" @click="updateVideoId()">お気に入り</button>
     </div>
     <iframe
       v-if="!youtubeId.value"
