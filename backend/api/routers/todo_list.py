@@ -21,7 +21,7 @@ def create_todo(todo: TodoCreate, user: UserDep, session: SessionDep):
     return db_todo
 
 # Todo更新リクエスト
-@router.put("/{id}", response_model=TodoPublic)
+@router.patch("/{id}", response_model=TodoPublic)
 def update_todo(id: uuid.UUID, todo: TodoUpdate, user: UserDep, session: SessionDep):
     db_todo = session.exec(select(Todo).where(Todo.user_id == user.id).where(Todo.id == id)).first()
     if not db_todo:

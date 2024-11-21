@@ -74,7 +74,7 @@ const addTodo = async () => {
 
 const updateTodo = async (todo) => {
   try {
-    await requestAPI.put(
+    await requestAPI.patch(
       `/todo-list/${todo.id}`,
       {
         is_done: todo.is_done,

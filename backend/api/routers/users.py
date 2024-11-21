@@ -27,7 +27,7 @@ def read_users_me(current_user: UserDep):
     return current_user
 
 # ユーザー情報更新リクエスト
-@router.put("/me/", response_model=UserPublic)
+@router.patch("/me/", response_model=UserPublic)
 def update_user_me(user: UserUpdate, current_user: UserDep, session: SessionDep):
     user_data = user.model_dump(exclude_unset=True)
     current_user.sqlmodel_update(user_data)
@@ -37,7 +37,7 @@ def update_user_me(user: UserUpdate, current_user: UserDep, session: SessionDep)
     return current_user
 
 # パスワード更新リクエスト
-@router.put("/me/password/")
+@router.patch("/me/password/")
 def update_user_password(user: UserPasswordUpdate, current_user: UserDep, session: SessionDep):
     if not verify_password(user.current_password, current_user.password):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect current password")

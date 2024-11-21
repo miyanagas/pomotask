@@ -21,7 +21,7 @@ const updatePassword = async () => {
   }
 
   try {
-    await requestAPI.put(
+    await requestAPI.patch(
       "/users/me/password/",
       {
         current_password: currentPassword.value,
