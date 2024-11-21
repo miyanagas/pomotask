@@ -25,7 +25,7 @@ def login_for_access_token(response: Response, form_data: Annotated[OAuth2Passwo
         key="access_token",
         value=f"Bearer {access_token}",
         httponly=True,
-        secure=False,
+        secure=True,
         domain="localhost",
         samesite="None",
         path="/",

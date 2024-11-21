@@ -4,5 +4,4 @@ WORKDIR /usr/src/app
 COPY ./requirements.txt ./
 RUN pip install -r requirements.txt
 
-EXPOSE 8000
-CMD ["fastapi", "run", "api/main.py"]
+CMD ["fastapi", "run", "api/main.py", "--port", "80"]

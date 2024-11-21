@@ -11,7 +11,7 @@ app = FastAPI()
 
 # CORSの設定
 origins = [
-    "http://localhost:5173",
+    "https://miyanagas.github.io",
 ]
 
 app.add_middleware(
@@ -38,9 +38,9 @@ async def validation_exception_handler(request, exc):
 def on_startup():
     create_db_and_tables()
 
-@app.on_event("shutdown")
-def on_shutdown():
-    drop_db_and_tables()
+# @app.on_event("shutdown")
+# def on_shutdown():
+#     drop_db_and_tables()
 
 @app.get("/")
 def read_root():
