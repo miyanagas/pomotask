@@ -6,7 +6,7 @@ FROM --platform=linux/arm64 node:22.8.0
 # RUN apt-get install -y nodejs
 # RUN npm create vue@latest
 
-WORKDIR /usr/src/app/vue-app
+WORKDIR /usr/src/app/web
 
 # RUN npm install
 # RUN npm run dev -- --host
@@ -14,5 +14,5 @@ WORKDIR /usr/src/app/vue-app
 EXPOSE 5173
 
 # CMD npm install && npm run dev -- --host
-COPY ./app/vue-app/ /usr/src/app/vue-app/
+COPY ./web/ /usr/src/app/web/
 RUN npm install
