@@ -16,7 +16,8 @@ const error = ref(null);
 const updatePassword = async () => {
   const valRes = validateInput(null, null, newPassword.value);
   if (!valRes) {
-    return;
+    error.value = valRes;
+    alert("入力内容を確認してください");
   }
 
   try {

@@ -3,6 +3,7 @@ import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import requestAPI from "./requestAPI";
 import { useAuthStore } from "@/auth";
+import { validateInput } from "./validation";
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -17,6 +18,8 @@ onMounted(async () => {
     });
     username.value = response.data.username;
     email.value = response.data.email;
+    newUsername.value = username.value;
+    newEmail.value = email.value;
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;
@@ -29,6 +32,8 @@ onMounted(async () => {
 
 const username = ref("");
 const email = ref("");
+const newUsername = ref("");
+const newEmail = ref("");
 
 const isEditingUsername = ref(false);
 const isEditingEmail = ref(false);
@@ -42,8 +47,21 @@ const toggleIsEditingEmail = () => {
 };
 
 const updateUsername = async () => {
+  if (!newUsername.value) return;
+  if (newUsername.value === username.value) {
+    toggleIsEditingUsername();
+    return;
+  }
+
+  const valRes = validateInput(newUsername.value, null, null);
+  if (valRes) {
+    error.value = valRes;
+    alert("入力内容を確認してください");
+    return;
+  }
+
   try {
-    await requestAPI.put(
+    const response = await requestAPI.put(
       "/users/me/",
       {
         username: username.value,
@@ -52,6 +70,9 @@ const updateUsername = async () => {
         withCredentials: true,
       }
     );
+
+    username.value = response.data.username;
+    newUsername.value = username.value;
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;
@@ -64,8 +85,21 @@ const updateUsername = async () => {
 };
 
 const updateEmail = async () => {
+  if (!newEmail.value) return;
+  if (newEmail.value === email.value) {
+    toggleIsEditingEmail();
+    return;
+  }
+
+  const valRes = validateInput(null, newEmail.value, null);
+  if (valRes) {
+    error.value = valRes;
+    alert("入力内容を確認してください");
+    return;
+  }
+
   try {
-    await requestAPI.put(
+    const response = await requestAPI.put(
       "/users/me/",
       {
         email: email.value,
@@ -74,6 +108,9 @@ const updateEmail = async () => {
         withCredentials: true,
       }
     );
+
+    email.value = response.data.email;
+    newEmail.value = email.value;
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;
@@ -125,19 +162,19 @@ const deleteUser = async () => {
         <p>{{ username }}</p>
         <button @click="toggleIsEditingUsername">編集</button>
       </div>
-      <div class="info-group" v-else>
-        <input type="text" v-model="username" />
-        <button @click="updateUsername">保存</button>
-      </div>
+      <form class="info-group" v-else @submit.prevent="updateUsername">
+        <input type="text" v-model="newUsername" required />
+        <button type="submit">保存</button>
+      </form>
       <p>メールアドレス</p>
       <div class="info-group" v-if="!isEditingEmail">
         <p>{{ email }}</p>
         <button @click="toggleIsEditingEmail">編集</button>
       </div>
-      <div class="info-group" v-else>
-        <input type="email" v-model="email" />
-        <button @click="updateEmail">保存</button>
-      </div>
+      <form class="info-group" v-else @submit.prevent="updateEmail">
+        <input type="email" v-model="newEmail" required />
+        <button type="submit">保存</button>
+      </form>
       <p>パスワード</p>
       <div class="info-group">
         <p>********</p>
