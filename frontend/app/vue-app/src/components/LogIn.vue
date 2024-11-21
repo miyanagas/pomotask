@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import requestAPI from "./requestAPI";
 import { useAuthStore } from "@/auth";
+import { validateInput } from "./validation";
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -13,6 +14,13 @@ const password = ref("");
 const error = ref(null);
 
 const login = async () => {
+  const valRes = validateInput(username.value, password.value);
+  if (valRes) {
+    error.value = valRes;
+    alert("入力内容を確認してください");
+    return;
+  }
+
   try {
     await requestAPI.post(
       "/token/",
@@ -41,10 +49,11 @@ const login = async () => {
   <div class="container">
     <h1 class="title">ログイン</h1>
     <form class="login-form" @submit.prevent="login">
-      <div v-if="error">{{ error }}</div>
+      <div v-if="error" class="error-message">{{ error }}</div>
       <div class="form-group">
         <label for="username">ユーザー名</label>
         <input
+          id="username"
           class="login-input"
           type="text"
           v-model="username"
@@ -55,6 +64,7 @@ const login = async () => {
       <div class="form-group">
         <label for="password">パスワード</label>
         <input
+          id="password"
           class="login-input"
           type="password"
           v-model="password"
@@ -130,5 +140,11 @@ const login = async () => {
   .signup-button:hover {
     background-color: var(--color-secondary-hover);
   }
+}
+
+.error-message {
+  color: var(--color-red);
+  font-size: 0.9rem;
+  margin: 0.5rem;
 }
 </style>

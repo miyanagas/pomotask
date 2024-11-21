@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import requestAPI from "./requestAPI";
 import { useAuthStore } from "@/auth";
+import { validateInput } from "./validation";
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -38,6 +39,13 @@ const login = async (username, password) => {
 };
 
 const signup = async () => {
+  const valRes = validateInput(username.value, password.value, email.value);
+  if (valRes) {
+    error.value = valRes;
+    alert("入力内容を確認してください");
+    return;
+  }
+
   try {
     await requestAPI.post("/users/signup/", {
       username: username.value,
