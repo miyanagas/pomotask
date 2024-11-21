@@ -1,8 +1,8 @@
 <script setup>
-import { ref, onMounted, computed, onBeforeUnmount } from "vue";
+import { ref, onMounted, computed } from "vue";
 import alarm from "@/assets/sound-alarm.mp3";
 import requestAPI from "./requestAPI";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { useAuthStore } from "@/auth";
 import { timeFormat } from "./Timer";
 
@@ -13,6 +13,8 @@ const props = defineProps({
   },
 });
 
+const routeId = useRoute().params.id;
+const router = useRouter();
 const authStore = useAuthStore();
 
 const defaultTaskTime = 25;
@@ -21,7 +23,8 @@ const taskTime = ref(defaultTaskTime);
 const breakTime = ref(defaultBreakTime);
 const seconds = 60;
 const circumference = 2 * Math.PI * 45;
-const routeId = useRoute().params.id;
+
+const timeToComplete = ref(props.timeToComplete);
 
 let timeType = {
   task: taskTime.value * seconds,
@@ -29,7 +32,6 @@ let timeType = {
 };
 let isTimerRunning;
 let currentTimer;
-let totalPassedTime;
 
 const timerWorker = ref(
   new Worker(new URL("./timerWorker.js", import.meta.url))
@@ -46,19 +48,16 @@ const formattedTime = computed(() => {
 });
 
 const formattedTotalTime = computed(() => {
-  return timeFormat(currentTimer - remainingTime.value + totalPassedTime);
+  return timeFormat(currentTimer - remainingTime.value + timeToComplete.value);
 });
 
 onMounted(() => {
-  totalPassedTime = props.timeToComplete;
   setTimer(timeType.task);
 });
 
-onBeforeUnmount(async () => {
+onBeforeRouteLeave((to, from, next) => {
   timerWorker.value.postMessage({ command: "stop" });
-  await updateTimeToComplete(
-    totalPassedTime + currentTimer - remainingTime.value
-  );
+  next();
 });
 
 timerWorker.value.addEventListener("message", (e) => {
@@ -67,17 +66,25 @@ timerWorker.value.addEventListener("message", (e) => {
   if (remainingTime.value <= 0) timerEnded();
 });
 
-const updateTimeToComplete = async (timeToComplete) => {
+const updateTodo = async (completed = false) => {
   try {
-    await requestAPI.put(
+    const response = await requestAPI.patch(
       `/todo-list/${routeId}`,
       {
-        time_to_complete: timeToComplete,
+        completed: completed,
+        time_to_complete:
+          currentTimer - remainingTime.value + timeToComplete.value,
       },
       {
         withCredentials: true,
       }
     );
+
+    if (completed) {
+      router.push("/");
+    } else {
+      timeToComplete.value = response.data.time_to_complete;
+    }
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;
@@ -101,8 +108,7 @@ const timerEnded = () => {
   currentTimer =
     currentTimer === timeType.task ? timeType.break : timeType.task;
   setTimeout(async () => {
-    totalPassedTime += currentTimer;
-    await updateTimeToComplete(totalPassedTime);
+    await updateTodo();
     setTimer(currentTimer);
     timerWorker.value.postMessage({ command: "start" });
   }, 1000);
@@ -119,11 +125,9 @@ const play = () => {
   }
 };
 
-const stop = async () => {
+const reset = () => {
   timerWorker.value.postMessage({ command: "stop" });
   document.getElementById("timer-play-button").textContent = "スタート";
-  totalPassedTime += currentTimer - remainingTime.value;
-  await updateTimeToComplete(totalPassedTime);
   setTimer(currentTimer);
 };
 
@@ -157,10 +161,11 @@ const customize = () => {
     <div id="total-time-display">
       <span>総時間</span>
       <span id="total-time">{{ formattedTotalTime }}</span>
+      <button id="complete-todo" @click="updateTodo(true)">完了</button>
     </div>
     <div id="timer-buttons">
       <button id="timer-play-button" @click="play()">スタート</button>
-      <button @click="stop()">リセット</button>
+      <button @click="reset()">リセット</button>
     </div>
     <div id="timer-customize">
       <div class="time-selector">
@@ -327,5 +332,15 @@ const customize = () => {
   #timer-customize button:hover {
     background-color: var(--color-primary-hover);
   }
+}
+
+#complete-todo {
+  padding: 0.5rem 1rem;
+  margin-left: 0.5rem;
+  border-radius: 4px;
+  background-color: var(--color-primary);
+  color: var(--color-text-white);
+  font-size: 18px;
+  font-weight: bold;
 }
 </style>
