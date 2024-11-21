@@ -40,7 +40,7 @@ const updatePassword = async () => {
   <div class="container">
     <h1 id="page-title">パスワード変更</h1>
     <div v-if="error">{{ error }}</div>
-    <form id="edit-password-form">
+    <form id="edit-password-form" @submit.prevent="updatePassword">
       <div class="form-group">
         <label for="current-password">現在のパスワード</label>
         <input type="password" id="current-password" />
@@ -49,10 +49,10 @@ const updatePassword = async () => {
         <label for="new-password">新しいパスワード</label>
         <input type="password" id="new-password" />
       </div>
+      <button id="update-password-button" type="submit">
+        パスワードを変更
+      </button>
     </form>
-    <button id="update-password-button" @click="updatePassword">
-      パスワードを変更
-    </button>
   </div>
 </template>
 

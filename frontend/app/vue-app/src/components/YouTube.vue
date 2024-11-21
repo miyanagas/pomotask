@@ -16,6 +16,8 @@ const extractYoutubeId = (url) => {
 };
 
 const embedYoutube = () => {
+  if (youtubeUrl.value == "") return;
+
   youtubeId.value = extractYoutubeId(youtubeUrl.value);
   youtubeUrl.value = "";
   if (youtubeId.value) {
@@ -34,11 +36,16 @@ const updateVideoId = () => {
 
 <template>
   <div class="video-container">
-    <div class="video-input-form">
-      <input type="text" v-model="youtubeUrl" placeholder="YouTube URL" />
-      <button id="embed" @click="embedYoutube()">ロード</button>
+    <form class="video-input-form" @submit.prevent="embedYoutube">
+      <input
+        type="text"
+        v-model="youtubeUrl"
+        required
+        placeholder="YouTube URL"
+      />
+      <button id="embed" type="submit">ロード</button>
       <button id="reset" @click="updateVideoId()">お気に入り</button>
-    </div>
+    </form>
     <iframe
       v-if="!youtubeId.value"
       v-bind:src="youtubeSrc"

@@ -46,10 +46,7 @@ onMounted(async () => {
 });
 
 const addTodo = async () => {
-  if (!newTodoTitle.value) {
-    alert("Todoを入力してください");
-    return;
-  }
+  if (!newTodoTitle.value) return;
 
   try {
     const response = await requestAPI.post(
@@ -119,14 +116,15 @@ const deleteTodoList = async () => {
     <div v-if="error">
       <p>{{ error }}</p>
     </div>
-    <div class="input-todo">
+    <form class="input-todo" @submit.prevent="addTodo">
       <input
         type="text"
         v-model="newTodoTitle"
+        required
         placeholder="Todoを入力してください"
       />
-      <button @click="addTodo()">追加</button>
-    </div>
+      <button type="submit">追加</button>
+    </form>
     <div class="filter-todo">
       <input class="filter-checkbox" type="checkbox" v-model="filtered" />
       <span>完了したTodoを非表示</span>
