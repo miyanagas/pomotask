@@ -10,15 +10,26 @@
   --color-text-black: hsl(0, 0%, 20%);
   --color-text-black-soft: hsla(0, 0%, 20%, 0.85);
 
-  --color-blue: #21a0db; /* ちぐさいろ、つきくさいろ */
-  --color-blue-soft: hsl(199, 74%, 59%);
-  --color-blue-mute: hsl(199, 64%, 79%);
+  --color-dodgerblue-soft: hsl(210, 100%, 70%);
+  --color-dodgerblue-mute: hsl(210, 100%, 40%);
 
-  --color-text-blue: #00aeef;
+   /* ちぐさいろ、つきくさいろ */
+  /* --color-blue: #21a0db;
+  --color-blue-soft: hsl(199, 74%, 59%);
+  --color-blue-mute: hsl(199, 64%, 79%); */
+
+  --color-blue: dodgerblue;
+  --color-blue-soft: var(--color-dodgerblue-soft);
+  --color-blue-mute: var(--color-dodgerblue-mute);
+
+
+  /* --color-text-blue: #00aeef; */
+  --color-text-blue: dodgerblue;
   --color-text-white: #ffffff;
 
-  --color-red: hsl(0, 100%, 50%);
-  --color-red-soft: hsl(0, 100%, 62%);
+  --color-red-soft: hsl(0, 100%, 70%);
+
+  --color-lightseagreen-soft: hsl(177, 70%, 36%);
 }
 
 :root {
@@ -39,6 +50,14 @@
   --color-red-hover: var(--color-red-soft);
 
   --color-gray-hover: var(--color-gray-soft);
+
+  --color-danger: red;
+  --color-danger-hover: var(--color-red-soft);
+
+  --color-update-button: lightseagreen;
+  --color-update-button-hover: var(--color-lightseagreen-soft);
+
+  --color-checkbox: royalblue;
 }
 
 *,

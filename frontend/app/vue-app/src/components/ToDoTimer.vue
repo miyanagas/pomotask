@@ -1,8 +1,21 @@
 <script setup>
-import { ref, onMounted, computed, onBeforeUnmount } from "vue";
+import { ref, onMounted, computed } from "vue";
 import alarm from "@/assets/sound-alarm.mp3";
 import requestAPI from "./requestAPI";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
+import { useAuthStore } from "@/auth";
+import { timeFormat } from "./time";
+
+const props = defineProps({
+  timeToComplete: {
+    type: Number,
+    required: true,
+  },
+});
+
+const routeId = useRoute().params.id;
+const router = useRouter();
+const authStore = useAuthStore();
 
 const defaultTaskTime = 25;
 const defaultBreakTime = 5;
@@ -10,7 +23,8 @@ const taskTime = ref(defaultTaskTime);
 const breakTime = ref(defaultBreakTime);
 const seconds = 60;
 const circumference = 2 * Math.PI * 45;
-const routeId = useRoute().params.id;
+
+const timeToComplete = ref(props.timeToComplete);
 
 let timeType = {
   task: taskTime.value * seconds,
@@ -18,7 +32,6 @@ let timeType = {
 };
 let isTimerRunning;
 let currentTimer;
-let totalPassedTime;
 
 const timerWorker = ref(
   new Worker(new URL("./timerWorker.js", import.meta.url))
@@ -31,50 +44,20 @@ const progressOffset = computed(() => {
 });
 
 const formattedTime = computed(() => {
-  return convertToTime(remainingTime.value);
+  return timeFormat(remainingTime.value);
 });
 
 const formattedTotalTime = computed(() => {
-  const hours = Math.floor(
-    (currentTimer - remainingTime.value + totalPassedTime) / 60 / 60
-  );
-  if (hours === 0) {
-    return convertToTime(currentTimer - remainingTime.value + totalPassedTime);
-  }
-  return `${hours}:${convertToTime(
-    currentTimer - remainingTime.value + totalPassedTime
-  )}`;
+  return timeFormat(currentTimer - remainingTime.value + timeToComplete.value);
 });
 
-const convertToTime = (time) => {
-  const minutes = String(Math.floor(time / 60) % 60).padStart(2, "0");
-  const seconds = String(time % 60).padStart(2, "0");
-  return `${minutes}:${seconds}`;
-};
-
-onMounted(async () => {
-  try {
-    const token = localStorage.getItem("token");
-    const response = await requestAPI.get(`/todo-list/${routeId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (!response.data) return;
-    totalPassedTime = response.data.time_to_complete;
-  } catch (e) {
-    error.value = e;
-    console.log(e);
-    alert("エラーが発生しました");
-  }
+onMounted(() => {
   setTimer(timeType.task);
 });
 
-onBeforeUnmount(async () => {
+onBeforeRouteLeave((to, from, next) => {
   timerWorker.value.postMessage({ command: "stop" });
-  await updateTimeToComplete(
-    totalPassedTime + currentTimer - remainingTime.value
-  );
+  next();
 });
 
 timerWorker.value.addEventListener("message", (e) => {
@@ -83,23 +66,32 @@ timerWorker.value.addEventListener("message", (e) => {
   if (remainingTime.value <= 0) timerEnded();
 });
 
-const updateTimeToComplete = async (timeToComplete) => {
+const updateTodo = async (completed = false) => {
   try {
-    const token = localStorage.getItem("token");
-    await requestAPI.put(
+    const response = await requestAPI.patch(
       `/todo-list/${routeId}`,
       {
-        time_to_complete: timeToComplete,
+        is_done: completed,
+        time_to_complete:
+          currentTimer - remainingTime.value + timeToComplete.value,
       },
       {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        withCredentials: true,
       }
     );
+
+    if (completed) {
+      router.push("/");
+    } else {
+      timeToComplete.value = response.data.time_to_complete;
+    }
   } catch (e) {
-    error.value = e;
-    alert("エラーが発生しました");
+    console.error(e);
+    error.value = e.response.data.detail;
+    alert("Todoの更新に失敗しました");
+    if (e.response.status === 401) {
+      authStore.checkLoginStatus();
+    }
   }
 };
 
@@ -116,8 +108,7 @@ const timerEnded = () => {
   currentTimer =
     currentTimer === timeType.task ? timeType.break : timeType.task;
   setTimeout(async () => {
-    totalPassedTime += currentTimer;
-    await updateTimeToComplete(totalPassedTime);
+    await updateTodo();
     setTimer(currentTimer);
     timerWorker.value.postMessage({ command: "start" });
   }, 1000);
@@ -134,11 +125,9 @@ const play = () => {
   }
 };
 
-const stop = async () => {
+const reset = () => {
   timerWorker.value.postMessage({ command: "stop" });
   document.getElementById("timer-play-button").textContent = "スタート";
-  totalPassedTime += currentTimer - remainingTime.value;
-  await updateTimeToComplete(totalPassedTime);
   setTimer(currentTimer);
 };
 
@@ -152,8 +141,8 @@ const customize = () => {
 </script>
 
 <template>
-  <div class="todo-timer">
-    <div id="timer-screen">
+  <div style="margin-top: 2rem; padding: 0 1rem">
+    <div class="screen">
       <div id="timer-progress">
         <svg class="progress-svg" viewBox="0 0 100 100">
           <circle class="progress-background" cx="50" cy="50" r="45"></circle>
@@ -167,17 +156,32 @@ const customize = () => {
           ></circle>
         </svg>
       </div>
-      <span>{{ formattedTime }}</span>
+      <span id="timer-display">{{ formattedTime }}</span>
     </div>
-    <div id="total-time-display">
+    <div class="flex-end-container">
       <span>総時間</span>
-      <span id="total-time">{{ formattedTotalTime }}</span>
+      <span id="total-time-display">{{ formattedTotalTime }}</span>
+      <button
+        style="margin-left: 0.5rem"
+        class="primary-button"
+        @click="updateTodo(true)"
+      >
+        完了
+      </button>
     </div>
-    <div id="timer-buttons">
-      <button id="timer-play-button" @click="play()">スタート</button>
-      <button @click="stop()">リセット</button>
+    <div style="display: flex; justify-content: center">
+      <button
+        class="timer-button primary-button"
+        id="timer-play-button"
+        @click="play()"
+      >
+        スタート
+      </button>
+      <button class="timer-button update-button" @click="reset()">
+        リセット
+      </button>
     </div>
-    <div id="timer-customize">
+    <div class="flex-center-container">
       <div class="time-selector">
         <label for="task-time">タスク時間</label>
         <select v-model="taskTime" id="task-time">
@@ -212,32 +216,25 @@ const customize = () => {
           <option value="30">30分</option>
         </select>
       </div>
-      <button @click="customize()">設定</button>
+      <button class="primary-button" @click="customize()">設定</button>
     </div>
   </div>
 </template>
 
 <style scoped>
-.todo-timer {
-  width: 55%;
-  margin: 0.5rem auto;
-  padding: 1rem;
-}
-
-#timer-screen {
+.screen {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 1rem;
   border: 2px solid var(--color-border);
-  border-radius: 4px;
+  border-radius: 8px;
 }
 
-#timer-screen span {
+#timer-display {
   font-size: 128px;
   font-family: "Lucida Console", monospace;
   margin: 8px 8px 8px 64px;
-  padding: 8px;
 }
 
 #timer-progress {
@@ -267,80 +264,38 @@ const customize = () => {
 }
 
 #total-time-display {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  margin: 0.5em 1em;
-  font-size: 1em;
-}
-
-#total-time {
   font-family: "Lucida Console", monospace;
   font-size: 1.5em;
-  margin: 0 0 0 0.25em;
+  margin-left: 0.25em;
   padding: 0 0.5em;
   border: 1px solid var(--color-border);
   border-radius: 4px;
 }
 
-#timer-buttons {
-  display: flex;
-  justify-content: center;
-}
-
-#timer-buttons button {
+.timer-button {
   width: 130px;
   font-size: 24px;
-  padding: 0.5rem 1rem;
   margin: 1.5rem;
-  border-radius: 4px;
-  background-color: var(--color-primary);
-  color: var(--color-text-white);
 }
 
-@media (hover: hover) {
-  #timer-buttons button:hover {
-    background-color: var(--color-primary-hover);
-  }
-}
-
-#timer-customize {
+.flex-center-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 3rem auto 5rem auto;
+  margin-top: 3rem;
 }
 
 .time-selector {
   display: flex;
   align-items: center;
-  margin: 0 0.5rem;
-}
-
-.time-selector label {
-  font-size: 16px;
-  margin: 0 0.5rem 0 0;
+  margin-right: 1rem;
 }
 
 .time-selector select {
+  margin-left: 0.5rem;
   padding: 0.5rem;
   border: 1px solid var(--color-border);
   border-radius: 4px;
   font-size: 16px;
-}
-
-#timer-customize button {
-  padding: 0.5rem 1rem;
-  margin: 0 0 0 0.5rem;
-  border-radius: 4px;
-  background-color: var(--color-primary);
-  color: var(--color-text-white);
-  font-weight: bold;
-}
-
-@media (hover: hover) {
-  #timer-customize button:hover {
-    background-color: var(--color-primary-hover);
-  }
 }
 </style>

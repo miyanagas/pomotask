@@ -4,19 +4,20 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
-from app.database import create_db_and_tables, drop_db_and_tables
-from app.routers import auth, users, todo_list
+from api.database import create_db_and_tables, drop_db_and_tables
+from api.routers import auth, users, todo_list
 
 app = FastAPI()
 
 # CORSの設定
 origins = [
-    "http://localhost:5173",
+    "https://miyanagas.github.io",
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -37,9 +38,9 @@ async def validation_exception_handler(request, exc):
 def on_startup():
     create_db_and_tables()
 
-@app.on_event("shutdown")
-def on_shutdown():
-    drop_db_and_tables()
+# @app.on_event("shutdown")
+# def on_shutdown():
+#     drop_db_and_tables()
 
 @app.get("/")
 def read_root():

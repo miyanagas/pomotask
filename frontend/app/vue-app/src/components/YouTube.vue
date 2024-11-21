@@ -1,39 +1,71 @@
 <script setup>
 import { ref } from "vue";
+import { useVideoStore } from "./video";
+
+const videoStore = useVideoStore();
 
 const youtubeUrl = ref("");
+const youtubeId = ref(videoStore.video_id);
+const youtubeSrc = ref(`https://www.youtube.com/embed/${youtubeId.value}`);
 
-const getYouTubeId = (url) => {
+const extractYoutubeId = (url) => {
   const regExp =
     /^(https:\/\/www\.youtube\.com\/watch\?v=|https:\/\/youtu\.be\/)([a-zA-Z0-9-_]+)(\?|$)/;
   const match = url.match(regExp);
   return match ? match[2] : null;
 };
 
-const roadYouTube = () => {
-  const youtubeId = getYouTubeId(youtubeUrl.value);
+const embedYoutube = () => {
+  if (youtubeUrl.value == "") return;
+
+  youtubeId.value = extractYoutubeId(youtubeUrl.value);
   youtubeUrl.value = "";
-  if (youtubeId) {
-    const iframe = document.querySelector("iframe");
-    iframe.width = "640";
-    iframe.height = "360";
-    iframe.src = `https://www.youtube.com/embed/${youtubeId}`;
+  if (youtubeId.value) {
+    youtubeSrc.value = `https://www.youtube.com/embed/${youtubeId.value}`;
   } else {
-    alert("無効なURLです");
+    alert("正しいYouTubeのURLを入力してください");
   }
+};
+
+const updateVideoId = () => {
+  if (youtubeId.value == "") return;
+  videoStore.setVideoId(youtubeId.value);
+  alert("お気に入りの動画に設定しました");
 };
 </script>
 
 <template>
-  <div class="video-container">
-    <div class="video-input-form">
-      <input type="text" v-model="youtubeUrl" placeholder="YouTube URL" />
-      <button @click="roadYouTube()">ロード</button>
-    </div>
+  <div style="padding: 0 1rem">
+    <form class="single-input-form" @submit.prevent="embedYoutube">
+      <input
+        style="font-size: 14px"
+        class="text-input"
+        type="text"
+        v-model="youtubeUrl"
+        required
+        placeholder="YouTube URL"
+      />
+      <button
+        style="margin-left: 2rem"
+        class="youtube-button video-button"
+        type="submit"
+      >
+        ロード
+      </button>
+      <button
+        style="margin-left: 1rem"
+        class="primary-button video-button"
+        id="reset"
+        @click="updateVideoId()"
+      >
+        お気に入り
+      </button>
+    </form>
     <iframe
-      width="0"
-      height="0"
-      src=""
+      v-if="!youtubeId.value"
+      v-bind:src="youtubeSrc"
+      width="640"
+      height="360"
       title="YouTube video player"
       frameborder="0"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -44,43 +76,22 @@ const roadYouTube = () => {
 </template>
 
 <style>
-.video-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 1rem auto;
-  width: 55%;
+iframe {
+  display: block;
+  margin: 0 auto;
 }
 
-.video-input-form {
-  display: flex;
-  justify-content: center;
-  width: 50%;
-  margin: 0rem auto 1rem auto;
-}
-
-.video-input-form input {
-  width: 60%;
-  padding: 0.5rem;
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  margin: 0 0.5rem 0 0;
+.video-button {
   font-size: 14px;
 }
 
-.video-input-form button {
-  padding: 0.5rem 1rem;
-  margin: 0 0 0 0.5rem;
-  border: 1px solid var(--color-background);
-  border-radius: 4px;
-  background-color: var(--color-red);
+.youtube-button {
+  background-color: red;
   color: var(--color-text-white);
-  font-size: 14px;
-  font-weight: bold;
 }
 
 @media (hover: hover) {
-  .video-input-form button:hover {
+  .youtube-button:hover {
     background-color: var(--color-red-hover);
   }
 }
