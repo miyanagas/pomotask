@@ -14,8 +14,9 @@ const error = ref(null);
 
 const isMenuOpen = ref(false);
 const title = ref("");
-const timeToComplete = ref(0);
+const timeToComplete = ref(null);
 
+// タスク情報を取得
 onMounted(async () => {
   try {
     const response = await requestAPI.get(`/todo-list/${routeId}`, {
@@ -37,12 +38,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <!-- <div class="todo-header">
-    <button class="back-button" @click="$router.push('/')">戻る</button>
-  </div> -->
   <div class="container">
-    <div v-if="error">{{ error }}</div>
-    <div id="todo-title-headline">
+    <div v-if="error" class="error-message">{{ error }}</div>
+    <div id="title">
       <img
         alt="App logo"
         class="logo"
@@ -50,62 +48,29 @@ onMounted(async () => {
         width="35"
         height="35"
       />
-      <h1 id="todo-title">{{ title }}</h1>
-      <button @click="isMenuOpen = !isMenuOpen">
+      <h1 style="margin-left: 1rem; font-weight: bold">{{ title }}</h1>
+      <button id="toggle-button" @click="isMenuOpen = !isMenuOpen">
         <img
           v-if="!isMenuOpen"
-          id="toggle-button"
           src="@/assets/arrow-down.svg"
           width="25"
           height="25"
         />
-        <img
-          v-else
-          id="toggle-button"
-          src="@/assets/arrow-up.svg"
-          width="25"
-          height="25"
-        />
+        <img v-else src="@/assets/arrow-up.svg" width="25" height="25" />
       </button>
     </div>
     <Transition>
       <YouTube v-show="isMenuOpen" />
     </Transition>
-    <Timer :timeToComplete="timeToComplete" />
+    <Timer :timeToComplete="timeToComplete" v-if="timeToComplete != null" />
   </div>
 </template>
 
 <style scoped>
-/* .todo-header {
-  display: flex;
-  padding: 1rem;
-  justify-content: flex-start;
-} */
-
-.back-button {
-  padding: 0.5rem 1rem;
-  font-size: 16px;
-  margin: 0;
-  background-color: var(--color-text-white);
-  border: 4px solid var(--color-primary);
-  border-radius: 4px;
-  color: var(--color-primary);
-  font-weight: bold;
-}
-
-@media (hover: hover) {
-  .back-button:hover {
-    background-color: var(--color-primary);
-    color: var(--color-text-white);
-  }
-}
-
-#todo-title-headline {
+#title {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  width: 55%;
-  margin: 0 auto;
   padding: 0.5rem 1.5rem;
   background-color: var(--color-gray);
   border-radius: 8px;
@@ -115,20 +80,17 @@ onMounted(async () => {
   margin: 0 0 0 1rem;
 }
 
-#todo-title {
-  margin: 0 1rem;
-  font-weight: bold;
-}
-
-#todo-title-headline button {
+#toggle-button {
   margin: 0 0 0 auto;
   padding: 0.5rem;
   background-color: var(--color-gray);
   border-radius: 100%;
 }
 
-#todo-title-headline button:hover {
-  background-color: var(--color-gray-hover);
+@media (hover: hover) {
+  #toggle-button:hover {
+    background-color: var(--color-gray-hover);
+  }
 }
 
 .v-enter-active {

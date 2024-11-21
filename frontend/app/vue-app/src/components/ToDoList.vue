@@ -1,31 +1,40 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import requestAPI from "./requestAPI";
 import { useAuthStore } from "@/auth";
+import { timeFormat } from "./time";
 
 const authStore = useAuthStore();
 
-const toDoList = ref([]);
-const newToDo = ref("");
-const isToDoFilter = ref(true);
+const todoList = ref([]);
+const newTodoTitle = ref("");
+const filtered = ref(false);
 
 const error = ref(null);
 
-onMounted(() => {
-  fetchToDoList();
+// Todoリストのフィルタリング
+const filteredTodoList = computed(() => {
+  if (filtered.value) {
+    return todoList.value.filter((todo) => {
+      return !todo.is_done;
+    });
+  } else {
+    return todoList.value;
+  }
 });
 
-const fetchToDoList = async () => {
+// Todoリストの取得
+onMounted(async () => {
   try {
     const response = await requestAPI.get("/todo-list/", {
       params: {
-        filter: isToDoFilter.value,
+        filter: filtered.value,
       },
       withCredentials: true,
     });
 
     if (!response.data) return;
-    toDoList.value = response.data;
+    todoList.value = response.data;
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;
@@ -34,24 +43,23 @@ const fetchToDoList = async () => {
       authStore.checkLoginStatus();
     }
   }
-};
+});
 
-const addToDo = async () => {
-  if (!newToDo.value) {
-    alert("Todoを入力してください");
-    return;
-  }
+const addTodo = async () => {
+  if (!newTodoTitle.value) return;
 
   try {
-    await requestAPI.post(
+    const response = await requestAPI.post(
       "/todo-list/",
       {
-        title: newToDo.value,
+        title: newTodoTitle.value,
       },
       {
         withCredentials: true,
       }
     );
+    const newTodo = response.data;
+    todoList.value.push(newTodo);
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;
@@ -60,18 +68,16 @@ const addToDo = async () => {
       authStore.checkLoginStatus();
     }
   } finally {
-    newToDo.value = "";
+    newTodoTitle.value = "";
   }
-
-  fetchToDoList();
 };
 
-const updateToDo = async (toDo) => {
+const updateTodo = async (todo) => {
   try {
     await requestAPI.put(
-      `/todo-list/${toDo.id}`,
+      `/todo-list/${todo.id}`,
       {
-        is_done: toDo.is_done,
+        is_done: todo.is_done,
       },
       {
         withCredentials: true,
@@ -85,11 +91,9 @@ const updateToDo = async (toDo) => {
       authStore.checkLoginStatus();
     }
   }
-
-  fetchToDoList();
 };
 
-const deleteToDoList = async () => {
+const deleteTodoList = async () => {
   try {
     await requestAPI.delete("/todo-list/", {
       withCredentials: true,
@@ -103,198 +107,145 @@ const deleteToDoList = async () => {
     }
   }
 
-  toDoList.value = [];
-};
-
-const timeFormatter = (time) => {
-  const hours = Math.floor(time / 60 / 60);
-  const minutes = String(Math.floor(time / 60) % 60).padStart(2, "0");
-  const seconds = String(time % 60).padStart(2, "0");
-  if (hours === 0) {
-    return `${minutes}:${seconds}`;
-  }
-  return `${hours}:${minutes}:${seconds}`;
+  todoList.value = [];
 };
 </script>
 
 <template>
   <div class="container">
-    <div v-if="error">
+    <div v-if="error" class="error-message">
       <p>{{ error }}</p>
     </div>
-    <div class="input-todo">
+    <form class="single-input-form" @submit.prevent="addTodo">
       <input
+        class="text-input"
         type="text"
-        v-model="newToDo"
-        placeholder="ToDoを入力してください"
+        v-model="newTodoTitle"
+        required
+        placeholder="Todoを入力してください"
       />
-      <button @click="addToDo()">追加</button>
+      <button style="margin-left: 2rem" class="primary-button" type="submit">
+        追加
+      </button>
+    </form>
+    <div style="font-size: 12px" class="flex-end-container">
+      <input id="filter-checkbox" type="checkbox" v-model="filtered" />
+      <span>完了したTodoを非表示</span>
     </div>
-    <div class="filter-todo">
-      <input
-        @change="fetchToDoList()"
-        class="filter-checkbox"
-        type="checkbox"
-        v-model="isToDoFilter"
-      />
-      <span>完了したToDoを非表示</span>
-    </div>
-    <div class="todo-list">
-      <ul v-if="toDoList.length !== 0">
+    <div id="todo-list">
+      <ul v-if="todoList.length !== 0">
         <li
-          :class="{ 'done-item': toDo.is_done }"
-          class="todo-item"
-          v-for="(toDo, index) in toDoList"
-          :key="index"
+          class="todo"
+          :class="{ 'completed-todo': todo.is_done }"
+          v-for="todo in filteredTodoList"
+          :key="todo.id"
         >
           <router-link
             :to="{
-              name: 'todo_item',
-              params: { id: toDo.id, title: toDo.title },
+              name: 'Todo',
+              params: { id: todo.id },
             }"
-            id="todo-item-link"
           >
-            <span>{{ toDo.title }}</span>
-            <span v-show="toDo.is_done" id="time-to-complete">
-              {{ timeFormatter(toDo.time_to_complete) }}
+            <span class="todo-title">{{ todo.title }}</span>
+            <span v-if="todo.is_done" class="todo-complete-time">
+              {{ timeFormat(todo.time_to_complete) }}
             </span>
           </router-link>
           <input
-            @change="updateToDo(toDo)"
-            class="status-checkbox"
+            class="todo-checkbox"
             type="checkbox"
-            v-model="toDo.is_done"
+            v-model="todo.is_done"
+            @change="updateTodo(todo)"
           />
         </li>
       </ul>
-      <p v-else>ToDoがありません</p>
+      <p v-else>Todoがありません</p>
     </div>
-    <div class="delete-todo">
-      <button @click="deleteToDoList()">ToDoを一括削除</button>
+    <div style="display: flex; justify-content: flex-end">
+      <button
+        style="margin: 2rem 0.5rem"
+        class="danger-button"
+        @click="deleteTodoList()"
+      >
+        Todoを全て削除
+      </button>
     </div>
   </div>
 </template>
 
 <style scoped>
-.container {
-  width: 640px;
-  margin: 0 auto;
-}
-
-.input-todo {
-  display: flex;
-  justify-content: center;
-}
-
-.input-todo input {
-  width: 400px;
-  padding: 0.5rem;
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  margin: 2rem;
-  font-size: 16px;
-}
-
-.input-todo button {
-  padding: 0.5rem 1rem;
-  margin: 2rem;
-  border-radius: 4px;
-  background-color: var(--color-primary);
-  color: var(--color-text-white);
-}
-
-@media (hover: hover) {
-  .input-todo button:hover {
-    background-color: var(--color-primary-hover);
-  }
-}
-
-.filter-todo {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-}
-
-.filter-todo span {
-  font-size: small;
-  padding: 0.25rem 0.5rem;
-}
-
-.filter-checkbox {
+#filter-checkbox {
+  margin-right: 0.5rem;
   display: block;
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   cursor: pointer;
-  accent-color: var(--color-primary-hover);
+  accent-color: var(--color-primary);
 }
 
-.todo-list {
-  padding: 1rem;
+#todo-list {
+  padding: 0.5rem 1rem;
   border: none;
   border-radius: 4px;
   background-color: var(--color-gray);
 }
 
-.todo-list ul {
+#todo-list ul {
   list-style: none;
   padding: 0;
 }
 
-.todo-item {
+.todo {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  margin: 0.25rem 0;
+  margin: 0.5rem 0;
   border-radius: 4px;
   background-color: var(--color-background);
+  font-size: 18px;
 }
 
 @media (hover: hover) {
-  .todo-item:hover {
+  .todo:hover {
     background-color: var(--color-background-hover);
   }
 }
 
-.done-item,
-.done-item:hover {
-  background-color: var(--color-primary-dark);
-}
-
-#todo-item-link {
+.todo a {
   display: block;
   width: 90%;
 }
 
-#time-to-complete {
-  font-family: "Lucida Console", monospace;
-  margin: 0 1em;
+.completed-todo {
+  background-color: var(--color-checkbox);
 }
 
-.status-checkbox {
+.completed-todo a {
+  pointer-events: none;
+  color: var(--color-text-white);
+}
+
+.completed-todo .todo-title {
+  text-decoration: line-through;
+}
+
+@media (hover: hover) {
+  .completed-todo:hover {
+    background-color: var(--color-checkbox);
+  }
+}
+
+.todo-complete-time {
+  font-family: "Lucida Console", monospace;
+  margin-left: 2rem;
+}
+
+.todo-checkbox {
   display: block;
   width: 25px;
   height: 25px;
   cursor: pointer;
-  accent-color: royalblue;
-}
-
-.delete-todo {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.delete-todo button {
-  margin: 2rem 0.5rem;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  background-color: var(--color-red);
-  color: var(--color-text-white);
-}
-
-@media (hover: hover) {
-  .delete-todo button:hover {
-    background-color: var(--color-red-hover);
-  }
+  accent-color: var(--color-checkbox);
 }
 </style>

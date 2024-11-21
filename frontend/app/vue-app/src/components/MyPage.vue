@@ -3,12 +3,14 @@ import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import requestAPI from "./requestAPI";
 import { useAuthStore } from "@/auth";
+import { validateInput } from "./validation";
 
 const router = useRouter();
 const authStore = useAuthStore();
 
 const error = ref(null);
 
+// ユーザー情報を取得
 onMounted(async () => {
   try {
     const response = await requestAPI.get("/users/me/", {
@@ -16,6 +18,8 @@ onMounted(async () => {
     });
     username.value = response.data.username;
     email.value = response.data.email;
+    newUsername.value = username.value;
+    newEmail.value = email.value;
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;
@@ -28,6 +32,8 @@ onMounted(async () => {
 
 const username = ref("");
 const email = ref("");
+const newUsername = ref("");
+const newEmail = ref("");
 
 const isEditingUsername = ref(false);
 const isEditingEmail = ref(false);
@@ -41,8 +47,21 @@ const toggleIsEditingEmail = () => {
 };
 
 const updateUsername = async () => {
+  if (!newUsername.value) return;
+  if (newUsername.value === username.value) {
+    toggleIsEditingUsername();
+    return;
+  }
+
+  const valRes = validateInput(newUsername.value, null, null);
+  if (valRes) {
+    error.value = valRes;
+    alert("入力内容を確認してください");
+    return;
+  }
+
   try {
-    await requestAPI.put(
+    const response = await requestAPI.put(
       "/users/me/",
       {
         username: username.value,
@@ -51,6 +70,9 @@ const updateUsername = async () => {
         withCredentials: true,
       }
     );
+
+    username.value = response.data.username;
+    newUsername.value = username.value;
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;
@@ -63,8 +85,21 @@ const updateUsername = async () => {
 };
 
 const updateEmail = async () => {
+  if (!newEmail.value) return;
+  if (newEmail.value === email.value) {
+    toggleIsEditingEmail();
+    return;
+  }
+
+  const valRes = validateInput(null, newEmail.value, null);
+  if (valRes) {
+    error.value = valRes;
+    alert("入力内容を確認してください");
+    return;
+  }
+
   try {
-    await requestAPI.put(
+    const response = await requestAPI.put(
       "/users/me/",
       {
         email: email.value,
@@ -73,6 +108,9 @@ const updateEmail = async () => {
         withCredentials: true,
       }
     );
+
+    email.value = response.data.email;
+    newEmail.value = email.value;
   } catch (e) {
     console.error(e);
     error.value = e.response.data.detail;
@@ -97,91 +135,121 @@ const logout = async () => {
     authStore.checkLoginStatus();
   }
 };
+
+const deleteUser = async () => {
+  if (!confirm("アカウントを削除しますか？")) return;
+  try {
+    await requestAPI.delete("/users/me/", {
+      withCredentials: true,
+    });
+    authStore.logout();
+    router.push("/login");
+  } catch (e) {
+    console.error(e);
+    alert("アカウントの削除に失敗しました");
+    authStore.checkLoginStatus();
+  }
+};
 </script>
 
 <template>
   <div class="container">
-    <h1 id="page-title">マイページ</h1>
-    <div v-if="error">{{ error }}</div>
+    <h1 id="mypage-title" class="title">マイページ</h1>
+    <div v-if="error" class="error-message">{{ error }}</div>
     <div id="user-info">
-      <p>ユーザー名</p>
-      <div class="info-group" v-if="!isEditingUsername">
-        <p>{{ username }}</p>
-        <button @click="toggleIsEditingUsername">編集</button>
-      </div>
-      <div class="info-group" v-else>
-        <input type="text" v-model="username" />
-        <button @click="updateUsername">保存</button>
-      </div>
-      <p>メールアドレス</p>
-      <div class="info-group" v-if="!isEditingEmail">
-        <p>{{ email }}</p>
-        <button @click="toggleIsEditingEmail">編集</button>
-      </div>
-      <div class="info-group" v-else>
-        <input type="email" v-model="email" />
-        <button @click="updateEmail">保存</button>
-      </div>
-      <p>パスワード</p>
-      <div class="info-group">
-        <p>********</p>
-        <button @click="router.push('/edit_password')">編集</button>
+      <span class="user-info-label">ユーザー名</span>
+      <form class="user-info-editor" @submit.prevent="updateUsername">
+        <input
+          class="text-input"
+          type="text"
+          v-model="newUsername"
+          v-bind:readonly="!isEditingUsername"
+          required
+        />
+        <button
+          v-if="!isEditingUsername"
+          class="edit-button"
+          @click="toggleIsEditingUsername"
+        >
+          編集
+        </button>
+        <button v-else class="update-button" type="submit">保存</button>
+      </form>
+      <span class="user-info-label">メールアドレス</span>
+      <form class="user-info-editor" @submit.prevent="updateEmail">
+        <input
+          class="text-input"
+          type="email"
+          v-model="newEmail"
+          v-bind:readonly="!isEditingEmail"
+          required
+        />
+        <button
+          v-if="!isEditingEmail"
+          class="edit-button"
+          @click="toggleIsEditingEmail"
+        >
+          編集
+        </button>
+        <button v-else class="update-button" type="submit">保存</button>
+      </form>
+      <span class="user-info-label">パスワード</span>
+      <div class="user-info-editor">
+        <input class="text-input" type="password" readonly value="********" />
+        <button class="edit-button" @click="router.push('/edit_password')">
+          編集
+        </button>
       </div>
     </div>
-    <button id="logout-button" @click="logout">ログアウト</button>
+    <div style="display: flex; margin-top: 3rem">
+      <button
+        style="margin-right: auto"
+        class="danger-button"
+        @click="deleteUser"
+      >
+        アカウントを削除
+      </button>
+      <button style="margin-left: auto" class="primary-button" @click="logout">
+        ログアウト
+      </button>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.container {
-  margin: 0 auto;
-  max-width: 500px;
-}
-
-#page-title {
+#mypage-title {
+  margin: 0 auto 0 0;
   color: var(--color-primary);
 }
 
 #user-info {
-  margin: 3rem 0 5rem 0;
+  margin: 3rem 0;
+  display: flex;
+  flex-direction: column;
 }
 
-#user-info p {
+.user-info-label {
+  padding: 0.5rem;
   font-size: 18px;
 }
 
-.info-group {
+.user-info-editor {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
 }
 
-.info-group p,
-input {
+.user-info-editor input {
   width: 80%;
-  height: 36px;
-  font-size: 18px;
-  padding: 0.25rem 0.5rem;
-  border: 1px solid var(--color-gray);
-  border-radius: 4px;
-  word-wrap: break-word;
-}
-
-.info-group button {
-  display: block;
-  margin: 0.5rem 0 0.5rem auto;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
   font-size: 16px;
 }
 
-#logout-button {
-  display: block;
-  margin: 2rem 0 2rem auto;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  background-color: var(--color-primary);
-  color: var(--color-white);
+input[readonly]:focus {
+  outline: none;
+}
+
+.user-info-editor button {
+  margin-left: auto;
 }
 </style>

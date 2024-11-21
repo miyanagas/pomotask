@@ -20,7 +20,7 @@ const routes = [
     component: SignUpView,
     meta: { hideHeader: true, requiresAuth: false },
   },
-  { path: "/my_page", component: MyPageView, meta: { requiresAuth: true } },
+  { path: "/mypage", component: MyPageView, meta: { requiresAuth: true } },
   {
     path: "/edit_password",
     component: EditPasswordView,
@@ -28,13 +28,13 @@ const routes = [
   },
   {
     path: "/",
-    name: "ToDoList",
+    name: "TodoList",
     component: ToDoListView,
     meta: { requiresAuth: true },
   },
   {
-    path: "/todo_list/:id/:title",
-    name: "todo_item",
+    path: "/:id/",
+    name: "Todo",
     component: ToDoItemView,
     meta: { requiresAuth: true },
   },
@@ -54,7 +54,7 @@ router.beforeEach(async (to, from, next) => {
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     next({ name: "Login" });
   } else if (!to.meta.requiresAuth && authStore.isAuthenticated) {
-    next({ name: "ToDoList" });
+    next({ name: "TodoList" });
   } else {
     next();
   }

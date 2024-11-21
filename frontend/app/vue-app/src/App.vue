@@ -10,6 +10,15 @@
       width="35"
       height="35"
     />
+    <router-link to="/mypage" class="title" id="mypage-link"
+      ><img
+        alt="My page"
+        class="logo"
+        src="./assets/user.svg"
+        width="35"
+        height="35"
+      />
+    </router-link>
   </header>
   <main>
     <RouterView />
@@ -36,5 +45,10 @@ header {
   padding: 0.5rem 1rem 0.5rem 2rem;
   color: var(--color-text-white);
   font-size: 32px;
+}
+
+#mypage-link {
+  margin: 0 2rem 0 auto;
+  padding: 0;
 }
 </style>

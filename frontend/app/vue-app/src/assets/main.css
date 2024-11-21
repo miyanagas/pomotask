@@ -1,8 +1,6 @@
 @import './base.css';
 
 #app {
-  padding: 0;
-  margin: 0;
   font-weight: normal;
 }
 
@@ -18,9 +16,127 @@ a {
 }
 
 button {
+  display: block;
+  padding: 0.5rem 1rem;
   cursor: pointer;
   border: none;
   font-size: 16px;
+  border-radius: 4px;
+}
+
+.container {
+  max-width: 720px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-end-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0.5rem;
+  font-size: 16px;
+}
+
+.flex-center-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.title {
+  display: block;
+  font-size: 32px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.single-input-form {
+  display: flex;
+  justify-content: center;
+  margin: 1rem 0;
+}
+
+.text-input {
+  width: 60%;
+  padding: 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.multiple-input-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.labeled-text-input {
+  display: flex;
+  flex-direction: column;
+  margin: 1rem 0;
+}
+
+.labeled-text-input label,
+.labeled-text-input input {
+  width: 60%;
+  margin: 0 auto;
+}
+
+.labeled-text-input label {
+  padding: 0.5rem;
+}
+
+.primary-button {
+  background-color: var(--color-primary);
+  color: var(--color-text-white);
+}
+
+@media (hover: hover) {
+  .primary-button:hover {
+    background-color: var(--color-primary-hover);
+  }
+}
+
+.update-button {
+  background-color: var(--color-update-button);
+  color: var(--color-text-white);
+}
+
+@media (hover: hover) {
+  .update-button:hover {
+    background-color: var(--color-update-button-hover);
+  }
+}
+
+.edit-button {
+  background-color: var(--color-gray);
+  color: var(--color-text-black);
+}
+
+@media (hover: hover) {
+  .edit-button:hover {
+    background-color: var(--color-gray-hover);
+  }
+}
+
+.danger-button {
+  background-color: var(--color-danger);
+  color: var(--color-text-white);
+}
+
+@media (hover: hover) {
+  .danger-button:hover {
+    background-color: var(--color-danger-hover);
+  }
+}
+
+.error-message {
+  color: var(--color-danger);
+  font-size: 0.9rem;
+  margin: 0.5rem;
 }
 
 /* @media (hover: hover) {
