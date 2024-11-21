@@ -4,7 +4,7 @@ import alarm from "@/assets/sound-alarm.mp3";
 import requestAPI from "./requestAPI";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { useAuthStore } from "@/auth";
-import { timeFormat } from "./Timer";
+import { timeFormat } from "./timer";
 
 const props = defineProps({
   timeToComplete: {
