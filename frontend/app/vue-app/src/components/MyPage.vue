@@ -98,6 +98,21 @@ const logout = async () => {
     authStore.checkLoginStatus();
   }
 };
+
+const deleteUser = async () => {
+  if (!confirm("アカウントを削除しますか？")) return;
+  try {
+    await requestAPI.delete("/users/me/", {
+      withCredentials: true,
+    });
+    authStore.logout();
+    router.push("/login");
+  } catch (e) {
+    console.error(e);
+    alert("アカウントの削除に失敗しました");
+    authStore.checkLoginStatus();
+  }
+};
 </script>
 
 <template>
@@ -129,7 +144,10 @@ const logout = async () => {
         <button @click="router.push('/edit_password')">編集</button>
       </div>
     </div>
-    <button id="logout-button" @click="logout">ログアウト</button>
+    <div id="buttons">
+      <button @click="deleteUser" id="delete-button">アカウントを削除</button>
+      <button @click="logout" id="logout-button">ログアウト</button>
+    </div>
   </div>
 </template>
 
@@ -177,9 +195,22 @@ input {
   font-size: 16px;
 }
 
+#buttons {
+  display: flex;
+}
+
+#delete-button {
+  display: block;
+  margin: 2rem auto 1rem 0;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  background-color: var(--color-red);
+  color: var(--color-white);
+}
+
 #logout-button {
   display: block;
-  margin: 2rem 0 2rem auto;
+  margin: 2rem 0 1rem auto;
   padding: 0.5rem 1rem;
   border-radius: 4px;
   background-color: var(--color-primary);
