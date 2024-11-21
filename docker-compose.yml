@@ -36,23 +36,24 @@ services:
       db:
         condition: service_healthy
   db:
-    image: mysql:9.0
+    image: postgres:15.6
     platform: linux/arm64
     container_name: todo-db
+    command: -c 'config_file=/etc/postgresql/postgresql.conf'
     ports:
-      - 3306:3306
-    restart: always
-    env_file:
-      - ./.env_file/mysql.env
+      - "5432:5432"
     volumes:
-      - ./db/conf.d:/etc/mysql/conf.d
-      - db-store:/var/lib/mysql
+      - db-store:/var/lib/postgresql/data
+      - ./db/config/postgresql.conf:/etc/postgresql/postgresql.conf
+    environment:
+      - TZ=Asia/Tokyo
+    env_file:
+      - ./db/.env
     healthcheck:
-      test: mysqladmin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD
-      interval: 10s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} || exit 1"]
+      interval: 2s
+      timeout: 5s
+      retries: 5
 
 volumes:
   db-store:
