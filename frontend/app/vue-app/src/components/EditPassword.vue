@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import requestAPI from "./requestAPI";
 import { useAuthStore } from "@/auth";
+import { validateInput } from "./validation";
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -13,6 +14,11 @@ const newPassword = ref("");
 const error = ref(null);
 
 const updatePassword = async () => {
+  const valRes = validateInput(null, null, newPassword.value);
+  if (!valRes) {
+    return;
+  }
+
   try {
     await requestAPI.put(
       "/users/me/password/",
@@ -39,7 +45,7 @@ const updatePassword = async () => {
 <template>
   <div class="container">
     <h1 id="page-title">パスワード変更</h1>
-    <div v-if="error">{{ error }}</div>
+    <div v-if="error" class="error-message">{{ error }}</div>
     <form id="edit-password-form" @submit.prevent="updatePassword">
       <div class="form-group">
         <label for="current-password">現在のパスワード</label>

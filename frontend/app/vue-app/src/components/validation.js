@@ -7,15 +7,15 @@ const isValidUsername = (username) => usernameRegex.test(username);
 const isValidEmail = (email) => emailRegex.test(email);
 const isValidPassword = (password) => passwordRegex.test(password);
 
-const validateInput = (username, password, email = null) => {
-  if (!isValidUsername(username)) {
+const validateInput = (username, email, password) => {
+  if (username && !isValidUsername(username)) {
     return "ユーザー名は20文字以内で、英数字またはアンダースコア、ハイフンを使用してください";
-  }
-  if (!isValidPassword(password)) {
-    return "パスワードは8～20文字で、英数字と記号（!@#$%^&*_-）を含む必要があります";
   }
   if (email && !isValidEmail(email)) {
     return "メールアドレスの形式が正しくありません";
+  }
+  if (password && !isValidPassword(password)) {
+    return "パスワードは8～20文字で、英数字と記号（!@#$%^&*_-）を含む必要があります";
   }
   return;
 };

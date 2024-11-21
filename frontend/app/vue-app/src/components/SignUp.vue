@@ -39,7 +39,7 @@ const login = async (username, password) => {
 };
 
 const signup = async () => {
-  const valRes = validateInput(username.value, password.value, email.value);
+  const valRes = validateInput(username.value, email.value, password.value);
   if (valRes) {
     error.value = valRes;
     alert("入力内容を確認してください");
@@ -65,7 +65,7 @@ const signup = async () => {
   <div class="container">
     <h1 class="title">新規登録</h1>
     <form class="signup-form" @submit.prevent="signup">
-      <div v-if="error">{{ error }}</div>
+      <div v-if="error" class="error-message">{{ error }}</div>
       <div class="form-group">
         <label for="username">ユーザー名</label>
         <input
