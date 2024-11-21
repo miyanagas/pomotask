@@ -158,28 +158,44 @@ const deleteUser = async () => {
     <div v-if="error" class="error-message">{{ error }}</div>
     <div id="user-info">
       <span class="user-info-label">ユーザー名</span>
-      <div class="user-info-editor" v-if="!isEditingUsername">
-        <span>{{ username }}</span>
-        <button class="edit-button" @click="toggleIsEditingUsername">
+      <form class="user-info-editor" @submit.prevent="updateUsername">
+        <input
+          class="text-input"
+          type="text"
+          v-model="newUsername"
+          v-bind:readonly="!isEditingUsername"
+          required
+        />
+        <button
+          v-if="!isEditingUsername"
+          class="edit-button"
+          @click="toggleIsEditingUsername"
+        >
           編集
         </button>
-      </div>
-      <form class="user-info-editor" v-else @submit.prevent="updateUsername">
-        <input type="text" v-model="newUsername" required />
-        <button class="update-button" type="submit">保存</button>
+        <button v-else class="update-button" type="submit">保存</button>
       </form>
       <span class="user-info-label">メールアドレス</span>
-      <div class="user-info-editor" v-if="!isEditingEmail">
-        <span>{{ email }}</span>
-        <button class="edit-button" @click="toggleIsEditingEmail">編集</button>
-      </div>
-      <form class="user-info-editor" v-else @submit.prevent="updateEmail">
-        <input type="email" v-model="newEmail" required />
-        <button class="update-button" type="submit">保存</button>
+      <form class="user-info-editor" @submit.prevent="updateEmail">
+        <input
+          class="text-input"
+          type="email"
+          v-model="newEmail"
+          v-bind:readonly="!isEditingEmail"
+          required
+        />
+        <button
+          v-if="!isEditingEmail"
+          class="edit-button"
+          @click="toggleIsEditingEmail"
+        >
+          編集
+        </button>
+        <button v-else class="update-button" type="submit">保存</button>
       </form>
       <span class="user-info-label">パスワード</span>
       <div class="user-info-editor">
-        <span>********</span>
+        <input class="text-input" type="password" readonly value="********" />
         <button class="edit-button" @click="router.push('/edit_password')">
           編集
         </button>
@@ -224,15 +240,13 @@ const deleteUser = async () => {
   margin-bottom: 1rem;
 }
 
-.user-info-editor span,
-input {
+.user-info-editor input {
   width: 80%;
-  /* height: 36px; */
-  font-size: 18px;
-  padding: 0.5rem;
-  border: 1px solid var(--color-gray);
-  border-radius: 4px;
-  word-wrap: break-word;
+  font-size: 16px;
+}
+
+input[readonly]:focus {
+  outline: none;
 }
 
 .user-info-editor button {
