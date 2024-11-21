@@ -10,15 +10,25 @@
   --color-text-black: hsl(0, 0%, 20%);
   --color-text-black-soft: hsla(0, 0%, 20%, 0.85);
 
-  --color-blue: #21a0db; /* ちぐさいろ、つきくさいろ */
+   /* ちぐさいろ、つきくさいろ */
+  /* --color-blue: #21a0db;
   --color-blue-soft: hsl(199, 74%, 59%);
-  --color-blue-mute: hsl(199, 64%, 79%);
+  --color-blue-mute: hsl(199, 64%, 79%); */
 
-  --color-text-blue: #00aeef;
+  --color-blue: hsl(210, 100%, 56%);
+  --color-blue-soft: hsl(210, 100%, 80%);
+  --color-blue-mute: hsl(210, 100%, 70%);
+
+
+  /* --color-text-blue: #00aeef; */
+  --color-text-blue: hsl(210, 100%, 56%);
   --color-text-white: #ffffff;
 
   --color-red: hsl(0, 100%, 50%);
   --color-red-soft: hsl(0, 100%, 62%);
+
+  --color-lightseagreen: hsl(177, 70%, 41%);
+  --color-lightseagreen-soft: hsl(177, 70%, 36%);
 }
 
 :root {
@@ -39,6 +49,8 @@
   --color-red-hover: var(--color-red-soft);
 
   --color-gray-hover: var(--color-gray-soft);
+
+  --color-lightseagreen-hover: var(--color-lightseagreen-soft);
 }
 
 *,
