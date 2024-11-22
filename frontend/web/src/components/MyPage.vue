@@ -124,7 +124,7 @@ const updateEmail = async () => {
 
 const logout = async () => {
   try {
-    await requestAPI.post("/logout/", {
+    await requestAPI.delete("/logout/", {
       withCredentials: true,
     });
     authStore.logout();
