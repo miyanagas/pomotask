@@ -1,7 +1,15 @@
-<script setup></script>
+<script setup>
+import { useRoute } from "vue-router";
+import { useLoadingStore } from "./components/loading";
+
+import LoadingView from "./components/Loading.vue";
+
+const route = useRoute();
+const loadingStore = useLoadingStore();
+</script>
 
 <template>
-  <header v-if="!$route.meta.hideHeader">
+  <header v-if="!route.meta.hideHeader">
     <router-link to="/" id="header-title" class="title">今日のToDo</router-link>
     <img
       alt="App logo"
@@ -21,7 +29,8 @@
     </router-link>
   </header>
   <main>
-    <RouterView />
+    <RouterView v-if="!loadingStore.isLoading" />
+    <LoadingView v-else />
   </main>
 </template>
 
