@@ -27,9 +27,6 @@ const filteredTodoList = computed(() => {
 onMounted(async () => {
   try {
     const response = await requestAPI.get("/todo-list/", {
-      params: {
-        filter: filtered.value,
-      },
       withCredentials: true,
     });
 
@@ -133,7 +130,7 @@ const deleteTodoList = async () => {
       <span>完了したTodoを非表示</span>
     </div>
     <div id="todo-list">
-      <ul v-if="todoList.length !== 0">
+      <ul v-if="filteredTodoList.length !== 0">
         <li
           class="todo"
           :class="{ 'completed-todo': todo.is_done }"
