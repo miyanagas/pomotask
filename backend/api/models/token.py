@@ -1,10 +1,11 @@
 from sqlmodel import SQLModel, Field, Relationship
 
-from typing import Optional
+from typing import TYPE_CHECKING
 import uuid
 from datetime import datetime
 
-from api.models.user import User
+if TYPE_CHECKING:
+    from api.models.user import User
 
 # Tokenテーブルの定義
 class TokenBase(SQLModel):
@@ -20,7 +21,7 @@ class Token(TokenBase, table=True):
     ) # 更新日時
 
     user_id: uuid.UUID = Field(index=True, foreign_key="user.id", ondelete="CASCADE") # User削除時に削除
-    user: User = Relationship(back_populates="token")
+    user: "User" = Relationship(back_populates="token")
 
 class TokenCreate(TokenBase):
     user_id: uuid.UUID

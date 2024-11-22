@@ -8,7 +8,7 @@ import re
 
 if TYPE_CHECKING:
     from api.models.todo import Todo
-    from api.models.token import Token
+from api.models.token import Token
 
 # Userテーブルの定義
 class UserBase(SQLModel):
