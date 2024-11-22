@@ -1,4 +1,4 @@
-from fastapi import FastAPI, status
+from fastapi import FastAPI, APIRouter, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
 from fastapi.encoders import jsonable_encoder
@@ -7,11 +7,11 @@ from fastapi.responses import JSONResponse
 from api.database import create_db_and_tables, drop_db_and_tables
 from api.routers import auth, users, todo_list
 
-app = FastAPI()
+app = FastAPI(openapi_url="/api/v1/openapi.json", docs_url="/api/v1/docs")
 
 # CORSの設定
 origins = [
-    "https://todo-app-2yl.pages.dev/",
+    "https://todo-app-2yl.pages.dev",
 ]
 
 app.add_middleware(
@@ -23,9 +23,12 @@ app.add_middleware(
 )
 
 # ルーターの登録
-app.include_router(auth.router)
-app.include_router(users.router)
-app.include_router(todo_list.router)
+api_router = APIRouter()
+api_router.include_router(auth.router)
+api_router.include_router(users.router)
+api_router.include_router(todo_list.router)
+
+app.include_router(api_router, prefix="/api/v1")
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request, exc):
