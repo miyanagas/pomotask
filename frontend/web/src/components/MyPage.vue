@@ -24,9 +24,6 @@ onMounted(async () => {
     console.error(e);
     error.value = e.response.data.detail;
     alert("ユーザー情報の取得に失敗しました");
-    if (e.response.status === 401) {
-      authStore.checkLoginStatus();
-    }
   }
 });
 
@@ -77,9 +74,6 @@ const updateUsername = async () => {
     console.error(e);
     error.value = e.response.data.detail;
     alert("ユーザー名の更新に失敗しました");
-    if (e.response.status === 401) {
-      authStore.checkLoginStatus();
-    }
   }
   toggleIsEditingUsername();
 };
@@ -115,9 +109,6 @@ const updateEmail = async () => {
     console.error(e);
     error.value = e.response.data.detail;
     alert("メールアドレスの更新に失敗しました");
-    if (e.response.status === 401) {
-      authStore.checkLoginStatus();
-    }
   }
   toggleIsEditingEmail();
 };

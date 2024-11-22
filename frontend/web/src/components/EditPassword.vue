@@ -2,11 +2,9 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import requestAPI from "./requestAPI";
-import { useAuthStore } from "@/auth";
 import { validateInput } from "./validation";
 
 const router = useRouter();
-const authStore = useAuthStore();
 
 const currentPassword = ref("");
 const newPassword = ref("");
@@ -36,9 +34,6 @@ const updatePassword = async () => {
     console.error(e);
     error.value = e.response.data.detail;
     alert("パスワードの変更に失敗しました");
-    if (e.response.status === 401) {
-      authStore.checkLoginStatus();
-    }
   }
 };
 </script>
