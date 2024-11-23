@@ -1,12 +1,10 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import requestAPI from "./requestAPI";
+import { useAuthStore } from "@/auth";
 import { timeFormat } from "./time";
-import { useLoadingStore } from "./loading";
 
-import LoadingView from "./Loading.vue";
-
-const loadingStore = useLoadingStore();
+const authStore = useAuthStore();
 
 const todoList = ref([]);
 const newTodoTitle = ref("");
@@ -29,24 +27,26 @@ const filteredTodoList = computed(() => {
 onMounted(async () => {
   try {
     const response = await requestAPI.get("/todo-list/", {
+      params: {
+        filter: filtered.value,
+      },
       withCredentials: true,
     });
 
     if (!response.data) return;
     todoList.value = response.data;
   } catch (e) {
+    console.error(e);
     error.value = e.response.data.detail;
     alert("Todoリストの取得に失敗しました");
+    if (e.response.status === 401) {
+      authStore.checkLoginStatus();
+    }
   }
 });
 
 const addTodo = async () => {
   if (!newTodoTitle.value) return;
-
-  if (newTodoTitle.value.length > 20) {
-    error.value = "Todoは20文字以内で入力してください";
-    return;
-  }
 
   try {
     const response = await requestAPI.post(
@@ -61,8 +61,12 @@ const addTodo = async () => {
     const newTodo = response.data;
     todoList.value.push(newTodo);
   } catch (e) {
+    console.error(e);
     error.value = e.response.data.detail;
     alert("Todoの追加に失敗しました");
+    if (e.response.status === 401) {
+      authStore.checkLoginStatus();
+    }
   } finally {
     newTodoTitle.value = "";
   }
@@ -80,12 +84,12 @@ const updateTodo = async (todo) => {
       }
     );
   } catch (e) {
-    if (e.response.data.detail === "Todo not found") {
-      error.value = "Todoの更新に失敗しました";
-    } else {
-      error.value = e.response.data.detail;
-    }
+    console.error(e);
+    error.value = e.response.data.detail;
     alert("Todoの更新に失敗しました");
+    if (e.response.status === 401) {
+      authStore.checkLoginStatus();
+    }
   }
 };
 
@@ -95,8 +99,12 @@ const deleteTodoList = async () => {
       withCredentials: true,
     });
   } catch (e) {
+    console.error(e);
     error.value = e.response.data.detail;
     alert("Todoリストの削除に失敗しました");
+    if (e.response.status === 401) {
+      authStore.checkLoginStatus();
+    }
   }
 
   todoList.value = [];
@@ -104,31 +112,28 @@ const deleteTodoList = async () => {
 </script>
 
 <template>
-  <div class="container" v-if="!loadingStore.isLoading">
+  <div class="container">
     <div v-if="error" class="error-message">
       <p>{{ error }}</p>
     </div>
-    <div class="single-input-form">
+    <form class="single-input-form" @submit.prevent="addTodo">
       <input
         class="text-input"
         type="text"
         v-model="newTodoTitle"
+        required
         placeholder="Todoを入力してください"
       />
-      <button
-        style="margin-left: 2rem"
-        class="primary-button"
-        @click="addTodo()"
-      >
+      <button style="margin-left: 2rem" class="primary-button" type="submit">
         追加
       </button>
-    </div>
+    </form>
     <div style="font-size: 12px" class="flex-end-container">
       <input id="filter-checkbox" type="checkbox" v-model="filtered" />
       <span>完了したTodoを非表示</span>
     </div>
     <div id="todo-list">
-      <ul v-if="filteredTodoList.length !== 0">
+      <ul v-if="todoList.length !== 0">
         <li
           class="todo"
           :class="{ 'completed-todo': todo.is_done }"
@@ -166,7 +171,6 @@ const deleteTodoList = async () => {
       </button>
     </div>
   </div>
-  <LoadingView v-else />
 </template>
 
 <style scoped>

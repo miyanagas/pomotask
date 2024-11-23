@@ -6,7 +6,6 @@ from sqlalchemy import pool
 from sqlmodel import SQLModel
 from api.models.user import User
 from api.models.todo import Todo
-from api.models.token import Token
 
 from api.config import SQL_DATABASE_URL
 
