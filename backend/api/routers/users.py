@@ -30,6 +30,10 @@ def read_users_me(current_user: UserDep):
 @router.patch("/me/", response_model=UserPublic)
 def update_user_me(user: UserUpdate, current_user: UserDep, session: SessionDep):
     user_data = user.model_dump(exclude_unset=True)
+    if user_data.get("username") and session.exec(select(User).where(User.username == user_data["username"], User.id != current_user.id)).first():
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already registered")
+    if user_data.get("email") and session.exec(select(User).where(User.email == user_data["email"], User.id != current_user.id)).first():
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
     current_user.sqlmodel_update(user_data)
     session.add(current_user)
     session.commit()
