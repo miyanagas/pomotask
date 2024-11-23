@@ -3,7 +3,6 @@ import { ref, onMounted, computed } from "vue";
 import alarm from "@/assets/sound-alarm.mp3";
 import requestAPI from "./requestAPI";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
-import { useAuthStore } from "@/auth";
 import { timeFormat } from "./time";
 
 const props = defineProps({
@@ -15,7 +14,6 @@ const props = defineProps({
 
 const routeId = useRoute().params.id;
 const router = useRouter();
-const authStore = useAuthStore();
 
 const defaultTaskTime = 25;
 const defaultBreakTime = 5;
@@ -86,12 +84,12 @@ const updateTodo = async (completed = false) => {
       timeToComplete.value = response.data.time_to_complete;
     }
   } catch (e) {
-    console.error(e);
-    error.value = e.response.data.detail;
-    alert("Todoの更新に失敗しました");
-    if (e.response.status === 401) {
-      authStore.checkLoginStatus();
+    if (e.response.data.detail === "Todo not found") {
+      error.value = "Todoの更新に失敗しました";
+    } else {
+      error.value = e.response.data.detail;
     }
+    alert("Todoの更新に失敗しました");
   }
 };
 
