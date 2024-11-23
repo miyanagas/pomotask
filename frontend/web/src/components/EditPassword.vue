@@ -19,7 +19,6 @@ const updatePassword = async () => {
   const valRes = validateInput(null, null, newPassword.value);
   if (!valRes) {
     error.value = valRes;
-    alert("入力内容を確認してください");
   }
 
   try {
@@ -35,7 +34,6 @@ const updatePassword = async () => {
     );
     router.push("/mypage");
   } catch (e) {
-    console.error(e);
     error.value = e.response.data.detail;
     alert("パスワードの変更に失敗しました");
   }

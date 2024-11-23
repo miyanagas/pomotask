@@ -21,7 +21,6 @@ const login = async () => {
   const valRes = validateInput(username.value, null, password.value);
   if (valRes) {
     error.value = valRes;
-    alert("入力内容を確認してください");
     return;
   }
 
@@ -42,8 +41,11 @@ const login = async () => {
     authStore.login();
     router.push("/");
   } catch (e) {
-    console.error(e);
-    error.value = e.response.data.detail;
+    if (e.response.data.detail === "Incorrect username or password") {
+      error.value = "ユーザー名またはパスワードが間違っています";
+    } else {
+      error.value = e.response.data.detail;
+    }
     alert("ログインに失敗しました");
   }
 };

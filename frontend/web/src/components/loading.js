@@ -17,8 +17,4 @@ export const useLoadingStore = defineStore("loading", {
       }
     },
   },
-  persist: {
-    key: "loading",
-    storage: sessionStorage,
-  },
 });

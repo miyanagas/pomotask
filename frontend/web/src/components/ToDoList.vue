@@ -35,7 +35,6 @@ onMounted(async () => {
     if (!response.data) return;
     todoList.value = response.data;
   } catch (e) {
-    console.error(e);
     error.value = e.response.data.detail;
     alert("Todoリストの取得に失敗しました");
   }
@@ -43,6 +42,11 @@ onMounted(async () => {
 
 const addTodo = async () => {
   if (!newTodoTitle.value) return;
+
+  if (newTodoTitle.value.length > 20) {
+    error.value = "Todoは20文字以内で入力してください";
+    return;
+  }
 
   try {
     const response = await requestAPI.post(
@@ -57,7 +61,6 @@ const addTodo = async () => {
     const newTodo = response.data;
     todoList.value.push(newTodo);
   } catch (e) {
-    console.error(e);
     error.value = e.response.data.detail;
     alert("Todoの追加に失敗しました");
   } finally {
@@ -77,8 +80,11 @@ const updateTodo = async (todo) => {
       }
     );
   } catch (e) {
-    console.error(e);
-    error.value = e.response.data.detail;
+    if (e.response.data.detail === "Todo not found") {
+      error.value = "Todoの更新に失敗しました";
+    } else {
+      error.value = e.response.data.detail;
+    }
     alert("Todoの更新に失敗しました");
   }
 };
@@ -89,7 +95,6 @@ const deleteTodoList = async () => {
       withCredentials: true,
     });
   } catch (e) {
-    console.error(e);
     error.value = e.response.data.detail;
     alert("Todoリストの削除に失敗しました");
   }
@@ -103,18 +108,21 @@ const deleteTodoList = async () => {
     <div v-if="error" class="error-message">
       <p>{{ error }}</p>
     </div>
-    <form class="single-input-form" @submit.prevent="addTodo">
+    <div class="single-input-form">
       <input
         class="text-input"
         type="text"
         v-model="newTodoTitle"
-        required
         placeholder="Todoを入力してください"
       />
-      <button style="margin-left: 2rem" class="primary-button" type="submit">
+      <button
+        style="margin-left: 2rem"
+        class="primary-button"
+        @click="addTodo()"
+      >
         追加
       </button>
-    </form>
+    </div>
     <div style="font-size: 12px" class="flex-end-container">
       <input id="filter-checkbox" type="checkbox" v-model="filtered" />
       <span>完了したTodoを非表示</span>

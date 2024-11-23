@@ -27,7 +27,6 @@ onMounted(async () => {
     newUsername.value = username.value;
     newEmail.value = email.value;
   } catch (e) {
-    console.error(e);
     error.value = e.response.data.detail;
     alert("ユーザー情報の取得に失敗しました");
   }
@@ -59,7 +58,6 @@ const updateUsername = async () => {
   const valRes = validateInput(newUsername.value, null, null);
   if (valRes) {
     error.value = valRes;
-    alert("入力内容を確認してください");
     return;
   }
 
@@ -77,8 +75,11 @@ const updateUsername = async () => {
     username.value = response.data.username;
     newUsername.value = username.value;
   } catch (e) {
-    console.error(e);
-    error.value = e.response.data.detail;
+    if (e.response.data.detail === "Username already registered") {
+      error.value = "ユーザー名は既に使用されています";
+    } else {
+      error.value = e.response.data.detail;
+    }
     alert("ユーザー名の更新に失敗しました");
   }
   toggleIsEditingUsername();
@@ -94,7 +95,6 @@ const updateEmail = async () => {
   const valRes = validateInput(null, newEmail.value, null);
   if (valRes) {
     error.value = valRes;
-    alert("入力内容を確認してください");
     return;
   }
 
@@ -112,8 +112,11 @@ const updateEmail = async () => {
     email.value = response.data.email;
     newEmail.value = email.value;
   } catch (e) {
-    console.error(e);
-    error.value = e.response.data.detail;
+    if (e.response.data.detail === "Email already registered") {
+      error.value = "メールアドレスは既に使用されています";
+    } else {
+      error.value = e.response.data.detail;
+    }
     alert("メールアドレスの更新に失敗しました");
   }
   toggleIsEditingEmail();
@@ -127,7 +130,6 @@ const logout = async () => {
     authStore.logout();
     router.push("/login");
   } catch (e) {
-    console.error(e);
     alert("ログアウトに失敗しました");
     authStore.checkLoginStatus();
   }
@@ -142,7 +144,6 @@ const deleteUser = async () => {
     authStore.logout();
     router.push("/login");
   } catch (e) {
-    console.error(e);
     alert("アカウントの削除に失敗しました");
     authStore.checkLoginStatus();
   }

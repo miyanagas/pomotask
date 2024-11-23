@@ -36,8 +36,11 @@ const login = async (username, password) => {
     authStore.login();
     router.push("/");
   } catch (e) {
-    console.error(e);
-    error.value = e.response.data.detail;
+    if (e.response.data.detail === "Incorrect username or password") {
+      error.value = "ユーザー名またはパスワードが間違っています";
+    } else {
+      error.value = e.response.data.detail;
+    }
     alert("ログインに失敗しました");
   }
 };
@@ -46,7 +49,6 @@ const signup = async () => {
   const valRes = validateInput(username.value, email.value, password.value);
   if (valRes) {
     error.value = valRes;
-    alert("入力内容を確認してください");
     return;
   }
 
@@ -58,8 +60,13 @@ const signup = async () => {
     });
     await login(username.value, password.value);
   } catch (e) {
-    console.error(e);
-    error.value = e.response.data.detail;
+    if (e.response.data.detail === "Username already registered") {
+      error.value = "ユーザー名は既に使用されています";
+    } else if (e.response.data.detail === "Email already registered") {
+      error.value = "メールアドレスは既に使用されています";
+    } else {
+      error.value = e.response.data.detail;
+    }
     alert("登録に失敗しました");
   }
 };
