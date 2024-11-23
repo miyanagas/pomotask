@@ -237,8 +237,8 @@ const customize = () => {
 
 @media screen and (max-width: 490px) {
   #timer-display {
-    font-size: 64px;
-    margin: 8px 8px 8px 32px;
+    font-size: 50px;
+    margin: 5px 5px 5px 25px;
   }
 }
 
@@ -300,7 +300,6 @@ const customize = () => {
   .timer-button {
     width: 100px;
     font-size: 18px;
-    margin: 1rem;
   }
 }
 
