@@ -12,6 +12,8 @@ app = FastAPI(openapi_url="/api/v1/openapi.json", docs_url="/api/v1/docs")
 # CORSの設定
 origins = [
     "https://todo-app-2yl.pages.dev",
+    "https://miyanagas.github.io",
+    # "http://localhost:5173",
 ]
 
 app.add_middleware(
