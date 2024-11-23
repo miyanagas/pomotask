@@ -237,8 +237,8 @@ const customize = () => {
 
 @media screen and (max-width: 490px) {
   #timer-display {
-    font-size: 50px;
-    margin: 5px 5px 5px 25px;
+    font-size: 40px;
+    margin: 5px 5px 5px 20px;
   }
 }
 
