@@ -14,7 +14,7 @@ from api.models.token import Token, TokenCreate
 router = APIRouter(tags=["auth"])
 
 # Set-Cookie attribute
-cookie_config = {"httponly": True, "secure": True, "samesite": "None"}
+cookie_config = {"httponly": True, "secure": True, "samesite": "None", "domain": "todo-app-xsm9.onrender.com"}
 # cookie_config = {"httponly": True, "secure": False, "samesite": "Strict"}
 
 # ログインしてアクセストークンを取得するリクエスト
