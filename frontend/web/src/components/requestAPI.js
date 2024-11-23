@@ -1,5 +1,4 @@
 import axios from "axios";
-import { createPinia, setActivePinia } from "pinia";
 import { useAuthStore } from "@/auth";
 import { useLoadingStore } from "./loading";
 
@@ -8,25 +7,35 @@ const requestAPI = axios.create({
   // baseURL: "http://localhost:8000/api/v1",
 });
 
-const pinia = createPinia();
-setActivePinia(pinia);
+requestAPI.interceptors.request.use(
+  (config) => {
+    const loadingStore = useLoadingStore();
+    loadingStore.startRequest();
 
-const authStore = useAuthStore();
-const loadingStore = useLoadingStore();
+    return config;
+  },
+  (error) => {
+    const loadingStore = useLoadingStore();
+    loadingStore.finishRequest();
+    console.error("Error loading request:", error);
 
-requestAPI.interceptors.request.use((config) => {
-  loadingStore.setLoading(true);
-  return config;
-});
+    return Promise.reject(error);
+  }
+);
 
 requestAPI.interceptors.response.use(
   (response) => {
+    const authStore = useAuthStore();
+    useLoadingStore().finishRequest();
+
     authStore.login();
-    loadingStore.setLoading(false);
 
     return response;
   },
   async (error) => {
+    const authStore = useAuthStore();
+    const loadingStore = useLoadingStore();
+
     if (error.response.status === 401) {
       try {
         await axios.get("https://todo-app-xsm9.onrender.com/api/v1/refresh/", {
@@ -37,13 +46,35 @@ requestAPI.interceptors.response.use(
         return requestAPI.request(error.config);
       } catch (refreshError) {
         console.error("Error refreshing token:", refreshError);
-        loadingStore.setLoading(false);
+        console.error("Error details:", refreshError.response.data.detail);
+        loadingStore.finishRequest();
+
         authStore.logout();
+
+        if (
+          refreshError.response.data.detail ===
+            "Could not validate credentials" ||
+          refreshError.response.data.detail === "Refresh token is missing" ||
+          refreshError.response.data.detail === "Invalid refresh token"
+        ) {
+          refreshError.response.data.detail = "認証情報が正しくありません";
+        }
 
         return Promise.reject(refreshError);
       }
     }
-    loadingStore.setLoading(false);
+    loadingStore.finishRequest();
+
+    console.error("Error loading response:", error);
+    console.error("Error details:", error.response.data.detail);
+
+    if (
+      error.response.data.detail === "Could not validate credentials" ||
+      error.response.data.detail === "Access token is missing" ||
+      error.response.data.detail === "User not found"
+    ) {
+      error.response.data.detail = "認証情報が正しくありません";
+    }
 
     return Promise.reject(error);
   }

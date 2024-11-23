@@ -2,11 +2,14 @@
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import requestAPI from "./requestAPI";
+import { useLoadingStore } from "./loading";
 
 import YouTube from "./YouTube.vue";
 import Timer from "./ToDoTimer.vue";
+import LoadingView from "./Loading.vue";
 
 const routeId = useRoute().params.id;
+const loadingStore = useLoadingStore();
 const error = ref(null);
 
 const isMenuOpen = ref(false);
@@ -24,15 +27,18 @@ onMounted(async () => {
     title.value = response.data.title;
     timeToComplete.value = response.data.time_to_complete;
   } catch (e) {
-    console.error(e);
-    error.value = e.response.data.detail;
-    alert("タスク情報の取得に失敗しました");
+    if (e.response.data.detail === "Todo not found") {
+      error.value = "Todoが見つかりませんでした";
+    } else {
+      error.value = e.response.data.detail;
+    }
+    alert("Todo情報の取得に失敗しました");
   }
 });
 </script>
 
 <template>
-  <div class="container">
+  <div class="container" v-if="!loadingStore.isLoading">
     <div v-if="error" class="error-message">{{ error }}</div>
     <div id="todo-title">
       <img
@@ -59,6 +65,7 @@ onMounted(async () => {
     </Transition>
     <Timer :timeToComplete="timeToComplete" v-if="timeToComplete != null" />
   </div>
+  <LoadingView v-else />
 </template>
 
 <style scoped>

@@ -2,9 +2,13 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import requestAPI from "./requestAPI";
+import { useLoadingStore } from "./loading";
 import { validateInput } from "./validation";
 
+import LoadingView from "./Loading.vue";
+
 const router = useRouter();
+const loadingStore = useLoadingStore();
 
 const currentPassword = ref("");
 const newPassword = ref("");
@@ -15,7 +19,6 @@ const updatePassword = async () => {
   const valRes = validateInput(null, null, newPassword.value);
   if (!valRes) {
     error.value = valRes;
-    alert("入力内容を確認してください");
   }
 
   try {
@@ -31,7 +34,6 @@ const updatePassword = async () => {
     );
     router.push("/mypage");
   } catch (e) {
-    console.error(e);
     error.value = e.response.data.detail;
     alert("パスワードの変更に失敗しました");
   }
@@ -39,7 +41,7 @@ const updatePassword = async () => {
 </script>
 
 <template>
-  <div class="container">
+  <div class="container" v-if="!loadingStore.isLoading">
     <h1 class="title">パスワード変更</h1>
     <div v-if="error" class="error-message">{{ error }}</div>
     <form id="multiple-input-form" @submit.prevent="updatePassword">
@@ -63,6 +65,7 @@ const updatePassword = async () => {
       </button>
     </form>
   </div>
+  <LoadingView v-else />
 </template>
 
 <style scoped>

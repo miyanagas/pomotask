@@ -1,14 +1,7 @@
 <script setup>
-import { computed } from "vue";
 import { useRoute } from "vue-router";
-import { useLoadingStore } from "./components/loading";
-
-import LoadingView from "./components/Loading.vue";
 
 const route = useRoute();
-const loadingStore = useLoadingStore();
-
-const isLoading = computed(() => loadingStore.isLoading);
 </script>
 
 <template>
@@ -32,8 +25,7 @@ const isLoading = computed(() => loadingStore.isLoading);
     </router-link>
   </header>
   <main>
-    <RouterView v-if="!isLoading" />
-    <LoadingView v-else />
+    <RouterView />
   </main>
 </template>
 
