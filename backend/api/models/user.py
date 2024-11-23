@@ -8,6 +8,7 @@ import re
 
 if TYPE_CHECKING:
     from api.models.todo import Todo
+from api.models.token import Token
 
 # Userテーブルの定義
 class UserBase(SQLModel):
@@ -24,6 +25,7 @@ class User(UserBase, table=True):
     ) # 更新日時
 
     todo_list: list["Todo"] = Relationship(back_populates="user", cascade_delete=True) # User削除時にTodoも削除
+    token: Token | None = Relationship(back_populates="user", cascade_delete=True) # User削除時にTokenも削除
 
 # パスワードのパターンを検証する関数
 def check_password_pattern(password: str):
