@@ -3,10 +3,14 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import requestAPI from "./requestAPI";
 import { useAuthStore } from "@/auth";
+import { useLoadingStore } from "./loading";
 import { validateInput } from "./validation";
+
+import LoadingView from "./Loading.vue";
 
 const router = useRouter();
 const authStore = useAuthStore();
+const loadingStore = useLoadingStore();
 
 const username = ref("");
 const password = ref("");
@@ -46,7 +50,7 @@ const login = async () => {
 </script>
 
 <template>
-  <div class="container">
+  <div class="container" v-if="!loadingStore.isLoading">
     <h1 class="title">ログイン</h1>
     <form class="multiple-input-form" @submit.prevent="login">
       <div v-if="error" class="error-message">
@@ -87,6 +91,7 @@ const login = async () => {
       </div>
     </form>
   </div>
+  <LoadingView v-else />
 </template>
 
 <style scoped>

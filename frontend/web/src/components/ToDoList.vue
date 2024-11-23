@@ -2,6 +2,11 @@
 import { ref, onMounted, computed } from "vue";
 import requestAPI from "./requestAPI";
 import { timeFormat } from "./time";
+import { useLoadingStore } from "./loading";
+
+import LoadingView from "./Loading.vue";
+
+const loadingStore = useLoadingStore();
 
 const todoList = ref([]);
 const newTodoTitle = ref("");
@@ -94,7 +99,7 @@ const deleteTodoList = async () => {
 </script>
 
 <template>
-  <div class="container">
+  <div class="container" v-if="!loadingStore.isLoading">
     <div v-if="error" class="error-message">
       <p>{{ error }}</p>
     </div>
@@ -153,6 +158,7 @@ const deleteTodoList = async () => {
       </button>
     </div>
   </div>
+  <LoadingView v-else />
 </template>
 
 <style scoped>

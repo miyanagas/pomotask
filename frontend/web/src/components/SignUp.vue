@@ -4,9 +4,13 @@ import { useRouter } from "vue-router";
 import requestAPI from "./requestAPI";
 import { useAuthStore } from "@/auth";
 import { validateInput } from "./validation";
+import { useLoadingStore } from "./loading";
+
+import LoadingView from "./Loading.vue";
 
 const router = useRouter();
 const authStore = useAuthStore();
+const loadingStore = useLoadingStore();
 
 const username = ref("");
 const email = ref("");
@@ -62,7 +66,7 @@ const signup = async () => {
 </script>
 
 <template>
-  <div class="container">
+  <div class="container" v-if="!loadingStore.isLoading">
     <h1 class="title">新規登録</h1>
     <form class="multiple-input-form" @submit.prevent="signup">
       <div v-if="error" class="error-message">{{ error }}</div>
@@ -101,6 +105,7 @@ const signup = async () => {
       </button>
     </form>
   </div>
+  <LoadingView v-else />
 </template>
 
 <style scoped>

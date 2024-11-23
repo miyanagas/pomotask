@@ -1,5 +1,4 @@
 import axios from "axios";
-import { createPinia, setActivePinia } from "pinia";
 import { useAuthStore } from "@/auth";
 import { useLoadingStore } from "./loading";
 
@@ -8,25 +7,34 @@ const requestAPI = axios.create({
   // baseURL: "http://localhost:8000/api/v1",
 });
 
-const pinia = createPinia();
-setActivePinia(pinia);
+requestAPI.interceptors.request.use(
+  (config) => {
+    const loadingStore = useLoadingStore();
+    loadingStore.startRequest();
 
-const authStore = useAuthStore();
-const loadingStore = useLoadingStore();
+    return config;
+  },
+  (error) => {
+    const loadingStore = useLoadingStore();
+    loadingStore.finishRequest();
 
-requestAPI.interceptors.request.use((config) => {
-  loadingStore.setLoading(true);
-  return config;
-});
+    return Promise.reject(error);
+  }
+);
 
 requestAPI.interceptors.response.use(
   (response) => {
+    const authStore = useAuthStore();
+    useLoadingStore().finishRequest();
+
     authStore.login();
-    loadingStore.setLoading(false);
 
     return response;
   },
   async (error) => {
+    const authStore = useAuthStore();
+    const loadingStore = useLoadingStore();
+
     if (error.response.status === 401) {
       try {
         await axios.get("https://todo-app-xsm9.onrender.com/api/v1/refresh/", {
@@ -37,13 +45,14 @@ requestAPI.interceptors.response.use(
         return requestAPI.request(error.config);
       } catch (refreshError) {
         console.error("Error refreshing token:", refreshError);
-        loadingStore.setLoading(false);
+        loadingStore.finishRequest();
+
         authStore.logout();
 
         return Promise.reject(refreshError);
       }
     }
-    loadingStore.setLoading(false);
+    loadingStore.finishRequest();
 
     return Promise.reject(error);
   }

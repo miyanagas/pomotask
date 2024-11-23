@@ -3,15 +3,21 @@ import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import requestAPI from "./requestAPI";
 import { useAuthStore } from "@/auth";
+import { useLoadingStore } from "./loading";
 import { validateInput } from "./validation";
+
+import LoadingView from "./Loading.vue";
 
 const router = useRouter();
 const authStore = useAuthStore();
+const loadingStore = useLoadingStore();
 
 const error = ref(null);
 
 // ユーザー情報を取得
 onMounted(async () => {
+  if (loadingStore.isLoading) return;
+
   try {
     const response = await requestAPI.get("/users/me/", {
       withCredentials: true,
@@ -144,7 +150,7 @@ const deleteUser = async () => {
 </script>
 
 <template>
-  <div class="container">
+  <div class="container" v-if="!loadingStore.isLoading">
     <h1 id="mypage-title" class="title">マイページ</h1>
     <div v-if="error" class="error-message">{{ error }}</div>
     <div id="user-info">
@@ -205,6 +211,7 @@ const deleteUser = async () => {
       </button>
     </div>
   </div>
+  <LoadingView v-else />
 </template>
 
 <style scoped>
