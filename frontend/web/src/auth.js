@@ -1,26 +1,23 @@
 import { defineStore } from "pinia";
-// import requestAPI from "./components/requestAPI";
+import requestAPI from "./components/requestAPI";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
     isAuthenticated: false,
-    // initialized: false,
+    initialized: false,
   }),
   actions: {
-    // async checkLoginStatus() {
-    //   try {
-    //     const response = await requestAPI.get("/status/", {
-    //       withCredentials: true,
-    //     });
-    //     this.isAuthenticated = response.data.is_authenticated;
-    //   } catch (error) {
-    //     this.isAuthenticated = false;
-    //   }
-    // },
-    // async initialize() {
-    //   await this.checkLoginStatus();
-    //   this.initialized = true;
-    // },
+    async initialize() {
+      try {
+        const response = await requestAPI.get("/status/", {
+          withCredentials: true,
+        });
+        this.isAuthenticated = response.data.is_authenticated;
+      } catch (error) {
+        this.isAuthenticated = false;
+      }
+      this.initialized = true;
+    },
     login() {
       this.isAuthenticated = true;
     },
