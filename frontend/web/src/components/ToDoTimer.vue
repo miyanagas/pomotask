@@ -252,8 +252,8 @@ const customize = () => {
 
 @media screen and (max-width: 490px) {
   #timer-progress {
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
   }
 }
 
