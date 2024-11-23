@@ -138,11 +138,9 @@ button {
 }
 
 .error-message {
-  display: block;
   color: var(--color-danger);
   font-size: 0.9rem;
-  padding: 0.5rem;
-  margin: 0 auto;
+  margin: 0.5rem;
 }
 
 /* @media (hover: hover) {
