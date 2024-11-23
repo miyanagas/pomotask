@@ -1,11 +1,7 @@
-<script setup>
-import { useRoute } from "vue-router";
-
-const route = useRoute();
-</script>
+<script setup></script>
 
 <template>
-  <header v-if="!route.meta.hideHeader">
+  <header v-if="!$route.meta.hideHeader">
     <router-link to="/" id="header-title" class="title">今日のToDo</router-link>
     <img
       alt="App logo"

@@ -4,13 +4,9 @@ import { useRouter } from "vue-router";
 import requestAPI from "./requestAPI";
 import { useAuthStore } from "@/auth";
 import { validateInput } from "./validation";
-import { useLoadingStore } from "./loading";
-
-import LoadingView from "./Loading.vue";
 
 const router = useRouter();
 const authStore = useAuthStore();
-const loadingStore = useLoadingStore();
 
 const username = ref("");
 const email = ref("");
@@ -36,11 +32,8 @@ const login = async (username, password) => {
     authStore.login();
     router.push("/");
   } catch (e) {
-    if (e.response.data.detail === "Incorrect username or password") {
-      error.value = "ユーザー名またはパスワードが間違っています";
-    } else {
-      error.value = e.response.data.detail;
-    }
+    console.error(e);
+    error.value = e.response.data.detail;
     alert("ログインに失敗しました");
   }
 };
@@ -49,6 +42,7 @@ const signup = async () => {
   const valRes = validateInput(username.value, email.value, password.value);
   if (valRes) {
     error.value = valRes;
+    alert("入力内容を確認してください");
     return;
   }
 
@@ -60,20 +54,15 @@ const signup = async () => {
     });
     await login(username.value, password.value);
   } catch (e) {
-    if (e.response.data.detail === "Username already registered") {
-      error.value = "ユーザー名は既に使用されています";
-    } else if (e.response.data.detail === "Email already registered") {
-      error.value = "メールアドレスは既に使用されています";
-    } else {
-      error.value = e.response.data.detail;
-    }
+    console.error(e);
+    error.value = e.response.data.detail;
     alert("登録に失敗しました");
   }
 };
 </script>
 
 <template>
-  <div class="container" v-if="!loadingStore.isLoading">
+  <div class="container">
     <h1 class="title">新規登録</h1>
     <form class="multiple-input-form" @submit.prevent="signup">
       <div v-if="error" class="error-message">{{ error }}</div>
@@ -112,7 +101,6 @@ const signup = async () => {
       </button>
     </form>
   </div>
-  <LoadingView v-else />
 </template>
 
 <style scoped>

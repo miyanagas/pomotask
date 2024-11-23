@@ -2,8 +2,6 @@
 import { ref } from "vue";
 import { useVideoStore } from "./video";
 
-const error = ref(null);
-
 const videoStore = useVideoStore();
 
 const youtubeUrl = ref("");
@@ -25,7 +23,7 @@ const embedYoutube = () => {
   if (youtubeId.value) {
     youtubeSrc.value = `https://www.youtube.com/embed/${youtubeId.value}`;
   } else {
-    error.value = "正しいYouTubeのURLを入力してください";
+    alert("正しいYouTubeのURLを入力してください");
   }
 };
 
@@ -38,29 +36,31 @@ const updateVideoId = () => {
 
 <template>
   <div style="padding: 0 1rem">
-    <div class="single-input-form">
+    <form class="single-input-form" @submit.prevent="embedYoutube">
       <input
         style="font-size: 14px"
         class="text-input"
         type="text"
         v-model="youtubeUrl"
+        required
         placeholder="YouTube URL"
       />
       <button
         style="margin-left: 2rem"
         class="youtube-button video-button"
-        @click="embedYoutube()"
+        type="submit"
       >
         ロード
       </button>
       <button
         style="margin-left: 1rem"
         class="primary-button video-button"
+        id="reset"
         @click="updateVideoId()"
       >
         お気に入り
       </button>
-    </div>
+    </form>
     <iframe
       v-if="!youtubeId.value"
       v-bind:src="youtubeSrc"
