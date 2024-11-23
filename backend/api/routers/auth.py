@@ -11,6 +11,10 @@ from api.models.token import Token, TokenCreate
 
 router = APIRouter(tags=["auth"])
 
+# Set-Cookie attribute
+cookie_config = {"httponly": True, "secure": True, "samesite": "None", "domain": "todo-app-xsm9.onrender.com"}
+# cookie_config = {"httponly": True, "secure": False, "samesite": "Strict"}
+
 # ログインしてアクセストークンを取得するリクエスト
 @router.post("/token/")
 def login_for_access_token(response: Response, form_data: Annotated[OAuth2PasswordRequestForm, Depends()], session: SessionDep):
