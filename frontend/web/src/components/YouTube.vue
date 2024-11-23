@@ -47,14 +47,14 @@ const updateVideoId = () => {
         placeholder="YouTube URL"
       />
       <button
-        style="margin-left: 2rem"
+        id="load-button"
         class="youtube-button video-button"
         @click="embedYoutube()"
       >
         ロード
       </button>
       <button
-        style="margin-left: 1rem"
+        id="favorite-button"
         class="primary-button video-button"
         @click="updateVideoId()"
       >
@@ -79,6 +79,15 @@ const updateVideoId = () => {
 iframe {
   display: block;
   margin: 0 auto;
+  width: 640px;
+  height: 360px;
+}
+
+@media screen and (max-width: 490px) {
+  iframe {
+    width: 320px;
+    height: 180px;
+  }
 }
 
 .video-button {
@@ -93,6 +102,26 @@ iframe {
 @media (hover: hover) {
   .youtube-button:hover {
     background-color: var(--color-red-hover);
+  }
+}
+
+#load-button {
+  margin-left: 2rem;
+}
+
+@media screen and (max-width: 490px) {
+  #load-button {
+    margin-left: 1rem;
+  }
+}
+
+#favorite-button {
+  margin-left: 1rem;
+}
+
+@media screen and (max-width: 490px) {
+  #favorite-button {
+    display: none;
   }
 }
 </style>

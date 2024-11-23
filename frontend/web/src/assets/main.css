@@ -56,6 +56,15 @@ button {
 
 .icon {
   display: block;
+  width: 35px;
+  height: 35px;
+}
+
+@media screen and (max-width: 490px) {
+  .icon {
+    width: 30px;
+    height: 30px;
+  }
 }
 
 .single-input-form {

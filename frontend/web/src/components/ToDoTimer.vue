@@ -181,7 +181,7 @@ const customize = () => {
     </div>
     <div class="flex-center-container">
       <div class="time-selector">
-        <label for="task-time">タスク時間</label>
+        <label for="task-time">タスク</label>
         <select v-model="taskTime" id="task-time">
           <option value="5">5分</option>
           <option value="10">10分</option>
@@ -204,7 +204,7 @@ const customize = () => {
         </select>
       </div>
       <div class="time-selector">
-        <label for="break-time">休憩時間</label>
+        <label for="break-time">休憩</label>
         <select v-model="breakTime" id="break-time">
           <option value="5">5分</option>
           <option value="10">10分</option>
@@ -235,12 +235,26 @@ const customize = () => {
   margin: 8px 8px 8px 64px;
 }
 
+@media screen and (max-width: 490px) {
+  #timer-display {
+    font-size: 64px;
+    margin: 8px 8px 8px 32px;
+  }
+}
+
 #timer-progress {
   display: flex;
   align-items: center;
   margin: auto 0;
   width: 200px;
   height: 200px;
+}
+
+@media screen and (max-width: 490px) {
+  #timer-progress {
+    width: 100px;
+    height: 100px;
+  }
 }
 
 .progress-svg {
@@ -270,10 +284,24 @@ const customize = () => {
   border-radius: 4px;
 }
 
+@media screen and (max-width: 490px) {
+  #total-time-display {
+    font-size: 1.2em;
+  }
+}
+
 .timer-button {
   width: 130px;
   font-size: 24px;
   margin: 1.5rem;
+}
+
+@media screen and (max-width: 490px) {
+  .timer-button {
+    width: 100px;
+    font-size: 18px;
+    margin: 1rem;
+  }
 }
 
 .flex-center-container {

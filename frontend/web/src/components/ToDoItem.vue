@@ -40,16 +40,16 @@ onMounted(async () => {
 <template>
   <div class="container" v-if="!loadingStore.isLoading">
     <div v-if="error" class="error-message">{{ error }}</div>
-    <div id="todo-title">
+    <div id="todo-titlebar">
       <img
+        id="todo-logo"
         alt="App logo"
-        style="margin-left: 1rem"
         class="icon"
         src="@/assets/todo-logo2.svg"
-        width="35"
-        height="35"
       />
-      <h1 style="margin-left: 1rem; font-weight: bold">{{ title }}</h1>
+      <h1 id="todo-title">
+        {{ title }}
+      </h1>
       <button id="toggle-button" @click="isMenuOpen = !isMenuOpen">
         <img
           v-if="!isMenuOpen"
@@ -69,13 +69,34 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-#todo-title {
+#todo-titlebar {
   display: flex;
   justify-content: flex-start;
   align-items: center;
   padding: 0.5rem 1.5rem;
   background-color: var(--color-gray);
   border-radius: 8px;
+}
+
+#todo-logo {
+  margin-left: 1rem;
+}
+
+@media screen and (max-width: 490px) {
+  #todo-logo {
+    margin: 0;
+  }
+}
+
+#todo-title {
+  margin-left: 1rem;
+  font-weight: bold;
+}
+
+@media screen and (max-width: 490px) {
+  #todo-title {
+    font-size: 1.5rem;
+  }
 }
 
 #toggle-button {

@@ -7,21 +7,9 @@ const route = useRoute();
 <template>
   <header v-if="!route.meta.hideHeader">
     <router-link to="/" id="header-title" class="title">今日のToDo</router-link>
-    <img
-      alt="App logo"
-      class="icon"
-      src="./assets/todo-logo.svg"
-      width="35"
-      height="35"
-    />
-    <router-link to="/mypage" class="title" id="mypage-link"
-      ><img
-        alt="My page"
-        class="icon"
-        src="./assets/user.svg"
-        width="35"
-        height="35"
-      />
+    <img alt="App logo" class="icon" src="./assets/todo-logo.svg" />
+    <router-link to="/mypage" class="title" id="mypage-link">
+      <img alt="My page" class="icon" src="./assets/user.svg" />
     </router-link>
   </header>
   <main>
@@ -45,8 +33,20 @@ header {
   color: var(--color-text-white);
 }
 
+@media screen and (max-width: 490px) {
+  #header-title {
+    margin: 0;
+  }
+}
+
 #mypage-link {
   margin: 0 2rem 0 auto;
   padding: 0;
+}
+
+@media screen and (max-width: 490px) {
+  #mypage-link {
+    margin-right: 1rem;
+  }
 }
 </style>
