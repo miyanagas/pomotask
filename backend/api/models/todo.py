@@ -13,7 +13,7 @@ class TodoBase(SQLModel):
 class Todo(TodoBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True) # ID
     is_done: bool = False # 完了フラグ
-    time_to_complete: int = 0 # 完了予定時間（秒）
+    time_to_complete: int = Field(ge=0, default=0) # 完了予定時間（秒）
     created_at: datetime = Field(default_factory=datetime.now, index=True) # 作成日時
     updated_at: datetime = Field(
         default_factory=datetime.now,

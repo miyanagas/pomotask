@@ -39,7 +39,7 @@ def read_todo_list(user: UserDep, session: SessionDep, filter: bool = False):
     if filter:
         db_todo_list = session.exec(select(Todo).where(Todo.user_id == user.id).where(Todo.is_done == False)).all()
     else:
-        db_todo_list = session.exec(select(Todo).where(Todo.user_id == user.id)).all()
+        db_todo_list = user.todo_list
     return db_todo_list
 
 # Todo取得リクエスト

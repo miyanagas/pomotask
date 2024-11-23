@@ -6,7 +6,8 @@ from datetime import timedelta
 
 from api.config import ACCESS_TOKEN_EXPIRE_MINUTES
 from api.database import SessionDep
-from api.auth import authenticate_user, create_access_token, get_token_from_cookie
+from api.auth import authenticate_user, create_token, get_access_token_from_cookie, get_refresh_token_from_cookie, validate_credentials
+from api.models.token import Token, TokenCreate
 
 router = APIRouter(tags=["auth"])
 
@@ -40,7 +41,5 @@ def logout(response: Response):
     return {"ok": True}
 
 @router.get("/status/")
-def read_auth_status(access_token: Annotated[str | None, Cookie()] = None):
-    if not access_token:
-        return {"is_authenticated": False}
+def read_auth_status(access_token: Annotated[str, Depends(get_access_token_from_cookie)]):
     return {"is_authenticated": True}
