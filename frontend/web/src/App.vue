@@ -12,7 +12,7 @@ const route = useRoute();
       to="/mypage"
       class="title"
       id="mypage-link"
-      v-if="route.meta.requiredAuth"
+      v-if="route.meta.requiresAuth"
     >
       <img alt="My page" class="icon" src="./assets/user.svg" />
     </router-link>
