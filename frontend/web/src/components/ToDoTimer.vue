@@ -229,6 +229,12 @@ const customize = () => {
   border-radius: 8px;
 }
 
+@media screen and (max-width: 490px) {
+  .screen {
+    padding: 0.5rem;
+  }
+}
+
 #timer-display {
   font-size: 128px;
   font-family: "Ubuntu Sans Mono", monospace;
@@ -237,8 +243,8 @@ const customize = () => {
 
 @media screen and (max-width: 490px) {
   #timer-display {
-    font-size: 40px;
-    margin: 5px 5px 5px 20px;
+    font-size: 64px;
+    margin: 4px 4px 4px 16px;
   }
 }
 
@@ -252,8 +258,8 @@ const customize = () => {
 
 @media screen and (max-width: 490px) {
   #timer-progress {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
   }
 }
 
