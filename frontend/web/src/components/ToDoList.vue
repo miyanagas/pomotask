@@ -233,7 +233,7 @@ const deleteTodoList = async () => {
 }
 
 .todo-complete-time {
-  font-family: "Lucida Console", monospace;
+  font-family: "Ubuntu Sans Mono", monospace;
   margin-left: 2rem;
 }
 

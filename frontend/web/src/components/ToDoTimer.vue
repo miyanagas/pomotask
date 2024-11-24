@@ -231,8 +231,8 @@ const customize = () => {
 
 #timer-display {
   font-size: 128px;
-  font-family: "Lucida Console", monospace;
-  margin: 8px 8px 8px 64px;
+  font-family: "Ubuntu Sans Mono", monospace;
+  margin: 8px 8px 8px 32px;
 }
 
 @media screen and (max-width: 490px) {
@@ -278,8 +278,8 @@ const customize = () => {
 }
 
 #total-time-display {
-  font-family: "Lucida Console", monospace;
   font-size: 1.5em;
+  font-family: "Ubuntu Sans Mono", monospace;
   margin-left: 0.25em;
   padding: 0 0.5em;
   border: 1px solid var(--color-border);
