@@ -13,12 +13,12 @@ const routes = [
     path: "/login",
     name: "Login",
     component: LogInView,
-    meta: { hideHeader: true, requiresAuth: false },
+    meta: { requiresAuth: false },
   },
   {
     path: "/signup",
     component: SignUpView,
-    meta: { hideHeader: true, requiresAuth: false },
+    meta: { requiresAuth: false },
   },
   { path: "/mypage", component: MyPageView, meta: { requiresAuth: true } },
   {
