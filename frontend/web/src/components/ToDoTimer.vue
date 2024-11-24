@@ -85,11 +85,11 @@ const updateTodo = async (completed = false) => {
     }
   } catch (e) {
     if (e.response.data.detail === "Todo not found") {
-      error.value = "Todoの更新に失敗しました";
+      error.value = "タスクの更新に失敗しました";
     } else {
       error.value = e.response.data.detail;
     }
-    alert("Todoの更新に失敗しました");
+    alert("タスクの更新に失敗しました");
   }
 };
 
@@ -229,16 +229,22 @@ const customize = () => {
   border-radius: 8px;
 }
 
+@media screen and (max-width: 490px) {
+  .screen {
+    padding: 0.5rem;
+  }
+}
+
 #timer-display {
   font-size: 128px;
-  font-family: "Lucida Console", monospace;
-  margin: 8px 8px 8px 64px;
+  font-family: "Ubuntu Sans Mono", monospace;
+  margin: 8px 8px 8px 32px;
 }
 
 @media screen and (max-width: 490px) {
   #timer-display {
-    font-size: 50px;
-    margin: 5px 5px 5px 25px;
+    font-size: 64px;
+    margin: 4px 4px 4px 16px;
   }
 }
 
@@ -258,6 +264,8 @@ const customize = () => {
 }
 
 .progress-svg {
+  width: 200px;
+  height: 200px;
   transform: rotate(-90deg) scale(1, -1);
 }
 
@@ -276,8 +284,8 @@ const customize = () => {
 }
 
 #total-time-display {
-  font-family: "Lucida Console", monospace;
   font-size: 1.5em;
+  font-family: "Ubuntu Sans Mono", monospace;
   margin-left: 0.25em;
   padding: 0 0.5em;
   border: 1px solid var(--color-border);

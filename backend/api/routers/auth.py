@@ -57,7 +57,7 @@ def login_for_access_token(response: Response, form_data: Annotated[OAuth2Passwo
     return {"ok": True}
 
 # リフレッシュトークンを使ってアクセストークンを更新するリクエスト
-@router.get("/refresh/")
+@router.post("/refresh/")
 def refresh_tokens(response: Response, refresh_token: Annotated[str, Depends(get_refresh_token_from_cookie)], session: SessionDep):
     refresh_exception = HTTPException(
         status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid refresh token"
@@ -67,8 +67,9 @@ def refresh_tokens(response: Response, refresh_token: Annotated[str, Depends(get
     db_refresh_token = session.exec(select(Token).where(Token.user_id == refresh_token_data.user_id, Token.expires == refresh_token_data.expires)).first()
     if not db_refresh_token:
         raise refresh_exception
-    if db_refresh_token.expires < datetime.now(timezone.utc):
+    if db_refresh_token.expires < datetime.now(timezone.utc).replace(tzinfo=None):
         session.delete(db_refresh_token)
+        session.commit()
         raise refresh_exception
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)

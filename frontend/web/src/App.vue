@@ -5,10 +5,15 @@ const route = useRoute();
 </script>
 
 <template>
-  <header v-if="!route.meta.hideHeader">
-    <router-link to="/" id="header-title" class="title">今日のToDo</router-link>
+  <header>
+    <router-link to="/" id="header-title" class="title">PomoTask</router-link>
     <img alt="App logo" class="icon" src="./assets/todo-logo.svg" />
-    <router-link to="/mypage" class="title" id="mypage-link">
+    <router-link
+      to="/mypage"
+      class="title"
+      id="mypage-link"
+      v-if="route.meta.requiresAuth"
+    >
       <img alt="My page" class="icon" src="./assets/user.svg" />
     </router-link>
   </header>
