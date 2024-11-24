@@ -46,6 +46,7 @@ requestAPI.interceptors.response.use(
             withCredentials: true,
           }
         );
+        loadingStore.finishRequest();
 
         return requestAPI.request(error.config);
       } catch (refreshError) {
@@ -67,7 +68,7 @@ requestAPI.interceptors.response.use(
         return Promise.reject(refreshError);
       }
     }
-    loadingStore.finishRequest();
+    loadingStore.finishRequest(); /* TODO */
 
     console.error("Error loading response:", error);
     console.error("Error details:", error.response.data.detail);
