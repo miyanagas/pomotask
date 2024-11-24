@@ -85,11 +85,11 @@ const updateTodo = async (completed = false) => {
     }
   } catch (e) {
     if (e.response.data.detail === "Todo not found") {
-      error.value = "Todoの更新に失敗しました";
+      error.value = "タスクの更新に失敗しました";
     } else {
       error.value = e.response.data.detail;
     }
-    alert("Todoの更新に失敗しました");
+    alert("タスクの更新に失敗しました");
   }
 };
 

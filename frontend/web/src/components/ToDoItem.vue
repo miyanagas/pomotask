@@ -28,11 +28,11 @@ onMounted(async () => {
     timeToComplete.value = response.data.time_to_complete;
   } catch (e) {
     if (e.response.data.detail === "Todo not found") {
-      error.value = "Todoが見つかりませんでした";
+      error.value = "タスクが見つかりませんでした";
     } else {
       error.value = e.response.data.detail;
     }
-    alert("Todo情報の取得に失敗しました");
+    alert("タスク情報の取得に失敗しました");
   }
 });
 </script>

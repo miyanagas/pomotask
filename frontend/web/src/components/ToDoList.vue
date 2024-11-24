@@ -36,7 +36,7 @@ onMounted(async () => {
     todoList.value = response.data;
   } catch (e) {
     error.value = e.response.data.detail;
-    alert("Todoリストの取得に失敗しました");
+    alert("タスク一覧の取得に失敗しました");
   }
 });
 
@@ -44,7 +44,7 @@ const addTodo = async () => {
   if (!newTodoTitle.value) return;
 
   if (newTodoTitle.value.length > 20) {
-    error.value = "Todoは20文字以内で入力してください";
+    error.value = "タスクは20文字以内で入力してください";
     return;
   }
 
@@ -62,7 +62,7 @@ const addTodo = async () => {
     todoList.value.push(newTodo);
   } catch (e) {
     error.value = e.response.data.detail;
-    alert("Todoの追加に失敗しました");
+    alert("タスクの追加に失敗しました");
   } finally {
     newTodoTitle.value = "";
   }
@@ -81,11 +81,11 @@ const updateTodo = async (todo) => {
     );
   } catch (e) {
     if (e.response.data.detail === "Todo not found") {
-      error.value = "Todoの更新に失敗しました";
+      error.value = "タスクの更新に失敗しました";
     } else {
       error.value = e.response.data.detail;
     }
-    alert("Todoの更新に失敗しました");
+    alert("タスクの更新に失敗しました");
   }
 };
 
@@ -96,7 +96,7 @@ const deleteTodoList = async () => {
     });
   } catch (e) {
     error.value = e.response.data.detail;
-    alert("Todoリストの削除に失敗しました");
+    alert("タスクの削除に失敗しました");
   }
 
   todoList.value = [];
@@ -113,7 +113,7 @@ const deleteTodoList = async () => {
         class="text-input"
         type="text"
         v-model="newTodoTitle"
-        placeholder="Todoを入力してください"
+        placeholder="タスクを入力してください"
       />
       <button
         style="margin-left: 2rem"
@@ -125,7 +125,7 @@ const deleteTodoList = async () => {
     </div>
     <div style="font-size: 12px" class="flex-end-container">
       <input id="filter-checkbox" type="checkbox" v-model="filtered" />
-      <span>完了したTodoを非表示</span>
+      <span>完了したタスクを非表示</span>
     </div>
     <div id="todo-list">
       <ul v-if="filteredTodoList.length !== 0">
@@ -154,7 +154,7 @@ const deleteTodoList = async () => {
           />
         </li>
       </ul>
-      <p v-else>Todoがありません</p>
+      <p v-else>タスクがありません</p>
     </div>
     <div style="display: flex; justify-content: flex-end">
       <button
@@ -162,7 +162,7 @@ const deleteTodoList = async () => {
         class="danger-button"
         @click="deleteTodoList()"
       >
-        Todoを全て削除
+        タスクを全て削除
       </button>
     </div>
   </div>
