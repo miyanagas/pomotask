@@ -38,10 +38,14 @@ requestAPI.interceptors.response.use(
 
     if (error.response.status === 401) {
       try {
-        await axios.post("https://todo-app-xsm9.onrender.com/api/v1/refresh/", {
-          // await axios.post("http://localhost:8000/api/v1/refresh/", {
-          withCredentials: true,
-        });
+        await axios.post(
+          "https://todo-app-xsm9.onrender.com/api/v1/refresh/",
+          //"http://localhost:8000/api/v1/refresh/",
+          {},
+          {
+            withCredentials: true,
+          }
+        );
 
         return requestAPI.request(error.config);
       } catch (refreshError) {
