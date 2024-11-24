@@ -258,6 +258,8 @@ const customize = () => {
 }
 
 .progress-svg {
+  width: 200px;
+  height: 200px;
   transform: rotate(-90deg) scale(1, -1);
 }
 
