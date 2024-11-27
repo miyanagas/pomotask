@@ -4,6 +4,7 @@ import alarm from "@/assets/sound-alarm.mp3";
 import requestAPI from "./requestAPI";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { timeFormat } from "./time";
+import { useTimeStore } from "./store/taskTime";
 
 const props = defineProps({
   timeToComplete: {
@@ -14,6 +15,7 @@ const props = defineProps({
 
 const routeId = useRoute().params.id;
 const router = useRouter();
+const timeStore = useTimeStore();
 
 const defaultTaskTime = 25;
 const defaultBreakTime = 5;
@@ -23,6 +25,7 @@ const seconds = 60;
 const circumference = 2 * Math.PI * 45;
 
 const timeToComplete = ref(props.timeToComplete);
+const completedTask = ref(false);
 
 let timeType = {
   task: taskTime.value * seconds,
@@ -50,11 +53,14 @@ const formattedTotalTime = computed(() => {
 });
 
 onMounted(() => {
+  timeToComplete.value += timeStore.time_diff;
   setTimer(timeType.task);
 });
 
-onBeforeRouteLeave((to, from, next) => {
+onBeforeRouteLeave(async (to, from, next) => {
   timerWorker.value.postMessage({ command: "stop" });
+  timeStore.initialize(0);
+  await updateTodo(completedTask.value);
   next();
 });
 
@@ -64,9 +70,9 @@ timerWorker.value.addEventListener("message", (e) => {
   if (remainingTime.value <= 0) timerEnded();
 });
 
-const updateTodo = async (completed = false) => {
+const updateTodo = async (completed) => {
   try {
-    const response = await requestAPI.patch(
+    await requestAPI.patch(
       `/todo-list/${routeId}`,
       {
         is_done: completed,
@@ -77,12 +83,6 @@ const updateTodo = async (completed = false) => {
         withCredentials: true,
       }
     );
-
-    if (completed) {
-      router.push("/");
-    } else {
-      timeToComplete.value = response.data.time_to_complete;
-    }
   } catch (e) {
     if (e.response.data.detail === "Todo not found") {
       error.value = "タスクの更新に失敗しました";
@@ -103,10 +103,11 @@ const setTimer = (time) => {
 const timerEnded = () => {
   const audio = new Audio(alarm);
   audio.play();
+  timeStore.increment(currentTimer);
+  timeToComplete.value += currentTimer;
   currentTimer =
     currentTimer === timeType.task ? timeType.break : timeType.task;
-  setTimeout(async () => {
-    await updateTodo();
+  setTimeout(() => {
     setTimer(currentTimer);
     timerWorker.value.postMessage({ command: "start" });
   }, 1000);
@@ -162,7 +163,10 @@ const customize = () => {
       <button
         style="margin-left: 0.5rem"
         class="primary-button"
-        @click="updateTodo(true)"
+        @click="
+          completedTask = true;
+          router.push('/');
+        "
       >
         完了
       </button>
