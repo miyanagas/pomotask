@@ -4,7 +4,7 @@ import { useRouter } from "vue-router";
 import requestAPI from "./requestAPI";
 import { useAuthStore } from "@/auth";
 import { validateInput } from "./validation";
-import { useLoadingStore } from "./loading";
+import { useLoadingStore } from "./store/loading";
 
 import LoadingView from "./Loading.vue";
 

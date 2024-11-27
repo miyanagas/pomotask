@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useAuthStore } from "@/auth";
-import { useLoadingStore } from "./loading";
+import { useLoadingStore } from "./store/loading";
 
 const requestAPI = axios.create({
   baseURL: "https://todo-app-xsm9.onrender.com/api/v1",

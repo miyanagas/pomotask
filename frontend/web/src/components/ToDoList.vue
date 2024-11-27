@@ -2,7 +2,7 @@
 import { ref, onMounted, computed } from "vue";
 import requestAPI from "./requestAPI";
 import { timeFormat } from "./time";
-import { useLoadingStore } from "./loading";
+import { useLoadingStore } from "./store/loading";
 
 import LoadingView from "./Loading.vue";
 

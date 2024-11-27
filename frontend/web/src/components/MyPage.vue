@@ -3,7 +3,7 @@ import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import requestAPI from "./requestAPI";
 import { useAuthStore } from "@/auth";
-import { useLoadingStore } from "./loading";
+import { useLoadingStore } from "./store/loading";
 import { validateInput } from "./validation";
 
 import LoadingView from "./Loading.vue";
