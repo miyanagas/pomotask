@@ -7,7 +7,9 @@
 
 ## 使い方
 ### 登録・ログイン
-<img src=""
+下記の画面よりログインまたは新規登録を行得ことで利用することができます
+<img width="720px" alt="ログイン画面" src="https://github.com/user-attachments/assets/9eb35b31-a9c7-43cb-94ea-cdfa2e3e3896">
+
 
 ### タスクの追加・閲覧
 
