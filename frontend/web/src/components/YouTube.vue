@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { useVideoStore } from "./video";
+import { useVideoStore } from "./store/video";
 
 const error = ref(null);
 

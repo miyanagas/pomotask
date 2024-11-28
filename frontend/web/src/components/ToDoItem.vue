@@ -2,7 +2,7 @@
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import requestAPI from "./requestAPI";
-import { useLoadingStore } from "./loading";
+import { useLoadingStore } from "./store/loading";
 
 import YouTube from "./YouTube.vue";
 import Timer from "./ToDoTimer.vue";
